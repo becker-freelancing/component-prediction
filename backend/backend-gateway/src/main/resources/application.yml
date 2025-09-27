@@ -1,0 +1,5 @@
+grpc:
+  client:
+    backendStorageService:
+      address: static://backend-storage-service:9090
+      negotiationType: plaintext

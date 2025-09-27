@@ -1,0 +1,31 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.storage;
+
+message FindAllDocumentsRequest {
+
+}
+
+message DocumentResponse {
+    string id = 1;
+    string app_name = 2;
+    string in_app_action_path = 3;
+    string action_title = 4;
+    string action_description = 5;
+    string action_short_description = 6;
+    repeated string tags = 7;
+    string locale = 8;
+    string version = 9;
+    string creator = 10;
+    string created_at = 11;
+}
+
+message DocumentsResponse {
+    repeated DocumentResponse documents = 1;
+}
+
+service BackendStorageServiceApi {
+    rpc FindAll (FindAllDocumentsRequest) returns (DocumentsResponse);
+}
