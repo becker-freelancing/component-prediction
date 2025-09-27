@@ -3,7 +3,9 @@ package com.becker.freelance.component.prediction.gateway.api;
 import com.becker.freelance.component.prediction.gateway.spi.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,15 +20,12 @@ public class BackendGatewayRestApi {
         this.storageService = storageService;
     }
 
-    @PutMapping("/documents")
-    public ResponseEntity<DocumentId> save(@RequestBody DocumentDto documentDto){
-        return ResponseEntity.badRequest().build();
-    }
-
     @GetMapping("/documents")
-    public ResponseEntity<List<String>> findAll(){
+    public ResponseEntity<List<DocumentId>> findAll() {
 
-        List<String> documentIds = storageService.findAll().stream().map(DocumentDto::getDocumentId).toList();
+        List<DocumentId> documentIds = storageService.findAll().stream()
+                .map(DocumentDto::getDocumentId)
+                .toList();
 
         return ResponseEntity.ok(documentIds);
     }

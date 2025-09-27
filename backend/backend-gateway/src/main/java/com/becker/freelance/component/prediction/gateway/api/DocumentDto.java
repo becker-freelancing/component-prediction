@@ -1,11 +1,12 @@
 package com.becker.freelance.component.prediction.gateway.api;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 public final class DocumentDto {
 
-    private String documentId;
+    private DocumentId documentId;
     private String appName;
     private String inAppActionPath;
     private String actionTitle;
@@ -15,9 +16,12 @@ public final class DocumentDto {
     private String locale;
     private String version;
     private String creator;
-    private String createdAt;
+    private LocalDateTime createdAt;
 
-    public DocumentDto(String documentId, String appName, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, List<String> tags, String locale, String version, String creator, String createdAt) {
+    public DocumentDto() {
+    }
+
+    public DocumentDto(DocumentId documentId, String appName, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, List<String> tags, String locale, String version, String creator, LocalDateTime createdAt) {
         this.documentId = documentId;
         this.appName = appName;
         this.inAppActionPath = inAppActionPath;
@@ -31,7 +35,7 @@ public final class DocumentDto {
         this.createdAt = createdAt;
     }
 
-    public String getDocumentId() {
+    public DocumentId getDocumentId() {
         return documentId;
     }
 
@@ -71,8 +75,52 @@ public final class DocumentDto {
         return creator;
     }
 
-    public String getCreatedAt() {
+    public void setDocumentId(DocumentId documentId) {
+        this.documentId = documentId;
+    }
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setAppName(String appName) {
+        this.appName = appName;
+    }
+
+    public void setInAppActionPath(String inAppActionPath) {
+        this.inAppActionPath = inAppActionPath;
+    }
+
+    public void setActionTitle(String actionTitle) {
+        this.actionTitle = actionTitle;
+    }
+
+    public void setActionDescription(String actionDescription) {
+        this.actionDescription = actionDescription;
+    }
+
+    public void setActionShortDescription(String actionShortDescription) {
+        this.actionShortDescription = actionShortDescription;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     @Override
