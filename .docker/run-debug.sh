@@ -1,0 +1,1 @@
+docker-compose --env-file .env.dev --env-file .env.debug up --build

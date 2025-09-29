@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://metadata-db:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
