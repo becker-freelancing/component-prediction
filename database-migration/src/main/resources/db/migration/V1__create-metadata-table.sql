@@ -1,20 +1,15 @@
 CREATE TABLE apps (
-    id INT PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     app_name VARCHAR(1024) NOT NULL
 );
 
-CREATE TABLE users (
-    id INT PRIMARY KEY,
-    username VARCHAR(16) UNIQUE NOT NULL
-);
-
 CREATE TABLE tags (
-    id INT PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     tag VARCHAR(1024) NOT NULL
 );
 
 CREATE TABLE document_metadata (
-    id INT PRIMARY KEY,
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     document_id UUID NOT NULL,
     app_id INT NOT NULL,
     in_app_action_path TEXT NOT NULL,
@@ -23,11 +18,9 @@ CREATE TABLE document_metadata (
     action_short_description TEXT NOT NULL,
     locale VARCHAR(2) NOT NULL,
     version INT NOT NULL,
-    creator_id INT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at VARCHAR(100) NOT NULL,
 
-    CONSTRAINT fk_app_id FOREIGN KEY (app_id) REFERENCES apps(id),
-    CONSTRAINT fk_creator_id FOREIGN KEY (creator_id) REFERENCES users(id)
+    CONSTRAINT fk_app_id FOREIGN KEY (app_id) REFERENCES apps(id)
 
 );
 

@@ -105,6 +105,10 @@ public class ReflectiveValueGeneratorRegistry implements ValueGeneratorRegistry 
         throw new UnsupportedOperationException("Number " + numberType + " not implemented yet.");
     }
 
+    protected int generateInt() {
+        return random.nextInt();
+    }
+
     protected LocalTime generateTime() {
 
         int hour = random.nextInt(0, 23);

@@ -26,9 +26,7 @@ public class FlyWayRunner implements CommandLineRunner {
         if (!failedMigrations.isEmpty()) {
             logger.error("Migration failed for {} Changesets", failedMigrations.size());
             failedMigrations.forEach(migrateOutput -> logger.error("Changeset: {} {} {}", migrateOutput.version, migrateOutput.description, migrateOutput.filepath));
-            System.exit(1);
         }
 
-        System.exit(0);
     }
 }

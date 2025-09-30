@@ -24,9 +24,6 @@ services:
 
   database-migration:
     image: beckerfreelancing/database-migration:${IMAGE_VERSION}
-    build:
-      context: ./../database-migration
-      dockerfile: Dockerfile
     ports:
       - "5005:5005" # DEBUGGING
     depends_on:
@@ -38,7 +35,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: 5432
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_DATABASE_MIGRATION}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_DATABASE_MIGRATION} # DEBUGGING
 
   backend-storage-service:
     image: beckerfreelancing/backend-storage-service:${IMAGE_VERSION}
