@@ -2,6 +2,7 @@ package com.becker.freelance.component.prediction.storage.adapter;
 
 import com.becker.freelance.component.prediction.storage.domain.Tag;
 import com.becker.freelance.component.prediction.storage.spi.TagsRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@Transactional
 class TagsRepositoryImplTest {
 
     @Autowired

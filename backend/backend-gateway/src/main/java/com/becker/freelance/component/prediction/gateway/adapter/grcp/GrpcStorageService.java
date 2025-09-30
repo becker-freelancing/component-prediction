@@ -1,62 +1,115 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.BackendStorageServiceApiGrpc;
-import com.becker.freelance.component.prediction.backend.storage.DocumentResponse;
-import com.becker.freelance.component.prediction.backend.storage.DocumentsResponse;
-import com.becker.freelance.component.prediction.backend.storage.FindAllDocumentsRequest;
-import com.becker.freelance.component.prediction.gateway.api.DocumentDto;
-import com.becker.freelance.component.prediction.gateway.api.DocumentId;
+import com.becker.freelance.component.prediction.backend.storage.*;
+import com.becker.freelance.component.prediction.gateway.api.dto.AppDto;
+import com.becker.freelance.component.prediction.gateway.api.dto.DocumentMetadataDto;
+import com.becker.freelance.component.prediction.gateway.api.dto.TagDto;
 import com.becker.freelance.component.prediction.gateway.spi.StorageService;
-import com.google.protobuf.ProtocolStringList;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GrpcStorageService implements StorageService {
 
-    private BackendStorageServiceApiGrpc.BackendStorageServiceApiBlockingStub stub;
+    private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
+    private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(-1).setAppName("nullable-app").build();
 
-    public GrpcStorageService(BackendStorageServiceApiGrpc.BackendStorageServiceApiBlockingStub stub) {
+    private final ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub stub;
+
+    public GrpcStorageService(ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub stub) {
         this.stub = stub;
     }
 
     @Override
-    public List<DocumentDto> findAll() {
-        FindAllDocumentsRequest request = FindAllDocumentsRequest.newBuilder().build();
-        DocumentsResponse response = stub.findAll(request);
-        return map(response);
+    public DocumentMetadataDto save(DocumentMetadataDto documentMetadataDto) {
+        GrpcDocumentMetadata save = stub.save(map(documentMetadataDto));
+        return map(save);
     }
 
-    private List<DocumentDto> map(DocumentsResponse response) {
-        return response.getDocumentsList().stream().map(this::map).toList();
+    private DocumentMetadataDto map(GrpcDocumentMetadata save) {
+        DocumentMetadataDto dto = new DocumentMetadataDto();
+        dto.setId(BigInteger.valueOf(save.getId()));
+        dto.setDocumentId(save.getDocumentId().getDocumentId().isEmpty() ? null : UUID.fromString(save.getDocumentId().getDocumentId()));
+        dto.setApp(map(save.getApp()));
+        dto.setInAppActionPath(save.getInAppActionPath().isEmpty() ? null : save.getInAppActionPath());
+        dto.setActionTitle(save.getActionTitle().isEmpty() ? null : save.getActionTitle());
+        dto.setActionDescription(save.getActionDescription().isEmpty() ? null : save.getActionDescription());
+        dto.setActionShortDescription(save.getActionShortDescription().isEmpty() ? null : save.getActionShortDescription());
+        dto.setLocale(save.getLocale().isEmpty() ? null : save.getLocale());
+        dto.setVersion(BigInteger.valueOf(save.getVersion()));
+        dto.setCreatedAt(ZonedDateTime.parse(save.getCreatedAt()).equals(MIN_ZONED_DATE_TIME) ? null : ZonedDateTime.parse(save.getCreatedAt()));
+        dto.setTags(map(save.getTagsList()));
+        return dto;
     }
 
-    private DocumentDto map(DocumentResponse response) {
-        return new DocumentDto(
-                replaceEmpty(response.getId(), DocumentId::new),
-                replaceEmptyWithNull(response.getAppName()),
-                replaceEmptyWithNull(response.getInAppActionPath()),
-                replaceEmptyWithNull(response.getActionTitle()),
-                replaceEmptyWithNull(response.getActionDescription()),
-                replaceEmptyWithNull(response.getActionShortDescription()),
-                map(response.getTagsList()),
-                replaceEmptyWithNull(response.getLocale()),
-                replaceEmptyWithNull(response.getVersion()),
-                replaceEmptyWithNull(response.getCreator()),
-                replaceEmpty(response.getCreatedAt(), LocalDateTime::parse)
-        );
+    private Set<TagDto> map(List<GrpcTag> tagsList) {
+        return tagsList.stream().map(this::map).collect(Collectors.toSet());
     }
 
-    private List<String> map(ProtocolStringList list) {
-        return list.stream().toList();
+    private TagDto map(GrpcTag grpcTag) {
+        TagDto tagDto = new TagDto();
+        tagDto.setId(BigInteger.valueOf(grpcTag.getId()));
+        tagDto.setTag(grpcTag.getTag());
+        return tagDto;
     }
 
-    private String replaceEmptyWithNull(String s) {
-        return replaceEmpty(s, t -> t);
+    private AppDto map(GrpcApp app) {
+        if (NULL_APP.equals(app)) {
+            return null;
+        }
+        AppDto appDto = new AppDto();
+        appDto.setId(BigInteger.valueOf(app.getId()));
+        appDto.setAppName(app.getAppName());
+        return appDto;
     }
 
-    private <T> T replaceEmpty(String s, Function<String, T> mapper) {
-        return s.isEmpty() ? null : mapper.apply(s);
+    private GrpcDocumentMetadata map(DocumentMetadataDto documentMetadataDto) {
+        return GrpcDocumentMetadata.newBuilder()
+                .setId(documentMetadataDto.getId() == null ? -1 : documentMetadataDto.getId().longValue())
+                .setDocumentId(GrpcDocumentId.newBuilder().setDocumentId(Optional.ofNullable(documentMetadataDto.getDocumentId()).map(UUID::toString).orElse("")).build())
+                .setApp(map(documentMetadataDto.getApp()))
+                .setInAppActionPath(documentMetadataDto.getInAppActionPath() == null ? "" : documentMetadataDto.getInAppActionPath())
+                .setActionTitle(documentMetadataDto.getActionTitle() == null ? "" : documentMetadataDto.getActionTitle())
+                .setActionDescription(documentMetadataDto.getActionDescription() == null ? "" : documentMetadataDto.getActionDescription())
+                .setActionShortDescription(documentMetadataDto.getActionShortDescription() == null ? "" : documentMetadataDto.getActionShortDescription())
+                .setLocale(documentMetadataDto.getLocale() == null ? "" : documentMetadataDto.getLocale())
+                .setVersion(documentMetadataDto.getVersion() == null ? -1 : documentMetadataDto.getVersion().longValue())
+                .setCreatedAt(documentMetadataDto.getCreatedAt() == null ? MIN_ZONED_DATE_TIME.toString() : documentMetadataDto.getCreatedAt().toString())
+                .addAllTags(map(documentMetadataDto.getTags()))
+                .build();
+    }
+
+    private Iterable<GrpcTag> map(Set<TagDto> tags) {
+        if (tags == null) {
+            return Set.of();
+        }
+        return tags.stream().map(this::map).collect(Collectors.toSet());
+    }
+
+    private GrpcTag map(TagDto tagDto) {
+        if (tagDto == null) {
+            throw new IllegalArgumentException("No null Tag Objects allowed");
+        }
+        return GrpcTag.newBuilder()
+                .setId(tagDto.getId() == null ? -1 : tagDto.getId().longValue())
+                .setTag(tagDto.getTag())
+                .build();
+    }
+
+    private GrpcApp map(AppDto app) {
+        if (app == null) {
+            return NULL_APP;
+        }
+        return GrpcApp.newBuilder()
+                .setId(app.getId() == null ? -1 : app.getId().longValue())
+                .setAppName(app.getAppName())
+                .build();
     }
 }

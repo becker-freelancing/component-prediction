@@ -1,10 +1,8 @@
 package com.becker.freelance.component.prediction.gateway.spi;
 
-import com.becker.freelance.component.prediction.gateway.api.DocumentDto;
-
-import java.util.List;
+import com.becker.freelance.component.prediction.gateway.api.dto.DocumentMetadataDto;
 
 public interface StorageService {
 
-    public List<DocumentDto> findAll();
+    public DocumentMetadataDto save(DocumentMetadataDto documentMetadataDto);
 }
