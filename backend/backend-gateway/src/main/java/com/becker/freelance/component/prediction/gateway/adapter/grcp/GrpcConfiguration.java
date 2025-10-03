@@ -2,8 +2,10 @@ package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
 import com.becker.freelance.component.prediction.backend.storage.ApiAppsRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiTagsRepositoryGrpc;
 import com.becker.freelance.component.prediction.gateway.spi.AppStorageService;
 import com.becker.freelance.component.prediction.gateway.spi.DocumentMetadataStorageService;
+import com.becker.freelance.component.prediction.gateway.spi.TagsStorageService;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,9 @@ public class GrpcConfiguration {
     @GrpcClient("backendAppStorageService")
     private ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub appStub;
 
+    @GrpcClient("backendTagStorageService")
+    private ApiTagsRepositoryGrpc.ApiTagsRepositoryBlockingStub tagsStub;
+
     @Bean
     public DocumentMetadataStorageService documentMetadataStorageService() {
         return new GrpcDocumentMetadataStorageService(stub);
@@ -26,5 +31,10 @@ public class GrpcConfiguration {
     @Bean
     public AppStorageService appStorageService() {
         return new GrpcAppStorageService(appStub);
+    }
+
+    @Bean
+    public TagsStorageService tagsStorageService() {
+        return new GrpcTagsStorageService(tagsStub);
     }
 }

@@ -50,7 +50,7 @@ class GrpcMapper {
         return tags.stream().map(this::mapOutgoing).collect(Collectors.toSet());
     }
 
-    private GrpcTag mapOutgoing(Tag tag) {
+    public GrpcTag mapOutgoing(Tag tag) {
         return GrpcTag.newBuilder()
                 .setId(tag.getId().longValue())
                 .setTag(mapOutgoing(tag.getTag()))
@@ -100,7 +100,7 @@ class GrpcMapper {
         return tagsList.stream().map(this::mapIncoming).collect(Collectors.toSet());
     }
 
-    private Tag mapIncoming(GrpcTag grpcTag) {
+    public Tag mapIncoming(GrpcTag grpcTag) {
         return new Tag(
                 mapIncoming(grpcTag.getId()),
                 mapIncoming(grpcTag.getTag())
