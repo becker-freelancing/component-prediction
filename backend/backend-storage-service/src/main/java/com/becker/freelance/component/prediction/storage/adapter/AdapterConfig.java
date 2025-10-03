@@ -1,5 +1,6 @@
 package com.becker.freelance.component.prediction.storage.adapter;
 
+import com.becker.freelance.component.prediction.storage.spi.AppRepository;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
 import com.becker.freelance.component.prediction.storage.spi.TagsRepository;
 import org.springframework.context.annotation.Bean;
@@ -24,5 +25,12 @@ public class AdapterConfig {
                 tagsSpringDataJpaRepository,
                 appsSpringDataJpaRepository
         );
+    }
+
+    @Bean
+    public AppRepository appRepository(
+            AppsSpringDataJpaRepository appsSpringDataJpaRepository
+    ) {
+        return new AppsRepositoryImpl(appsSpringDataJpaRepository);
     }
 }

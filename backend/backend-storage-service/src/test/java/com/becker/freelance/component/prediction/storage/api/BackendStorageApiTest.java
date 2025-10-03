@@ -28,12 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class BackendStorageApiTest {
 
     private DocumentMetadataRepository metadataRepository;
-    private BackendStorageApi storageApi;
+    private BackendDocumentMetadataStorageApi storageApi;
 
     @BeforeEach
     void setUp() {
         metadataRepository = Mockito.mock(DocumentMetadataRepository.class);
-        storageApi = new BackendStorageApi(metadataRepository);
+        storageApi = new BackendDocumentMetadataStorageApi(metadataRepository);
     }
 
     @Test

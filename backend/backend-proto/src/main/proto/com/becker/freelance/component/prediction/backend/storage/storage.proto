@@ -39,6 +39,10 @@ message GrpcTagList {
     repeated GrpcTag tags = 1;
 }
 
+message GrpcAppList {
+    repeated GrpcApp apps = 1;
+}
+
 
 service ApiDocumentMetadataRepository {
     rpc Save (GrpcDocumentMetadata) returns (GrpcDocumentMetadata);
@@ -50,4 +54,11 @@ service ApiTagsRepository {
     rpc Save (GrpcTag) returns (GrpcTag);
 
     rpc FindAll (google.protobuf.Empty) returns (GrpcTagList);
+}
+
+service ApiAppsRepository {
+
+    rpc Save (GrpcApp) returns (GrpcApp);
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcAppList);
 }

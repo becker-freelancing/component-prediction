@@ -19,15 +19,15 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GrpcStorageServiceTest {
+class GrpcDocumentMetadataStorageServiceTest {
 
     private ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub stub;
-    private GrpcStorageService storageService;
+    private GrpcDocumentMetadataStorageService storageService;
 
     @BeforeEach
     void setUp() {
         stub = Mockito.mock(ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub.class);
-        storageService = new GrpcStorageService(stub);
+        storageService = new GrpcDocumentMetadataStorageService(stub);
     }
 
 

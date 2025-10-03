@@ -1,13 +1,12 @@
 package com.becker.freelance.component.prediction.storage.api;
 
-import com.becker.freelance.component.prediction.backend.storage.*;
+import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
+import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentId;
+import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
 import com.becker.freelance.component.prediction.storage.domain.App;
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.domain.Tag;
-import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
-import io.grpc.stub.StreamObserver;
-import net.devh.boot.grpc.server.service.GrpcService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -19,39 +18,19 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@GrpcService
-public class BackendStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryImplBase {
+class GrpcMapper {
+
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
     private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(-1).setAppName("nullable-app").build();
 
-    private final DocumentMetadataRepository metadataRepository;
 
-    @Autowired
-    public BackendStorageApi(DocumentMetadataRepository metadataRepository) {
-        this.metadataRepository = metadataRepository;
-    }
-
-    private static BigInteger mapIncoming(Long l) {
+    private BigInteger mapIncoming(Long l) {
         return l == -1 ? null : BigInteger.valueOf(l);
     }
 
-    @Override
-    public void save(GrpcDocumentMetadata request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
-        DocumentMetadata documentMetadata = mapIncoming(request);
-        DocumentMetadata saved = metadataRepository.save(documentMetadata);
-        responseObserver.onNext(mapOutgoing(saved));
-        responseObserver.onCompleted();
-    }
 
-    @Override
-    public void findByRelatedDocumentId(GrpcDocumentId request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
-        Optional<DocumentMetadata> find = metadataRepository.findByRelatedDocumentId(mapIncomingUUID(request.getDocumentId()));
-        find.map(this::mapOutgoing).ifPresent(responseObserver::onNext);
-        responseObserver.onCompleted();
-    }
-
-    private GrpcDocumentMetadata mapOutgoing(DocumentMetadata saved) {
+    public GrpcDocumentMetadata mapOutgoing(DocumentMetadata saved) {
         return GrpcDocumentMetadata.newBuilder()
                 .setId(saved.getId().longValue())
                 .setDocumentId(GrpcDocumentId.newBuilder().setDocumentId(Optional.ofNullable(saved.getDocumentId()).map(UUID::toString).orElse("")).build())
@@ -78,7 +57,7 @@ public class BackendStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocu
                 .build();
     }
 
-    private GrpcApp mapOutgoing(App app) {
+    public GrpcApp mapOutgoing(App app) {
         if (app == null) {
             return NULL_APP;
         }
@@ -88,7 +67,7 @@ public class BackendStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocu
                 .build();
     }
 
-    private DocumentMetadata mapIncoming(GrpcDocumentMetadata request) {
+    public DocumentMetadata mapIncoming(GrpcDocumentMetadata request) {
         return new DocumentMetadata(
                 mapIncoming(request.getId()),
                 mapIncomingUUID(request.getDocumentId().getDocumentId()),
@@ -113,7 +92,7 @@ public class BackendStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocu
         return createdAt == null ? MIN_ZONED_DATE_TIME.toString() : createdAt.toString();
     }
 
-    private UUID mapIncomingUUID(String uuid) {
+    public UUID mapIncomingUUID(String uuid) {
         return uuid.isEmpty() ? null : UUID.fromString(uuid);
     }
 
@@ -128,7 +107,7 @@ public class BackendStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocu
         );
     }
 
-    private App mapIncoming(GrpcApp app) {
+    public App mapIncoming(GrpcApp app) {
         return app.equals(NULL_APP) ? null : new App(mapIncoming(app.getId()), mapIncoming(app.getAppName()));
     }
 
