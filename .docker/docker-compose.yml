@@ -35,13 +35,16 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_PORT: 5432
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_DATABASE_MIGRATION} # DEBUGGING
 
   backend-storage-service:
     image: beckerfreelancing/backend-storage-service:${IMAGE_VERSION}
-    build:
-      context: ./../backend/backend-storage-service
-      dockerfile: Dockerfile
+    ports:
+      - "5006:5005" # DEBUGGING
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_STORAGE_SERVICE} # DEBUGGING
     depends_on:
       - metadata-db
       - database-migration
@@ -51,15 +54,16 @@ services:
 
   backend-gateway:
     image: beckerfreelancing/backend-gateway:${IMAGE_VERSION}
-    build:
-      context: ./../backend/backend-gateway
-      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_GATEWAY} # DEBUGGING
     depends_on:
       - backend-storage-service
     networks:
       - devnet
     ports:
       - ${BACKEND_GATEWAY_PORT}:8080
+      - "5007:5005" # DEBUGGING
 
 
 networks:
