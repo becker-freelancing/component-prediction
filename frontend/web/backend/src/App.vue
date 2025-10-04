@@ -1,30 +1,56 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app-container">
+    <nav class="sidebar">
+      <h1>Navigation Tree</h1>
+
+      <div v-if="isLoading">Loading Navigation...</div>
+      <div v-else-if="error">{{ error }}</div>
+      <ul v-else>
+        <TreeNode
+          v-for="child in navigationData"
+          :key="child.id"
+          :node="child"
+        />
+      </ul>
+    </nav>
+
+    <main class="content">
+      <Breadcrumbs/>
+      <router-view />
+    </main>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup lang="ts">
+import TreeNode from "@/components/TreeNode.vue";
+import Breadcrumbs from "@/components/Breadcrumbs.vue";
+import { useNavigation } from "@/composables/useNavigation";
+
+const { navigationData, isLoading, error } = useNavigation();
+</script>
+
+<style>
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.sidebar {
+  box-sizing: border-box;
+  padding: 1rem;
+  border-right: 1px solid #ccc;
+  overflow-y: auto;
+  flex: 0 0 20%;
+  height: 100%;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.content {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 1rem;
+  overflow-y: auto;
 }
 </style>
