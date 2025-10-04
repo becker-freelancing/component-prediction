@@ -4,10 +4,7 @@ package com.becker.freelance.component.prediction.gateway.api;
 import com.becker.freelance.component.prediction.gateway.api.dto.TagDto;
 import com.becker.freelance.component.prediction.gateway.spi.TagsStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +22,7 @@ public class BackendGatewayTagsApi {
     }
 
     @PutMapping
-    public TagDto save(TagDto appDto) {
+    public TagDto save(@RequestBody TagDto appDto) {
         return tagsStorageService.save(appDto);
     }
 

@@ -3,3 +3,9 @@ grpc:
     backendStorageService:
       address: static://backend-storage-service:9090
       negotiationType: plaintext
+    backendAppStorageService:
+      address: static://backend-storage-service:9090
+      negotiationType: plaintext
+    backendTagStorageService:
+      address: static://backend-storage-service:9090
+      negotiationType: plaintext
