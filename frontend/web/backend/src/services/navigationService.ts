@@ -15,6 +15,14 @@ export async function fetchNavigation(): Promise<TreeNodeContent[]> {
           children: []
         },
         {
+          id: "manage-tags",
+          label: "Manage Tags",
+          seoRoute: "/manage-tags",
+          visible: true,
+          permissions: [],
+          children: []
+        },
+        {
           id: "create-content",
           label: "Create Content",
           seoRoute: "/create-content",

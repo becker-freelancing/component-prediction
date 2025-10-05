@@ -13,7 +13,6 @@
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
 import { saveApp } from '@/services/appService';
-import type { App } from '@/components/DocumentMetadataTypes';
 
 const route = useRoute()
 const router = useRouter()

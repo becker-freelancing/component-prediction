@@ -15,7 +15,6 @@
     </nav>
 
     <main class="content">
-      <Breadcrumbs/>
       <router-view />
     </main>
   </div>
@@ -23,7 +22,6 @@
 
 <script setup lang="ts">
 import TreeNode from "@/components/TreeNode.vue";
-import Breadcrumbs from "@/components/Breadcrumbs.vue";
 import { useNavigation } from "@/composables/useNavigation";
 
 const { navigationData, isLoading, error } = useNavigation();

@@ -8,6 +8,10 @@
   padding: 0;
 }
 
+.default-margin {
+  margin: 1rem;
+}
+
 /* Form Elements */
 .form-row {
   display: flex;

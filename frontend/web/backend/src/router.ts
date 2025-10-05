@@ -3,6 +3,8 @@ import NotFound from './pages/NotFound.vue'
 import CreateContent from './pages/CreateContent.vue'
 import AppManagement from './pages/AppManagement.vue'
 import AppCreate from './pages/AppCreate.vue'
+import TagsManagement from './pages/TagsManagement.vue'
+import TagCreate from './pages/TagCreate.vue'
 
 const routes = [
   {
@@ -11,9 +13,19 @@ const routes = [
     component: AppManagement
   },
   {
-    path: "/createapp",
+    path: "/create-app",
     name: "createApp",
     component: AppCreate
+  },
+  {
+    path: "/manage-tags",
+    name: "manageTags",
+    component: TagsManagement
+  },
+  {
+    path: "/create-tag",
+    name: "createTag",
+    component: TagCreate
   },
   {
     path: '/create-content',

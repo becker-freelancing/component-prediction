@@ -7,7 +7,7 @@ export interface App {
 
 export interface Tag {
     id: number | undefined,
-    appName: string
+    tag: string
 }
 
 export interface DocumentMetadata {

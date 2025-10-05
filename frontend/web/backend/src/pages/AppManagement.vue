@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <div class="default-margin">
     <button @click="createApp()">+</button>
   </div>
   <div class="scroll-container">
+  <h2 class="default-margin">All Apps</h2>
     <ul v-if="apps.length > 0">
       <li v-for="app in apps" :key="app.id">
         {{ app.appName }}
@@ -25,6 +26,6 @@ const router = useRouter();
 fetchAllApps().then((fetched) => (apps.value = fetched));
 
 function createApp() {
-    router.push("/createapp?returnUrl=" + route.fullPath)
+    router.push("/create-app?returnUrl=" + route.fullPath)
 }
 </script>
