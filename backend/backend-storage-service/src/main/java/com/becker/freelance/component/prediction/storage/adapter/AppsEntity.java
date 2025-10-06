@@ -2,17 +2,17 @@ package com.becker.freelance.component.prediction.storage.adapter;
 
 import jakarta.persistence.*;
 
-import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "apps")
 public class AppsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id")
-    private BigInteger id;
+    private UUID id;
 
     @Column(name = "app_name", nullable = false, length = 1024)
     private String appName;
@@ -20,11 +20,11 @@ public class AppsEntity {
     @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DocumentMetadataEntity> metadata;
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

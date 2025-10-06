@@ -8,8 +8,7 @@ import java.util.UUID;
 
 public class DocumentMetadataDto {
 
-    private BigInteger id;
-    private UUID documentId;
+    private UUID id;
     private AppDto app;
     private String inAppActionPath;
     private String actionTitle;
@@ -23,20 +22,12 @@ public class DocumentMetadataDto {
     public DocumentMetadataDto() {
     }
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
-    }
-
-    public UUID getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(UUID documentId) {
-        this.documentId = documentId;
     }
 
     public AppDto getApp() {
@@ -115,19 +106,18 @@ public class DocumentMetadataDto {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         DocumentMetadataDto that = (DocumentMetadataDto) o;
-        return Objects.equals(id, that.id) && Objects.equals(documentId, that.documentId) && Objects.equals(app, that.app) && Objects.equals(inAppActionPath, that.inAppActionPath) && Objects.equals(actionTitle, that.actionTitle) && Objects.equals(actionDescription, that.actionDescription) && Objects.equals(actionShortDescription, that.actionShortDescription) && Objects.equals(locale, that.locale) && Objects.equals(version, that.version) && Objects.equals(createdAt, that.createdAt) && Objects.equals(tags, that.tags);
+        return Objects.equals(id, that.id) && Objects.equals(app, that.app) && Objects.equals(inAppActionPath, that.inAppActionPath) && Objects.equals(actionTitle, that.actionTitle) && Objects.equals(actionDescription, that.actionDescription) && Objects.equals(actionShortDescription, that.actionShortDescription) && Objects.equals(locale, that.locale) && Objects.equals(version, that.version) && Objects.equals(createdAt, that.createdAt) && Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, documentId, app, inAppActionPath, actionTitle, actionDescription, actionShortDescription, locale, version, createdAt, tags);
+        return Objects.hash(id, app, inAppActionPath, actionTitle, actionDescription, actionShortDescription, locale, version, createdAt, tags);
     }
 
     @Override
     public String toString() {
         return "DocumentMetadataDto{" +
                 "id=" + id +
-                ", documentId=" + documentId +
                 ", appDto=" + app +
                 ", inAppActionPath='" + inAppActionPath + '\'' +
                 ", actionTitle='" + actionTitle + '\'' +

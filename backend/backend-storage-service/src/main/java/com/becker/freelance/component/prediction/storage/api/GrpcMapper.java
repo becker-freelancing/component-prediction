@@ -1,9 +1,9 @@
 package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentId;
 import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
 import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
+import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import com.becker.freelance.component.prediction.storage.domain.App;
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.domain.Tag;
@@ -22,7 +22,7 @@ class GrpcMapper {
 
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
-    private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(-1).setAppName("nullable-app").build();
+    private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
 
 
     private BigInteger mapIncoming(Long l) {
@@ -32,27 +32,38 @@ class GrpcMapper {
 
     public GrpcDocumentMetadata mapOutgoing(DocumentMetadata saved) {
         return GrpcDocumentMetadata.newBuilder()
-                .setId(saved.getId().longValue())
-                .setDocumentId(GrpcDocumentId.newBuilder().setDocumentId(Optional.ofNullable(saved.getDocumentId()).map(UUID::toString).orElse("")).build())
+                .setId(mapOutgoing(saved.getId()))
                 .setApp(mapOutgoing(saved.getApp()))
                 .setInAppActionPath(mapOutgoing(saved.getInAppActionPath()))
                 .setActionTitle(mapOutgoing(saved.getActionTitle()))
                 .setActionDescription(mapOutgoing(saved.getActionDescription()))
                 .setActionShortDescription(mapOutgoing(saved.getActionShortDescription()))
                 .setLocale(mapOutgoing(saved.getLocale()))
-                .setVersion(saved.getVersion().longValue())
+                .setVersion(mapOutgoing(saved.getVersion()))
                 .setCreatedAt(mapOutgoingTime(saved.getCreatedAt()))
                 .addAllTags(mapOutgoing(saved.getTags()))
                 .build();
     }
 
+    private long mapOutgoing(BigInteger version) {
+        return version == null ? -1 : version.longValue();
+    }
+
+    private GrpcUUID mapOutgoing(UUID id) {
+        return GrpcUUID.newBuilder().setId(Optional.ofNullable(id).map(UUID::toString).orElse("")).build();
+    }
+
+    public UUID mapIncoming(GrpcUUID id) {
+        return id.getId().isEmpty() ? null : UUID.fromString(id.getId());
+    }
+
     private Iterable<GrpcTag> mapOutgoing(Set<Tag> tags) {
-        return tags.stream().map(this::mapOutgoing).collect(Collectors.toSet());
+        return Optional.ofNullable(tags).orElse(Set.of()).stream().map(this::mapOutgoing).collect(Collectors.toSet());
     }
 
     public GrpcTag mapOutgoing(Tag tag) {
         return GrpcTag.newBuilder()
-                .setId(tag.getId().longValue())
+                .setId(mapOutgoing(tag.getId()))
                 .setTag(mapOutgoing(tag.getTag()))
                 .build();
     }
@@ -62,7 +73,7 @@ class GrpcMapper {
             return NULL_APP;
         }
         return GrpcApp.newBuilder()
-                .setId(app.getId().longValue())
+                .setId(mapOutgoing(app.getId()))
                 .setAppName(app.getAppName())
                 .build();
     }
@@ -70,7 +81,6 @@ class GrpcMapper {
     public DocumentMetadata mapIncoming(GrpcDocumentMetadata request) {
         return new DocumentMetadata(
                 mapIncoming(request.getId()),
-                mapIncomingUUID(request.getDocumentId().getDocumentId()),
                 mapIncoming(request.getApp()),
                 mapIncoming(request.getInAppActionPath()),
                 mapIncoming(request.getActionTitle()),
@@ -90,10 +100,6 @@ class GrpcMapper {
 
     private String mapOutgoingTime(ZonedDateTime createdAt) {
         return createdAt == null ? MIN_ZONED_DATE_TIME.toString() : createdAt.toString();
-    }
-
-    public UUID mapIncomingUUID(String uuid) {
-        return uuid.isEmpty() ? null : UUID.fromString(uuid);
     }
 
     private Set<Tag> mapIncoming(List<GrpcTag> tagsList) {

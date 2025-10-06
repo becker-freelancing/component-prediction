@@ -2,25 +2,25 @@ package com.becker.freelance.component.prediction.storage.adapter;
 
 import jakarta.persistence.*;
 
-import java.math.BigInteger;
+import java.util.UUID;
 
 @Entity
 @Table(name = "tags")
 public class TagsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id")
-    private BigInteger id;
+    private UUID id;
 
     @Column(name = "tag", nullable = false, length = 1024)
     private String tag;
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

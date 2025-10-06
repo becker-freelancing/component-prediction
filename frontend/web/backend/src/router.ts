@@ -5,6 +5,7 @@ import AppManagement from './pages/AppManagement.vue'
 import AppCreate from './pages/AppCreate.vue'
 import TagsManagement from './pages/TagsManagement.vue'
 import TagCreate from './pages/TagCreate.vue'
+import ContentManagement from './pages/ContentManagement.vue'
 
 const routes = [
   {
@@ -28,9 +29,14 @@ const routes = [
     component: TagCreate
   },
   {
-    path: '/create-content',
-    name: 'createContent',
-    component: CreateContent,
+    path: '/manage-content',
+    name: 'manageContent',
+    component: ContentManagement,
+  },
+  {
+    path: "/create-content",
+    name: "createContent",
+    component: CreateContent
   },
   {
     path: '/:pathMatch(.*)*',

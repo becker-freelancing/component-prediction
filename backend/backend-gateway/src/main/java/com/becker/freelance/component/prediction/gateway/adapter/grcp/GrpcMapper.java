@@ -1,9 +1,9 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
 import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentId;
 import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
 import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
+import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import com.becker.freelance.component.prediction.gateway.api.dto.AppDto;
 import com.becker.freelance.component.prediction.gateway.api.dto.DocumentMetadataDto;
 import com.becker.freelance.component.prediction.gateway.api.dto.TagDto;
@@ -12,8 +12,8 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,13 +22,12 @@ class GrpcMapper {
 
 
     public static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
-    public static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(-1).setAppName("nullable-app").build();
+    public static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
 
 
     public DocumentMetadataDto map(GrpcDocumentMetadata save) {
         DocumentMetadataDto dto = new DocumentMetadataDto();
-        dto.setId(BigInteger.valueOf(save.getId()));
-        dto.setDocumentId(save.getDocumentId().getDocumentId().isEmpty() ? null : UUID.fromString(save.getDocumentId().getDocumentId()));
+        dto.setId(map(save.getId()));
         dto.setApp(map(save.getApp()));
         dto.setInAppActionPath(save.getInAppActionPath().isEmpty() ? null : save.getInAppActionPath());
         dto.setActionTitle(save.getActionTitle().isEmpty() ? null : save.getActionTitle());
@@ -36,9 +35,17 @@ class GrpcMapper {
         dto.setActionShortDescription(save.getActionShortDescription().isEmpty() ? null : save.getActionShortDescription());
         dto.setLocale(save.getLocale().isEmpty() ? null : save.getLocale());
         dto.setVersion(BigInteger.valueOf(save.getVersion()));
-        dto.setCreatedAt(ZonedDateTime.parse(save.getCreatedAt()).equals(MIN_ZONED_DATE_TIME) ? null : ZonedDateTime.parse(save.getCreatedAt()));
+        dto.setCreatedAt(map(save.getCreatedAt()));
         dto.setTags(map(save.getTagsList()));
         return dto;
+    }
+
+    private ZonedDateTime map(String createdAt) {
+        try {
+            return ZonedDateTime.parse(createdAt).equals(MIN_ZONED_DATE_TIME) ? null : ZonedDateTime.parse(createdAt);
+        } catch (DateTimeParseException e) {
+            return null;
+        }
     }
 
     public Set<TagDto> map(List<GrpcTag> tagsList) {
@@ -47,7 +54,7 @@ class GrpcMapper {
 
     public TagDto map(GrpcTag grpcTag) {
         TagDto tagDto = new TagDto();
-        tagDto.setId(BigInteger.valueOf(grpcTag.getId()));
+        tagDto.setId(map(grpcTag.getId()));
         tagDto.setTag(grpcTag.getTag());
         return tagDto;
     }
@@ -57,15 +64,14 @@ class GrpcMapper {
             return null;
         }
         AppDto appDto = new AppDto();
-        appDto.setId(BigInteger.valueOf(app.getId()));
+        appDto.setId(map(app.getId()));
         appDto.setAppName(app.getAppName());
         return appDto;
     }
 
     public GrpcDocumentMetadata map(DocumentMetadataDto documentMetadataDto) {
         return GrpcDocumentMetadata.newBuilder()
-                .setId(documentMetadataDto.getId() == null ? -1 : documentMetadataDto.getId().longValue())
-                .setDocumentId(GrpcDocumentId.newBuilder().setDocumentId(Optional.ofNullable(documentMetadataDto.getDocumentId()).map(UUID::toString).orElse("")).build())
+                .setId(map(documentMetadataDto.getId()))
                 .setApp(map(documentMetadataDto.getApp()))
                 .setInAppActionPath(documentMetadataDto.getInAppActionPath() == null ? "" : documentMetadataDto.getInAppActionPath())
                 .setActionTitle(documentMetadataDto.getActionTitle() == null ? "" : documentMetadataDto.getActionTitle())
@@ -76,6 +82,16 @@ class GrpcMapper {
                 .setCreatedAt(documentMetadataDto.getCreatedAt() == null ? MIN_ZONED_DATE_TIME.toString() : documentMetadataDto.getCreatedAt().toString())
                 .addAllTags(map(documentMetadataDto.getTags()))
                 .build();
+    }
+
+    public GrpcUUID map(UUID id) {
+        return GrpcUUID.newBuilder()
+                .setId(id == null ? "" : id.toString())
+                .build();
+    }
+
+    public UUID map(GrpcUUID id) {
+        return id.getId().isEmpty() ? null : UUID.fromString(id.getId());
     }
 
     public Iterable<GrpcTag> map(Set<TagDto> tags) {
@@ -90,7 +106,7 @@ class GrpcMapper {
             throw new IllegalArgumentException("No null Tag Objects allowed");
         }
         return GrpcTag.newBuilder()
-                .setId(tagDto.getId() == null ? -1 : tagDto.getId().longValue())
+                .setId(map(tagDto.getId()))
                 .setTag(tagDto.getTag())
                 .build();
     }
@@ -100,7 +116,7 @@ class GrpcMapper {
             return NULL_APP;
         }
         return GrpcApp.newBuilder()
-                .setId(app.getId() == null ? -1 : app.getId().longValue())
+                .setId(map(app.getId()))
                 .setAppName(app.getAppName())
                 .build();
     }

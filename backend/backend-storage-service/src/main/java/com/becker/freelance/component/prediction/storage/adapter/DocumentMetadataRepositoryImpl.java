@@ -7,6 +7,7 @@ import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRep
 import jakarta.transaction.Transactional;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -33,14 +34,20 @@ public class DocumentMetadataRepositoryImpl implements DocumentMetadataRepositor
     }
 
     @Override
-    public Optional<DocumentMetadata> findByRelatedDocumentId(UUID documentId) {
-        return repository.findByDocumentId(documentId).map(this::map);
+    public List<DocumentMetadata> findAll() {
+        return repository.findAll().stream()
+                .map(this::map)
+                .toList();
+    }
+
+    @Override
+    public Optional<DocumentMetadata> findById(UUID id) {
+        return repository.findById(id).map(this::map);
     }
 
     private DocumentMetadataEntity map(DocumentMetadata metadata) {
         DocumentMetadataEntity entity = new DocumentMetadataEntity();
         entity.setId(metadata.getId());
-        entity.setDocumentId(metadata.getDocumentId());
         AppsEntity app = map(metadata.getApp());
         app = appsRepository.save(app);
         entity.setApp(app);
@@ -60,7 +67,6 @@ public class DocumentMetadataRepositoryImpl implements DocumentMetadataRepositor
     private DocumentMetadata map(DocumentMetadataEntity entity) {
         return new DocumentMetadata(
                 entity.getId(),
-                entity.getDocumentId(),
                 map(entity.getApp()),
                 entity.getInAppActionPath(),
                 entity.getActionTitle(),

@@ -13,6 +13,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,12 +35,14 @@ class GrpcDocumentMetadataStorageServiceTest {
     @Test
     void save() {
         UUID documentId = UUID.randomUUID();
+        UUID id = UUID.randomUUID();
+        UUID appId = UUID.randomUUID();
+        UUID tagId = UUID.randomUUID();
         Mockito.when(stub.save(Mockito.any())).then((Answer<GrpcDocumentMetadata>) invocationOnMock -> {
             GrpcDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcDocumentMetadata.class);
             return GrpcDocumentMetadata.newBuilder()
-                    .setId(2)
-                    .setDocumentId(GrpcDocumentId.newBuilder().setDocumentId(documentId.toString()).build())
-                    .setApp(GrpcApp.newBuilder(argument.getApp()).setId(3).build())
+                    .setId(GrpcUUID.newBuilder().setId(id.toString()).build())
+                    .setApp(GrpcApp.newBuilder(argument.getApp()).setId(GrpcUUID.newBuilder().setId(appId.toString()).build()).build())
                     .setInAppActionPath(argument.getInAppActionPath())
                     .setActionTitle(argument.getActionTitle())
                     .setActionDescription(argument.getActionDescription())
@@ -47,7 +50,7 @@ class GrpcDocumentMetadataStorageServiceTest {
                     .setLocale(argument.getLocale())
                     .setVersion(1)
                     .setCreatedAt(argument.getCreatedAt())
-                    .addAllTags(argument.getTagsList().stream().map(GrpcTag::newBuilder).map(b -> b.setId(4)).map(GrpcTag.Builder::build).toList())
+                    .addAllTags(argument.getTagsList().stream().map(GrpcTag::newBuilder).map(b -> b.setId(GrpcUUID.newBuilder().setId(tagId.toString()).build())).map(GrpcTag.Builder::build).toList())
                     .build();
         });
 
@@ -70,9 +73,8 @@ class GrpcDocumentMetadataStorageServiceTest {
         }).collect(Collectors.toSet()));
 
         DocumentMetadataDto saved = storageService.save(dto);
-        assertEquals(BigInteger.TWO, saved.getId());
-        assertEquals(documentId, saved.getDocumentId());
-        assertEquals(BigInteger.valueOf(3), saved.getApp().getId());
+        assertEquals(id, saved.getId());
+        assertEquals(appId, saved.getApp().getId());
         assertEquals("test-app", saved.getApp().getAppName());
         assertEquals("path", saved.getInAppActionPath());
         assertEquals("title", saved.getActionTitle());
@@ -82,7 +84,7 @@ class GrpcDocumentMetadataStorageServiceTest {
         assertEquals(BigInteger.ONE, saved.getVersion());
         assertEquals(ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), ZoneId.of("UTC")), saved.getCreatedAt());
         assertEquals(2, saved.getTags().size());
-        saved.getTags().forEach(tag -> assertEquals(BigInteger.valueOf(4), tag.getId()));
+        saved.getTags().forEach(tag -> assertEquals(tagId, tag.getId()));
         saved.getTags().forEach(tag -> assertTrue(tagNames.contains(tag.getTag())));
     }
 
@@ -92,8 +94,7 @@ class GrpcDocumentMetadataStorageServiceTest {
         Mockito.when(stub.save(Mockito.any())).then((Answer<GrpcDocumentMetadata>) invocationOnMock -> {
             GrpcDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcDocumentMetadata.class);
             return GrpcDocumentMetadata.newBuilder()
-                    .setId(2)
-                    .setDocumentId(argument.getDocumentId())
+                    .setId(GrpcUUID.newBuilder().setId("").build())
                     .setApp(argument.getApp())
                     .setInAppActionPath(argument.getInAppActionPath())
                     .setActionTitle(argument.getActionTitle())
@@ -110,8 +111,7 @@ class GrpcDocumentMetadataStorageServiceTest {
 
 
         DocumentMetadataDto saved = storageService.save(dto);
-        assertEquals(BigInteger.TWO, saved.getId());
-        assertNull(saved.getDocumentId());
+        assertNull(saved.getId());
         assertNull(saved.getApp());
         assertNull(saved.getInAppActionPath());
         assertNull(saved.getActionTitle());
@@ -121,5 +121,29 @@ class GrpcDocumentMetadataStorageServiceTest {
         assertEquals(BigInteger.ONE, saved.getVersion());
         assertNull(saved.getCreatedAt());
         assertEquals(0, saved.getTags().size());
+    }
+
+    @Test
+    void findAllWithEmptyList() {
+        Mockito.when(stub.findAll(Mockito.any())).thenReturn(GrpcDocumentMetadataList.newBuilder().build());
+
+        List<DocumentMetadataDto> all = storageService.findAll();
+
+        assertEquals(0, all.size());
+    }
+
+    @Test
+    void findAll() {
+        UUID id1 = UUID.randomUUID();
+        UUID id2 = UUID.randomUUID();
+        Mockito.when(stub.findAll(Mockito.any())).thenReturn(GrpcDocumentMetadataList.newBuilder()
+                .addAllMetadata(List.of(
+                        GrpcDocumentMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId(id1.toString()).build()).build(),
+                        GrpcDocumentMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId(id2.toString()).build()).build()
+                )).build());
+
+        List<DocumentMetadataDto> all = storageService.findAll();
+        assertEquals(2, all.size());
+        assertEquals(List.of(id1, id2), all.stream().map(DocumentMetadataDto::getId).toList());
     }
 }

@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.UUID;
+
 class BackendGatewayDocumentApiTest {
 
     private DocumentMetadataStorageService documentMetadataStorageService;
@@ -24,6 +26,23 @@ class BackendGatewayDocumentApiTest {
         restApi.save(mock);
 
         Mockito.verify(documentMetadataStorageService, Mockito.times(1)).save(mock);
+    }
+
+    @Test
+    void findAll() {
+        restApi.findAll();
+
+        Mockito.verify(documentMetadataStorageService, Mockito.times(1)).findAll();
+    }
+
+    @Test
+    void findById() {
+
+        UUID uuid = UUID.randomUUID();
+
+        restApi.findById(uuid);
+
+        Mockito.verify(documentMetadataStorageService, Mockito.times(1)).findById(uuid);
     }
 
 }

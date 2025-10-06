@@ -3,7 +3,7 @@ package com.becker.freelance.component.prediction.gateway.api.dto;
 import com.becker.freelance.junit.commons.beans.DynamicBeanTest;
 import com.becker.freelance.junit.commons.equals.EqualsTest;
 
-import java.math.BigInteger;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 class TagDtoTest extends DynamicBeanTest implements EqualsTest<TagDto> {
@@ -21,7 +21,7 @@ class TagDtoTest extends DynamicBeanTest implements EqualsTest<TagDto> {
     @Override
     public TagDto unequalObject() {
         TagDto tagDto = new TagDto();
-        tagDto.setId(BigInteger.ONE);
+        tagDto.setId(UUID.randomUUID());
         tagDto.setTag("tag");
         return tagDto;
     }

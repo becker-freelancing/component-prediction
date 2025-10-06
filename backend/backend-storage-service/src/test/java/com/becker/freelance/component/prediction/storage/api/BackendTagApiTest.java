@@ -2,6 +2,7 @@ package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
 import com.becker.freelance.component.prediction.backend.storage.GrpcTagList;
+import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import com.becker.freelance.component.prediction.storage.domain.Tag;
 import com.becker.freelance.component.prediction.storage.spi.TagsRepository;
 import com.google.protobuf.Empty;
@@ -12,8 +13,8 @@ import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.opentest4j.AssertionFailedError;
 
-import java.math.BigInteger;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,15 +31,16 @@ class BackendTagApiTest {
 
     @Test
     void save() {
+        UUID tagId = UUID.randomUUID();
         Mockito.when(repository.save(Mockito.any())).then((Answer<Tag>) invocationOnMock -> {
             Tag argument = invocationOnMock.getArgument(0, Tag.class);
             return new Tag(
-                    BigInteger.TWO,
+                    tagId,
                     argument.getTag()
             );
         });
 
-        StreamObserverAssertion observer = Mockito.spy(new StreamObserverAssertion(2L, "tag"));
+        StreamObserverAssertion observer = Mockito.spy(new StreamObserverAssertion(tagId, "tag"));
 
         tagApi.save(GrpcTag.newBuilder().setTag("tag").build(), observer);
 
@@ -48,9 +50,11 @@ class BackendTagApiTest {
 
     @Test
     void findAll() {
+        UUID tagId = UUID.randomUUID();
+        UUID tagId2 = UUID.randomUUID();
         Mockito.when(repository.findAll()).thenReturn(List.of(
-                new Tag(BigInteger.ONE, "tag"),
-                new Tag(BigInteger.TWO, "tag2")
+                new Tag(tagId, "tag"),
+                new Tag(tagId2, "tag2")
         ));
 
         StreamObserver<GrpcTagList> observer = Mockito.mock(StreamObserver.class);
@@ -61,10 +65,10 @@ class BackendTagApiTest {
         Mockito.verify(observer, Mockito.times(1)).onCompleted();
     }
 
-    private record StreamObserverAssertion(Long id, String appName) implements StreamObserver<GrpcTag> {
+    private record StreamObserverAssertion(UUID id, String appName) implements StreamObserver<GrpcTag> {
         @Override
         public void onNext(GrpcTag grpcApp) {
-            assertEquals(id(), grpcApp.getId());
+            assertEquals(GrpcUUID.newBuilder().setId(id().toString()).build(), grpcApp.getId());
             assertEquals(appName(), grpcApp.getTag());
         }
 

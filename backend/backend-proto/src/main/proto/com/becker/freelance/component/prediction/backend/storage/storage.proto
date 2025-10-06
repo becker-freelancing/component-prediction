@@ -6,33 +6,35 @@ package com.becker.freelance.component.prediction.backend.storage;
 
 import "google/protobuf/empty.proto";
 
+message GrpcUUID {
+    string id = 1;
+}
 
 message GrpcApp {
-    int64 id = 1;
+    GrpcUUID id = 1;
     string app_name = 2;
 }
 
 message GrpcTag {
-    int64 id = 1;
+    GrpcUUID id = 1;
     string tag = 2;
 }
 
-message GrpcDocumentId {
-    string document_id = 1;
+message GrpcDocumentMetadata {
+    GrpcUUID id = 1;
+    GrpcApp app = 2;
+    string in_app_action_path = 3;
+    string action_title = 4;
+    string action_description = 5;
+    string action_short_description = 6;
+    string locale = 7;
+    int64 version = 8;
+    string created_at = 9;
+    repeated GrpcTag tags = 10;
 }
 
-message GrpcDocumentMetadata {
-    int64 id = 1;
-    GrpcDocumentId document_id = 2;
-    GrpcApp app = 3;
-    string in_app_action_path = 4;
-    string action_title = 5;
-    string action_description = 6;
-    string action_short_description = 7;
-    string locale = 8;
-    int64 version = 9;
-    string created_at = 10;
-    repeated GrpcTag tags = 12;
+message GrpcDocumentMetadataList {
+    repeated GrpcDocumentMetadata metadata = 1;
 }
 
 message GrpcTagList {
@@ -47,7 +49,9 @@ message GrpcAppList {
 service ApiDocumentMetadataRepository {
     rpc Save (GrpcDocumentMetadata) returns (GrpcDocumentMetadata);
 
-    rpc FindByRelatedDocumentId (GrpcDocumentId) returns (GrpcDocumentMetadata);
+    rpc FindAll (google.protobuf.Empty) returns (GrpcDocumentMetadataList);
+
+    rpc FindById (GrpcUUID) returns (GrpcDocumentMetadata);
 }
 
 service ApiTagsRepository {

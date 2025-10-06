@@ -1,18 +1,17 @@
 import {DateTime} from 'luxon';
 
 export interface App {
-    id: number | undefined,
+    id: string | undefined,
     appName: string
 }
 
 export interface Tag {
-    id: number | undefined,
+    id: string | undefined,
     tag: string
 }
 
 export interface DocumentMetadata {
-    id: number | undefined,
-    documentId: string | undefined,
+    id: string | undefined,
     app: App,
     inAppActionPath: string,
     actionTitle: string,
@@ -21,5 +20,4 @@ export interface DocumentMetadata {
     locale: string,
     version: number,
     createdAt: DateTime | undefined,
-
 }

@@ -3,7 +3,7 @@ package com.becker.freelance.component.prediction.gateway.api.dto;
 import com.becker.freelance.junit.commons.beans.DynamicBeanTest;
 import com.becker.freelance.junit.commons.equals.EqualsTest;
 
-import java.math.BigInteger;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 class DocumentMetadataDtoTest extends DynamicBeanTest implements EqualsTest<DocumentMetadataDto> {
@@ -21,7 +21,7 @@ class DocumentMetadataDtoTest extends DynamicBeanTest implements EqualsTest<Docu
     @Override
     public DocumentMetadataDto unequalObject() {
         DocumentMetadataDto dto = new DocumentMetadataDto();
-        dto.setId(BigInteger.ONE);
+        dto.setId(UUID.randomUUID());
         return dto;
     }
 }

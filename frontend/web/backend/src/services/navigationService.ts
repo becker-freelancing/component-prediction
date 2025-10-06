@@ -7,8 +7,15 @@ export async function fetchNavigation(): Promise<TreeNodeContent[]> {
     resolve(
       [
         {
+          id: "management",
+          label: "Management",
+          seoRoute: "/manage-apps",
+          visible: true,
+          permissions: [],
+          children: [
+        {
           id: "manage-apps",
-          label: "Manage Apps",
+          label: "Apps",
           seoRoute: "/manage-apps",
           visible: true,
           permissions: [],
@@ -16,7 +23,7 @@ export async function fetchNavigation(): Promise<TreeNodeContent[]> {
         },
         {
           id: "manage-tags",
-          label: "Manage Tags",
+          label: "Tags",
           seoRoute: "/manage-tags",
           visible: true,
           permissions: [],
@@ -24,13 +31,16 @@ export async function fetchNavigation(): Promise<TreeNodeContent[]> {
         },
         {
           id: "create-content",
-          label: "Create Content",
-          seoRoute: "/create-content",
+          label: "Content",
+          seoRoute: "/manage-content",
           visible: true,
           permissions: [],
           children: []
         }
       ]
+        }
+      ]
+      
     )
   }
   )

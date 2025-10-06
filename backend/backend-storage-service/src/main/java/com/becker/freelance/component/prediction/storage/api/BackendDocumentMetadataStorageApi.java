@@ -1,14 +1,17 @@
 package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentId;
 import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadataList;
+import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Optional;
 
 @GrpcService
@@ -31,10 +34,21 @@ public class BackendDocumentMetadataStorageApi extends ApiDocumentMetadataReposi
     }
 
     @Override
-    public void findByRelatedDocumentId(GrpcDocumentId request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
-        Optional<DocumentMetadata> find = metadataRepository.findByRelatedDocumentId(grpcMapper.mapIncomingUUID(request.getDocumentId()));
-        find.map(grpcMapper::mapOutgoing).ifPresent(responseObserver::onNext);
+    public void findAll(Empty request, StreamObserver<GrpcDocumentMetadataList> responseObserver) {
+        List<GrpcDocumentMetadata> found = metadataRepository.findAll().stream()
+                .map(grpcMapper::mapOutgoing)
+                .toList();
+
+        GrpcDocumentMetadataList build = GrpcDocumentMetadataList.newBuilder().addAllMetadata(found).build();
+
+        responseObserver.onNext(build);
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void findById(GrpcUUID request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
+        Optional<DocumentMetadata> found = metadataRepository.findById(grpcMapper.mapIncoming(request));
+        found.map(grpcMapper::mapOutgoing).ifPresent(responseObserver::onNext);
+        responseObserver.onCompleted();
+    }
 }

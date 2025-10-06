@@ -1,11 +1,11 @@
 package com.becker.freelance.component.prediction.storage.domain;
 
-import java.math.BigInteger;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Tag {
 
-    private BigInteger id;
+    private UUID id;
     private String tag;
 
     public Tag(String tag) {
@@ -13,7 +13,7 @@ public class Tag {
                 tag);
     }
 
-    public Tag(BigInteger id, String tag) {
+    public Tag(UUID id, String tag) {
         this.id = id;
         this.tag = tag;
     }
@@ -21,11 +21,11 @@ public class Tag {
     public Tag() {
     }
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -13,10 +13,12 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +31,6 @@ class DocumentMetadataRepositoryImplTest {
 
     private static void assertDefaultSaved(DefaultSaveResult result) {
         assertNotNull(result.saved().getId());
-        assertEquals(result.documentId(), result.saved().getDocumentId());
         assertEquals("in-app", result.saved().getInAppActionPath());
         assertEquals("title", result.saved().getActionTitle());
         assertEquals("description", result.saved().getActionDescription());
@@ -60,11 +61,9 @@ class DocumentMetadataRepositoryImplTest {
 
         App app = new App("test-app-2");
         Set<Tag> tags = Set.of(new Tag("t12"), new Tag("t22"));
-        UUID documentId = UUID.randomUUID();
         ZonedDateTime createdAt = ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0, 0), ZoneId.of("UTC"));
         DocumentMetadata documentMetadata = new DocumentMetadata(
                 result.saved().getId(),
-                documentId,
                 app,
                 "in-app2",
                 "title2",
@@ -79,7 +78,6 @@ class DocumentMetadataRepositoryImplTest {
         DocumentMetadata saved = documentMetadataRepository.save(documentMetadata);
 
         assertNotNull(saved.getId());
-        assertEquals(documentId, saved.getDocumentId());
         assertEquals("in-app2", saved.getInAppActionPath());
         assertEquals("title2", saved.getActionTitle());
         assertEquals("description2", saved.getActionDescription());
@@ -96,31 +94,49 @@ class DocumentMetadataRepositoryImplTest {
 
     }
 
+
     @Test
-    void findByRelatedDocumentId() {
-        DefaultSaveResult result = saveDefault();
+    void findAllWithEmptyDb() {
 
-        assertDefaultSaved(result);
+        List<DocumentMetadata> all = documentMetadataRepository.findAll();
 
-        Optional<DocumentMetadata> byRelatedDocumentId = documentMetadataRepository.findByRelatedDocumentId(result.documentId());
+        assertEquals(0, all.size());
+    }
 
-        assertTrue(byRelatedDocumentId.isPresent());
-        assertDefaultSaved(new DefaultSaveResult(
-                result.app(),
-                result.tags(),
-                result.documentId(),
-                result.createdAt(),
-                byRelatedDocumentId.get()
-        ));
+    @Test
+    void findAll() {
+        DefaultSaveResult saved1 = saveDefault();
+        DefaultSaveResult saved2 = saveDefault();
+
+        List<DocumentMetadata> all = documentMetadataRepository.findAll();
+
+        assertEquals(2, all.size());
+        assertEquals(Stream.of(saved1, saved2).map(DefaultSaveResult::saved).map(DocumentMetadata::getId).collect(Collectors.toSet()), all.stream().map(DocumentMetadata::getId).collect(Collectors.toSet()));
+    }
+
+    @Test
+    void findById() {
+        DefaultSaveResult saved = saveDefault();
+        Optional<DocumentMetadata> find = documentMetadataRepository.findById(saved.saved().getId());
+
+        assertTrue(find.isPresent());
+        assertEquals(saved.saved().getId(), find.get().getId());
+    }
+
+    @Test
+    void findByIdIfNotFound() {
+        saveDefault();
+
+        Optional<DocumentMetadata> byId = documentMetadataRepository.findById(UUID.randomUUID());
+
+        assertTrue(byId.isEmpty());
     }
 
     private DefaultSaveResult saveDefault() {
         App app = new App("test-app");
         Set<Tag> tags = Set.of(new Tag("t1"), new Tag("t2"));
-        UUID documentId = UUID.randomUUID();
         ZonedDateTime createdAt = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), ZoneId.of("UTC"));
         DocumentMetadata documentMetadata = new DocumentMetadata(
-                documentId,
                 app,
                 "in-app",
                 "title",
@@ -133,10 +149,10 @@ class DocumentMetadataRepositoryImplTest {
         );
 
         DocumentMetadata saved = documentMetadataRepository.save(documentMetadata);
-        return new DefaultSaveResult(app, tags, documentId, createdAt, saved);
+        return new DefaultSaveResult(app, tags, createdAt, saved);
     }
 
-    private record DefaultSaveResult(App app, Set<Tag> tags, UUID documentId, ZonedDateTime createdAt,
+    private record DefaultSaveResult(App app, Set<Tag> tags, ZonedDateTime createdAt,
                                      DocumentMetadata saved) {
     }
 

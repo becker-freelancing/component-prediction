@@ -8,8 +8,7 @@ import java.util.UUID;
 
 public class DocumentMetadata {
 
-    private BigInteger id;
-    private UUID documentId;
+    private UUID id;
     private App app;
     private String inAppActionPath;
     private String actionTitle;
@@ -23,9 +22,8 @@ public class DocumentMetadata {
     public DocumentMetadata() {
     }
 
-    public DocumentMetadata(BigInteger id, UUID documentId, App app, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, String locale, BigInteger version, ZonedDateTime createdAt, Set<Tag> tags) {
+    public DocumentMetadata(UUID id, App app, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, String locale, BigInteger version, ZonedDateTime createdAt, Set<Tag> tags) {
         this.id = id;
-        this.documentId = documentId;
         this.app = app;
         this.inAppActionPath = inAppActionPath;
         this.actionTitle = actionTitle;
@@ -37,10 +35,9 @@ public class DocumentMetadata {
         this.tags = tags;
     }
 
-    public DocumentMetadata(UUID documentId, App app, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, String locale, BigInteger version, ZonedDateTime createdAt, Set<Tag> tags) {
+    public DocumentMetadata(App app, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, String locale, BigInteger version, ZonedDateTime createdAt, Set<Tag> tags) {
         this(
                 null,
-                documentId,
                 app,
                 inAppActionPath,
                 actionTitle,
@@ -61,20 +58,12 @@ public class DocumentMetadata {
         this.actionShortDescription = actionShortDescription;
     }
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
-    }
-
-    public UUID getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(UUID documentId) {
-        this.documentId = documentId;
     }
 
     public App getApp() {
@@ -145,19 +134,18 @@ public class DocumentMetadata {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         DocumentMetadata that = (DocumentMetadata) o;
-        return Objects.equals(id, that.id) && Objects.equals(documentId, that.documentId) && Objects.equals(app, that.app) && Objects.equals(inAppActionPath, that.inAppActionPath) && Objects.equals(actionTitle, that.actionTitle) && Objects.equals(actionDescription, that.actionDescription) && Objects.equals(actionShortDescription, that.actionShortDescription) && Objects.equals(locale, that.locale) && Objects.equals(version, that.version) && Objects.equals(createdAt, that.createdAt) && Objects.equals(tags, that.tags);
+        return Objects.equals(id, that.id) && Objects.equals(app, that.app) && Objects.equals(inAppActionPath, that.inAppActionPath) && Objects.equals(actionTitle, that.actionTitle) && Objects.equals(actionDescription, that.actionDescription) && Objects.equals(actionShortDescription, that.actionShortDescription) && Objects.equals(locale, that.locale) && Objects.equals(version, that.version) && Objects.equals(createdAt, that.createdAt) && Objects.equals(tags, that.tags);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, documentId, app, inAppActionPath, actionTitle, actionDescription, actionShortDescription, locale, version, createdAt, tags);
+        return Objects.hash(id, app, inAppActionPath, actionTitle, actionDescription, actionShortDescription, locale, version, createdAt, tags);
     }
 
     @Override
     public String toString() {
         return "DocumentMetadata{" +
                 "id=" + id +
-                ", documentId=" + documentId +
                 ", app=" + app +
                 ", inAppActionPath='" + inAppActionPath + '\'' +
                 ", actionTitle='" + actionTitle + '\'' +

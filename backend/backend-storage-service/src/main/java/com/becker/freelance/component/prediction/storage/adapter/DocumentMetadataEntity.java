@@ -12,12 +12,9 @@ import java.util.UUID;
 public class DocumentMetadataEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id")
-    private BigInteger id;
-
-    @Column(name = "document_id", nullable = false)
-    private UUID documentId;
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "app_id", nullable = false)
@@ -52,20 +49,12 @@ public class DocumentMetadataEntity {
     @Column(name = "created_at", nullable = false)
     private ZonedDateTime createdAt;
 
-    public BigInteger getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(UUID id) {
         this.id = id;
-    }
-
-    public UUID getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(UUID documentId) {
-        this.documentId = documentId;
     }
 
     public AppsEntity getApp() {

@@ -1,9 +1,9 @@
 <template>
-    <h1>Create App</h1>
+    <h1>Create Tag</h1>
 
     <div class="form-row">
-        <label for="app-name">Name:</label>
-        <input type="text" id="app-name" v-model="appName"/>
+        <label for="tag-name">Name:</label>
+        <input type="text" id="tag-name" v-model="tagName"/>
     </div>
 
     <button @click="save()" :disabled="isValid">Save</button>
@@ -12,15 +12,15 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { computed, ref } from 'vue';
-import { saveApp } from '@/services/appService';
+import { saveTag } from '@/services/tagService';
 
 const route = useRoute()
 const router = useRouter()
 
-const appName = ref('')
+const tagName = ref('')
 
 function validate(): boolean{
-    return appName.value.length > 0;
+    return tagName.value.length > 0;
 }
 
 const isValid = computed(() => !validate())
@@ -30,10 +30,14 @@ function save(){
         return;
     }
     
-    saveApp({id: undefined, appName: appName.value})
+    saveTag({id: undefined, tag: tagName.value})
     .then(saved => {
         const backQuery = (route.query.returnUrl as string)|| '/'
         router.push(backQuery)
     })
 }
 </script>
+
+<style scoped>
+
+</style>
