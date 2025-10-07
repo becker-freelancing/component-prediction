@@ -1,0 +1,314 @@
+[
+  {
+    "inAppActionPath": "Click Dashboard → Posts → Categories",
+    "actionTitle": "Manage Post Categories",
+    "actionDescription": "Create new categories, edit existing ones, or delete them.",
+    "actionShortDescription": "Manage categories",
+    "locale": "en_US",
+    "tags": [
+      "Post",
+      "Category",
+      "Manage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Posts → Tags",
+    "actionTitle": "Manage Post Tags",
+    "actionDescription": "Add new tags or edit existing ones for posts.",
+    "actionShortDescription": "Manage tags",
+    "locale": "en_US",
+    "tags": [
+      "Post",
+      "Tag",
+      "Manage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Media → Library",
+    "actionTitle": "Manage Media",
+    "actionDescription": "Edit, delete, or view details of existing media files.",
+    "actionShortDescription": "Manage media",
+    "locale": "en_US",
+    "tags": [
+      "Media",
+      "Library",
+      "Manage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Pages → All Pages",
+    "actionTitle": "Manage Pages",
+    "actionDescription": "Edit, delete, or create new pages on your website.",
+    "actionShortDescription": "Pages overview",
+    "locale": "en_US",
+    "tags": [
+      "Page",
+      "Manage",
+      "Edit"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Pages → Add New",
+    "actionTitle": "Add New Page",
+    "actionDescription": "Create a new page with title, content, and layout.",
+    "actionShortDescription": "Add page",
+    "locale": "en_US",
+    "tags": [
+      "Page",
+      "Create",
+      "New"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Comments",
+    "actionTitle": "Manage Comments",
+    "actionDescription": "Approve, delete, or mark comments as spam.",
+    "actionShortDescription": "Moderate comments",
+    "locale": "en_US",
+    "tags": [
+      "Comment",
+      "Moderation",
+      "Manage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Customize",
+    "actionTitle": "Customize Site Design",
+    "actionDescription": "Change colors, fonts, layouts, and other design settings.",
+    "actionShortDescription": "Customize design",
+    "locale": "en_US",
+    "tags": [
+      "Design",
+      "Customizer",
+      "Layout"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Menus → Create Menu",
+    "actionTitle": "Create New Menu",
+    "actionDescription": "Set up a new navigation menu and add menu items.",
+    "actionShortDescription": "Add menu",
+    "locale": "en_US",
+    "tags": [
+      "Menu",
+      "Navigation",
+      "Create"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Widgets → Add Widget",
+    "actionTitle": "Add New Widget",
+    "actionDescription": "Add a new widget to the sidebar or footer.",
+    "actionShortDescription": "Add widget",
+    "locale": "en_US",
+    "tags": [
+      "Widget",
+      "Add",
+      "Sidebar"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Plugins → Installed Plugins",
+    "actionTitle": "Activate/Deactivate Plugins",
+    "actionDescription": "Enable, disable, or delete existing plugins.",
+    "actionShortDescription": "Manage plugins",
+    "locale": "en_US",
+    "tags": [
+      "Plugin",
+      "Manage",
+      "Activate"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Users → All Users",
+    "actionTitle": "View User List",
+    "actionDescription": "See all users and manage their roles and permissions.",
+    "actionShortDescription": "Users overview",
+    "locale": "en_US",
+    "tags": [
+      "User",
+      "List",
+      "Manage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Users → Edit Profile",
+    "actionTitle": "Edit Your Profile",
+    "actionDescription": "Change your name, email, password, and bio.",
+    "actionShortDescription": "Edit profile",
+    "locale": "en_US",
+    "tags": [
+      "User",
+      "Profile",
+      "Edit"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Tools → Import",
+    "actionTitle": "Import Content",
+    "actionDescription": "Import posts, pages, and media from other platforms.",
+    "actionShortDescription": "Start import",
+    "locale": "en_US",
+    "tags": [
+      "Tool",
+      "Import",
+      "Content"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Tools → Export",
+    "actionTitle": "Export Content",
+    "actionDescription": "Export posts, pages, and media for backup or transfer.",
+    "actionShortDescription": "Start export",
+    "locale": "en_US",
+    "tags": [
+      "Tool",
+      "Export",
+      "Backup"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Reading",
+    "actionTitle": "Configure Reading Settings",
+    "actionDescription": "Set homepage, posts page, and blog display options.",
+    "actionShortDescription": "Change reading settings",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Reading",
+      "Homepage"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Writing",
+    "actionTitle": "Configure Writing Settings",
+    "actionDescription": "Set default post category, post format, and writing options.",
+    "actionShortDescription": "Change writing settings",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Writing",
+      "Blog"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Discussion",
+    "actionTitle": "Adjust Discussion Settings",
+    "actionDescription": "Enable comments, set moderation rules, and manage notifications.",
+    "actionShortDescription": "Manage discussion",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Discussion",
+      "Comments"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Media",
+    "actionTitle": "Configure Media Settings",
+    "actionDescription": "Set default image sizes and upload options.",
+    "actionShortDescription": "Change media settings",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Media",
+      "Images"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Permalinks",
+    "actionTitle": "Adjust Permalink Structure",
+    "actionDescription": "Change the URL structure for posts, pages, and categories.",
+    "actionShortDescription": "Set permalinks",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Permalink",
+      "SEO"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Theme Editor",
+    "actionTitle": "Edit Theme Files",
+    "actionDescription": "Directly edit installed theme files.",
+    "actionShortDescription": "Edit theme",
+    "locale": "en_US",
+    "tags": [
+      "Theme",
+      "Editor",
+      "Code"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Plugins → Plugin Editor",
+    "actionTitle": "Edit Plugin Files",
+    "actionDescription": "Directly edit installed plugin files (use with caution).",
+    "actionShortDescription": "Edit plugin",
+    "locale": "en_US",
+    "tags": [
+      "Plugin",
+      "Editor",
+      "Code"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Tools → Site Health",
+    "actionTitle": "Check Site Health",
+    "actionDescription": "View technical information and get recommendations for the site.",
+    "actionShortDescription": "Check site health",
+    "locale": "en_US",
+    "tags": [
+      "Tool",
+      "Health",
+      "Analysis"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Users → Manage Roles",
+    "actionTitle": "Edit User Roles",
+    "actionDescription": "Assign or change roles to control permissions.",
+    "actionShortDescription": "Manage roles",
+    "locale": "en_US",
+    "tags": [
+      "User",
+      "Roles",
+      "Permissions"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Settings → Privacy",
+    "actionTitle": "Configure Privacy Settings",
+    "actionDescription": "Set privacy policies and configure privacy page.",
+    "actionShortDescription": "Privacy settings",
+    "locale": "en_US",
+    "tags": [
+      "Settings",
+      "Privacy",
+      "Legal"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Customize → Colors",
+    "actionTitle": "Change Colors in Customizer",
+    "actionDescription": "Adjust primary colors of the site using the customizer.",
+    "actionShortDescription": "Adjust colors",
+    "locale": "en_US",
+    "tags": [
+      "Customizer",
+      "Colors",
+      "Design"
+    ]
+  },
+  {
+    "inAppActionPath": "Click Dashboard → Appearance → Customize → Fonts",
+    "actionTitle": "Change Fonts in Customizer",
+    "actionDescription": "Adjust site typography using the customizer.",
+    "actionShortDescription": "Adjust fonts",
+    "locale": "en_US",
+    "tags": [
+      "Customizer",
+      "Fonts",
+      "Design"
+    ]
+  }
+]

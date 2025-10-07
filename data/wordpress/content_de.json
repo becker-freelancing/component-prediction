@@ -1,0 +1,374 @@
+[
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Beiträge' → 'Kategorien'",
+    "actionTitle": "Beitragskategorien verwalten",
+    "actionDescription": "Neue Kategorien erstellen, vorhandene bearbeiten oder löschen.",
+    "actionShortDescription": "Kategorien verwalten",
+    "locale": "de_DE",
+    "tags": [
+      "Beitrag",
+      "Kategorie",
+      "Verwalten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Beiträge' → 'Schlagwörter'",
+    "actionTitle": "Beitrags-Tags verwalten",
+    "actionDescription": "Neue Schlagwörter hinzufügen oder bestehende bearbeiten.",
+    "actionShortDescription": "Tags verwalten",
+    "locale": "de_DE",
+    "tags": [
+      "Beitrag",
+      "Tag",
+      "Verwalten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Medien' → 'Bibliothek'",
+    "actionTitle": "Medien verwalten",
+    "actionDescription": "Bestehende Dateien bearbeiten, löschen oder Details anzeigen.",
+    "actionShortDescription": "Mediathek durchsuchen",
+    "locale": "de_DE",
+    "tags": [
+      "Medien",
+      "Verwalten",
+      "Bibliothek"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Seiten' → 'Alle Seiten'",
+    "actionTitle": "Seiten verwalten",
+    "actionDescription": "Vorhandene Seiten bearbeiten, löschen oder neue erstellen.",
+    "actionShortDescription": "Seiten Übersicht",
+    "locale": "de_DE",
+    "tags": [
+      "Seite",
+      "Verwalten",
+      "Bearbeiten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Seiten' → 'Neu hinzufügen'",
+    "actionTitle": "Neue Seite erstellen",
+    "actionDescription": "Erstelle eine neue Seite mit Inhalt, Titel und Layout.",
+    "actionShortDescription": "Seite hinzufügen",
+    "locale": "de_DE",
+    "tags": [
+      "Seite",
+      "Erstellen",
+      "Neu"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Kommentare'",
+    "actionTitle": "Kommentare verwalten",
+    "actionDescription": "Kommentare freischalten, löschen oder als Spam markieren.",
+    "actionShortDescription": "Kommentare moderieren",
+    "locale": "de_DE",
+    "tags": [
+      "Kommentar",
+      "Moderation",
+      "Verwalten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer'",
+    "actionTitle": "Website Design anpassen",
+    "actionDescription": "Farben, Schriftarten, Layouts und andere Design-Einstellungen ändern.",
+    "actionShortDescription": "Design anpassen",
+    "locale": "de_DE",
+    "tags": [
+      "Design",
+      "Customizer",
+      "Layout"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Menüs' → 'Menü erstellen'",
+    "actionTitle": "Neues Menü erstellen",
+    "actionDescription": "Ein neues Navigationsmenü anlegen und Menüpunkte hinzufügen.",
+    "actionShortDescription": "Menü hinzufügen",
+    "locale": "de_DE",
+    "tags": [
+      "Menü",
+      "Navigation",
+      "Erstellen"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Widgets' → 'Widget hinzufügen'",
+    "actionTitle": "Neues Widget hinzufügen",
+    "actionDescription": "Ein neues Widget in eine Seitenleiste oder den Footer hinzufügen.",
+    "actionShortDescription": "Widget hinzufügen",
+    "locale": "de_DE",
+    "tags": [
+      "Widget",
+      "Hinzufügen",
+      "Seitenleiste"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Plugins' → 'Installierte Plugins'",
+    "actionTitle": "Plugins aktivieren/deaktivieren",
+    "actionDescription": "Bestehende Plugins aktivieren, deaktivieren oder löschen.",
+    "actionShortDescription": "Plugin verwalten",
+    "locale": "de_DE",
+    "tags": [
+      "Plugin",
+      "Verwalten",
+      "Aktivieren"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Benutzer' → 'Alle Benutzer'",
+    "actionTitle": "Benutzerliste anzeigen",
+    "actionDescription": "Alle Benutzer der Website sehen und deren Rollen bearbeiten.",
+    "actionShortDescription": "Benutzer anzeigen",
+    "locale": "de_DE",
+    "tags": [
+      "Benutzer",
+      "Liste",
+      "Verwalten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Benutzer' → 'Profil bearbeiten'",
+    "actionTitle": "Eigenes Benutzerprofil bearbeiten",
+    "actionDescription": "Eigenen Namen, E-Mail-Adresse, Passwort und Biografie ändern.",
+    "actionShortDescription": "Profil bearbeiten",
+    "locale": "de_DE",
+    "tags": [
+      "Benutzer",
+      "Profil",
+      "Bearbeiten"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Werkzeuge' → 'Importieren'",
+    "actionTitle": "Inhalte importieren",
+    "actionDescription": "Beiträge, Seiten und Medien aus anderen Plattformen importieren.",
+    "actionShortDescription": "Import starten",
+    "locale": "de_DE",
+    "tags": [
+      "Werkzeug",
+      "Import",
+      "Inhalte"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Werkzeuge' → 'Exportieren'",
+    "actionTitle": "Inhalte exportieren",
+    "actionDescription": "Beiträge, Seiten und Medien exportieren, um sie zu sichern oder zu übertragen.",
+    "actionShortDescription": "Export starten",
+    "locale": "de_DE",
+    "tags": [
+      "Werkzeug",
+      "Export",
+      "Sicherung"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Lesen'",
+    "actionTitle": "Leseeinstellungen konfigurieren",
+    "actionDescription": "Startseite und Beitragsseite festlegen, sowie die Bloganzeige konfigurieren.",
+    "actionShortDescription": "Leseeinstellungen ändern",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Lesen",
+      "Startseite"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Schreiben'",
+    "actionTitle": "Schreibeinstellungen konfigurieren",
+    "actionDescription": "Standard-Kategorie, Standard-Format und Beitragsoptionen festlegen.",
+    "actionShortDescription": "Schreibeinstellungen ändern",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Schreiben",
+      "Blog"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Diskussion'",
+    "actionTitle": "Diskussionseinstellungen anpassen",
+    "actionDescription": "Kommentare aktivieren, Moderation einstellen und Benachrichtigungen verwalten.",
+    "actionShortDescription": "Diskussion verwalten",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Diskussion",
+      "Kommentare"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Medien'",
+    "actionTitle": "Medieneinstellungen konfigurieren",
+    "actionDescription": "Standardgrößen für Bilder festlegen und Upload-Optionen anpassen.",
+    "actionShortDescription": "Medienoptionen ändern",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Medien",
+      "Bilder"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Permalinks'",
+    "actionTitle": "Permalink-Struktur anpassen",
+    "actionDescription": "Die URL-Struktur für Beiträge, Seiten und Kategorien ändern.",
+    "actionShortDescription": "Permalinks einstellen",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Permalink",
+      "SEO"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer' → 'Widgets'",
+    "actionTitle": "Customizer Widgets bearbeiten",
+    "actionDescription": "Widgets direkt im Customizer hinzufügen oder anpassen.",
+    "actionShortDescription": "Widgets im Customizer",
+    "locale": "de_DE",
+    "tags": [
+      "Customizer",
+      "Widgets",
+      "Design"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer' → 'Menüs'",
+    "actionTitle": "Customizer Menüs bearbeiten",
+    "actionDescription": "Menüs direkt im Customizer erstellen oder ändern.",
+    "actionShortDescription": "Menüs im Customizer",
+    "locale": "de_DE",
+    "tags": [
+      "Customizer",
+      "Menü",
+      "Navigation"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer' → 'Startseite'",
+    "actionTitle": "Startseite im Customizer anpassen",
+    "actionDescription": "Inhalte, Widgets und Layouts für die Startseite anpassen.",
+    "actionShortDescription": "Startseite anpassen",
+    "locale": "de_DE",
+    "tags": [
+      "Customizer",
+      "Startseite",
+      "Design"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Plugins' → 'Editor'",
+    "actionTitle": "Plugin-Dateien bearbeiten",
+    "actionDescription": "Code von installierten Plugins direkt bearbeiten (vorsichtig nutzen).",
+    "actionShortDescription": "Plugin bearbeiten",
+    "locale": "de_DE",
+    "tags": [
+      "Plugin",
+      "Editor",
+      "Code"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Theme Editor'",
+    "actionTitle": "Theme-Dateien bearbeiten",
+    "actionDescription": "Code von installierten Themes direkt bearbeiten.",
+    "actionShortDescription": "Theme bearbeiten",
+    "locale": "de_DE",
+    "tags": [
+      "Theme",
+      "Editor",
+      "Code"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Werkzeuge' → 'Website-Zustand'",
+    "actionTitle": "Website-Zustand prüfen",
+    "actionDescription": "Technische Informationen über die Website anzeigen und Empfehlungen erhalten.",
+    "actionShortDescription": "Zustand prüfen",
+    "locale": "de_DE",
+    "tags": [
+      "Werkzeug",
+      "Status",
+      "Analyse"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Werkzeuge' → 'Daten exportieren'",
+    "actionTitle": "Website-Daten exportieren",
+    "actionDescription": "Alle Inhalte und Einstellungen der Website exportieren.",
+    "actionShortDescription": "Daten exportieren",
+    "locale": "de_DE",
+    "tags": [
+      "Werkzeug",
+      "Export",
+      "Sicherung"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Werkzeuge' → 'Website importieren'",
+    "actionTitle": "Website importieren",
+    "actionDescription": "Inhalte von einer anderen WordPress-Website importieren.",
+    "actionShortDescription": "Website importieren",
+    "locale": "de_DE",
+    "tags": [
+      "Werkzeug",
+      "Import",
+      "Website"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Benutzer' → 'Rollen verwalten'",
+    "actionTitle": "Benutzerrollen bearbeiten",
+    "actionDescription": "Rollen zuweisen oder ändern, um Rechte und Berechtigungen zu steuern.",
+    "actionShortDescription": "Rollen verwalten",
+    "locale": "de_DE",
+    "tags": [
+      "Benutzer",
+      "Rollen",
+      "Rechte"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Einstellungen' → 'Datenschutz'",
+    "actionTitle": "Datenschutzeinstellungen anpassen",
+    "actionDescription": "Datenschutzrichtlinien festlegen und Seite für Datenschutzinformationen konfigurieren.",
+    "actionShortDescription": "Datenschutz konfigurieren",
+    "locale": "de_DE",
+    "tags": [
+      "Einstellungen",
+      "Datenschutz",
+      "Rechtliches"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer' → 'Farben'",
+    "actionTitle": "Farben im Customizer ändern",
+    "actionDescription": "Hauptfarben der Website über den Customizer anpassen.",
+    "actionShortDescription": "Farben anpassen",
+    "locale": "de_DE",
+    "tags": [
+      "Customizer",
+      "Farben",
+      "Design"
+    ]
+  },
+  {
+    "inAppActionPath": "Klicke im Dashboard auf 'Design' → 'Customizer' → 'Schriften'",
+    "actionTitle": "Schriften im Customizer ändern",
+    "actionDescription": "Typografie der Website über den Customizer anpassen.",
+    "actionShortDescription": "Schriften anpassen",
+    "locale": "de_DE",
+    "tags": [
+      "Customizer",
+      "Schriftart",
+      "Design"
+    ]
+  }
+]

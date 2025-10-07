@@ -1,0 +1,24 @@
+{
+  "userQueries": [
+    "How do I create a new blog post?",
+    "I want to add a new page to my website.",
+    "How can I upload images to the media library?",
+    "Where do I manage my site’s categories?",
+    "How do I edit an existing page?",
+    "How can I change the homepage of my site?",
+    "I want to approve comments waiting for moderation.",
+    "How do I install a new plugin?",
+    "Where can I activate or deactivate plugins?",
+    "How do I create a new navigation menu?",
+    "I want to add widgets to my sidebar.",
+    "How can I change my site’s theme?",
+    "Where do I edit user roles and permissions?",
+    "I want to change the permalink structure for posts.",
+    "How do I backup my WordPress site?",
+    "Where can I adjust reading and writing settings?",
+    "I want to add tags to my blog posts.",
+    "How do I import content from another website?",
+    "I want to export my posts and pages for backup.",
+    "Where can I check the health of my WordPress site?"
+  ]
+}
