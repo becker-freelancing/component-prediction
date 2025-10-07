@@ -12,6 +12,10 @@
   margin: 1rem;
 }
 
+.default-margin * {
+  margin: 5px;
+}
+
 /* Form Elements */
 .form-row {
   display: flex;

@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import type { DocumentMetadata, App, Tag } from '@/components/DocumentMetadataTypes';
 import { fetchById, saveMetadata } from '@/services/documentMetadataService';
@@ -131,7 +131,7 @@ function save(){
         createdAt: createdAt.value
     }
 
-    saveMetadata(metaData).then(saved => {
+    saveMetadata(metaData).then(_saved => {
         const returnUrl = route.query.returnUrl as string;
         router.push(returnUrl)
     })

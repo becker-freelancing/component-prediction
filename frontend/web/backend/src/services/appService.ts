@@ -16,3 +16,8 @@ export async function saveApp(app: App): Promise<App> {
     throw Error("Failed to save App");
   });
 }
+
+export async function fetchAppById(id: string): Promise<App | undefined> {
+  return fetchAllApps()
+  .then(apps => apps.find(app => app.id === id))
+}

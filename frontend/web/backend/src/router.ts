@@ -1,17 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NotFound from './pages/NotFound.vue'
-import CreateContent from './pages/CreateContent.vue'
-import AppManagement from './pages/AppManagement.vue'
-import AppCreate from './pages/AppCreate.vue'
-import TagsManagement from './pages/TagsManagement.vue'
-import TagCreate from './pages/TagCreate.vue'
-import ContentManagement from './pages/ContentManagement.vue'
+import CreateContent from './pages/content/CreateContent.vue'
+import AppCreate from './pages/app/AppCreate.vue'
+import TagsOverview from './pages/tags/TagsOverview.vue'
+import TagCreate from './pages/tags/TagCreate.vue'
+import TagEdit from './pages/tags/TagEdit.vue'
+import ContentManagement from './pages/content/ContentManagement.vue'
+import AppOverview from './pages/app/AppOverview.vue'
+import AppEdit from './pages/app/AppEdit.vue'
 
 const routes = [
   {
     path: "/manage-apps",
     name: "manageApps",
-    component: AppManagement
+    component: AppOverview
   },
   {
     path: "/create-app",
@@ -19,14 +21,24 @@ const routes = [
     component: AppCreate
   },
   {
+    path: "/edit-app",
+    name: "editApp",
+    component: AppEdit
+  },
+  {
     path: "/manage-tags",
     name: "manageTags",
-    component: TagsManagement
+    component: TagsOverview
   },
   {
     path: "/create-tag",
     name: "createTag",
     component: TagCreate
+  },
+  {
+    path: "/edit-tag",
+    name: "editTag",
+    component: TagEdit
   },
   {
     path: '/manage-content',

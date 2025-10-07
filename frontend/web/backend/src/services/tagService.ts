@@ -16,3 +16,9 @@ export async function saveTag(app: Tag): Promise<Tag> {
     throw Error("Failed to save Tag");
   });
 }
+
+
+export async function fetchTagById(id: string): Promise<Tag | undefined> {
+  return fetchAllTags()
+  .then(tags => tags.find(tag => tag.id === id))
+}
