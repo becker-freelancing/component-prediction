@@ -12,6 +12,7 @@
         <module name="language-detection-proto" />
         <module name="backend-proto" />
         <module name="backend-gateway" />
+        <module name="ingest-service" />
         <module name="junit-test-commons" />
       </profile>
     </annotationProcessing>

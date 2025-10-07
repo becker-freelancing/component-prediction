@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.becker-freelance.component-prediction</groupId>
-            <artifactId>backend-proto</artifactId>
+            <artifactId>backend-storage-proto</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>

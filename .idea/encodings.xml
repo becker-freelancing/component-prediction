@@ -7,6 +7,8 @@
     <file url="file://$PROJECT_DIR$/backend/backend-proto/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-storage-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-storage-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/ingest-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/ingest-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/bom/src/main/java" charset="UTF-8" />

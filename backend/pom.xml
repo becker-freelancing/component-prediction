@@ -14,8 +14,7 @@
 
     <modules>
         <module>backend-gateway</module>
-        <module>backend-proto</module>
-        <module>backend-storage-service</module>
+        <module>backend-storage</module>
     </modules>
 
     <dependencies>
