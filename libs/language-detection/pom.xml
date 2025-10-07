@@ -5,16 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.becker-freelance.component-prediction</groupId>
-        <artifactId>component-prediction</artifactId>
+        <artifactId>libs</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>libs</artifactId>
+    <artifactId>language-detection</artifactId>
     <packaging>pom</packaging>
-
     <modules>
-        <module>junit-test-commons</module>
-        <module>language-detection</module>
+        <module>language-detection-proto</module>
+        <module>language-detection-service</module>
     </modules>
 
 </project>

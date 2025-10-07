@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="database-migration" />
+        <module name="language-detection-service" />
         <module name="backend-storage-service" />
+        <module name="language-detection-proto" />
         <module name="backend-proto" />
         <module name="backend-gateway" />
-        <module name="database-migration" />
         <module name="junit-test-commons" />
       </profile>
     </annotationProcessing>
