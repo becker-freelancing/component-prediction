@@ -15,6 +15,7 @@
     <modules>
         <module>backend-gateway</module>
         <module>backend-storage</module>
+        <module>backend-embedding</module>
     </modules>
 
     <dependencies>

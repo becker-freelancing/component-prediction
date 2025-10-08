@@ -1,0 +1,5 @@
+embedding:
+  use_l2_normalization: true
+  chunk_size: 256
+  chunk_overlap: 32
+  chunk_threshold: 384

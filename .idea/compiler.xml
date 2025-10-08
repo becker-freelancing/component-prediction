@@ -7,14 +7,18 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="database-migration" />
+        <module name="backend-embedding-proto" />
         <module name="language-detection-service" />
         <module name="backend-storage-service" />
         <module name="language-detection-proto" />
-        <module name="backend-proto" />
+        <module name="backend-embedding-service" />
         <module name="backend-gateway" />
-        <module name="ingest-service" />
+        <module name="backend-storage-proto" />
         <module name="junit-test-commons" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ingest-service" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
