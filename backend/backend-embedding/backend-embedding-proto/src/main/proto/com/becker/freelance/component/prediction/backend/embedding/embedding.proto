@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.embedding;
+
+
+message GrpcFloatArray {
+    repeated float array = 1;
+}
+
+message GrpcEmbedding {
+    repeated GrpcFloatArray embeddings = 1;
+}
+
+message GrpcEmbeddingRequest {
+    string text = 1;
+}
+
+
+service ApiEmbeddingService {
+
+    rpc Embed (GrpcEmbeddingRequest) returns (GrpcEmbedding);
+}

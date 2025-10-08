@@ -1,12 +1,13 @@
 package com.becker.freelance.component.prediction.adapter.sentencetransformer;
 
+import com.becker.freelance.component.prediction.EmbeddingServiceStarter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(classes = EmbeddingServiceStarter.class)
 class EmbeddingServiceImplTest {
 
     @Autowired

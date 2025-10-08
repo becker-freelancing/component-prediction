@@ -26,6 +26,7 @@ public class EmbeddingServiceImpl implements EmbeddingService {
         this.textChunker = textChunker;
     }
 
+    @Override
     public float[][] embed(String text) throws EmbeddingException {
 
         NDManager ndManager = model.getNDManager();
