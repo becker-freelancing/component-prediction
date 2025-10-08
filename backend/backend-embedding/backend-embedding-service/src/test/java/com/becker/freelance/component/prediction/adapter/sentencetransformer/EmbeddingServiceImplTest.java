@@ -19,7 +19,7 @@ class EmbeddingServiceImplTest {
 
         assertNotNull(embeddings);
         assertEquals(1, embeddings.length);
-        assertTrue(embeddings[0].length > 0);
+        assertValidEmbedding(embeddings[0]);
     }
 
     @Test
@@ -30,8 +30,20 @@ class EmbeddingServiceImplTest {
         float[][] embeddings = embeddingService.embed(longText);
 
         assertNotNull(embeddings);
-        assertEquals(1, embeddings.length);
-        assertTrue(embeddings[0].length > 0);
+        assertEquals(12, embeddings.length);
+        for (float[] embedding : embeddings) {
+            assertValidEmbedding(embedding);
+        }
+
+    }
+
+    void assertValidEmbedding(float[] array) {
+        assertTrue(array.length > 0);
+        for (float f : array) {
+            assertFalse(Float.isNaN(f));
+            assertFalse(Float.isInfinite(f));
+        }
+
     }
 
 }

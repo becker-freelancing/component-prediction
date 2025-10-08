@@ -67,11 +67,9 @@ public class TransformerConfig {
     }
 
     @Bean
-    public SentenceEmbeddingTranslator sentenceEmbeddingTranslator(TokenizationService tokenizationService,
-                                                                   TextChunker textChunker,
-                                                                   MeanPooler meanPooler,
+    public SentenceEmbeddingTranslator sentenceEmbeddingTranslator(MeanPooler meanPooler,
                                                                    L2Normalizer l2Normalizer) {
-        return new SentenceEmbeddingTranslator(tokenizationService, textChunker, meanPooler, l2Normalizer);
+        return new SentenceEmbeddingTranslator(meanPooler, l2Normalizer);
     }
 
     @Bean
@@ -83,7 +81,9 @@ public class TransformerConfig {
 
     @Bean
     public EmbeddingService embeddingService(Model model,
-                                             SentenceEmbeddingTranslator translator) {
-        return new EmbeddingServiceImpl(model, translator);
+                                             SentenceEmbeddingTranslator translator,
+                                             TokenizationService tokenizationService,
+                                             TextChunker textChunker) {
+        return new EmbeddingServiceImpl(model, translator, tokenizationService, textChunker);
     }
 }

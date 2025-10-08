@@ -21,6 +21,7 @@ public class TextChunker implements ChunkingService {
         this.chunkThreshold = chunkThreshold;
     }
 
+    @Override
     public List<String> chunkText(String text) {
         if (text == null || text.isEmpty()) {
             return List.of();
