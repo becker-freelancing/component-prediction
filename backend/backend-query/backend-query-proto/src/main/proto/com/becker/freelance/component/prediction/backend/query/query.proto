@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.query;
+
+import "google/protobuf/empty.proto";
+
+message GrpcQueryUUID {
+    string id = 1;
+}
+
+message GrpcQueryApp {
+    GrpcQueryUUID id = 1;
+    string app_name = 2;
+}
+
+message GrpcQueryTag {
+    GrpcQueryUUID id = 1;
+    string tag = 2;
+}
+
+message GrpcQueryDocumentMetadata {
+    GrpcQueryUUID id = 1;
+    GrpcQueryApp app = 2;
+    string in_app_action_path = 3;
+    string action_title = 4;
+    string action_description = 5;
+    string action_short_description = 6;
+    string locale = 7;
+    int64 version = 8;
+    string created_at = 9;
+    string last_modified_at = 10;
+    repeated GrpcQueryTag tags = 11;
+}
+
+message GrpcQueryDocumentMetadataList {
+    repeated GrpcQueryDocumentMetadata metadata = 1;
+}
+
+message GrpcQueryTagList {
+    repeated GrpcQueryTag tags = 1;
+}
+
+message GrpcQueryAppList {
+    repeated GrpcQueryApp apps = 1;
+}
+
+
+service ApiDocumentMetadataReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcQueryDocumentMetadataList);
+
+    rpc FindById (GrpcQueryUUID) returns (GrpcQueryDocumentMetadata);
+}
+
+service ApiTagsReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcQueryTagList);
+}
+
+service ApiAppsReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcQueryAppList);
+}

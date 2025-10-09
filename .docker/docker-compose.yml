@@ -52,13 +52,46 @@ services:
     networks:
       - devnet
 
+  embedding-service:
+    image: beckerfreelancing/backend-embedding-service:${IMAGE_VERSION}
+    environment:
+      EMBEDDING_USE_L2_NORMALIZATION: ${EMBEDDING_USE_L2_NORMALIZATION}
+      EMBEDDING_CHUNK_SIZE: ${EMBEDDING_CHUNK_SIZE}
+      EMBEDDING_CHUNK_OVERLAP: ${EMBEDDING_CHUNK_OVERLAP}
+      EMBEDDING_CHUNK_THRESHOLD: ${EMBEDDING_CHUNK_THRESHOLD}
+    networks:
+      - devnet
+
+  language-service:
+    image: beckerfreelancing/language-detection-service:${IMAGE_VERSION}
+    networks:
+      - devnet
+
+  ingest-service:
+    image: beckerfreelancing/backeng-ingest-service:${IMAGE_VERSION}
+    depends_on:
+      - embedding-service
+      - backend-storage-service
+      - language-service
+    networks:
+      - devnet
+
+
+  query-service:
+    image: beckerfreelancing/backeng-query-service:${IMAGE_VERSION}
+    depends_on:
+      - backend-storage-service
+    networks:
+      - devnet
+
   backend-gateway:
     image: beckerfreelancing/backend-gateway:${IMAGE_VERSION}
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_GATEWAY} # DEBUGGING
     depends_on:
-      - backend-storage-service
+      - ingest-service
+      - query-service
     networks:
       - devnet
     ports:

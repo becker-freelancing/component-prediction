@@ -1,7 +1,8 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiTagsRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
+import com.becker.freelance.component.prediction.backend.ingest.ApiTagsIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiTagsReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.GrpcQueryTag;
 import com.becker.freelance.component.prediction.gateway.api.dto.TagDto;
 import com.becker.freelance.component.prediction.gateway.spi.TagsStorageService;
 import com.google.protobuf.Empty;
@@ -11,17 +12,19 @@ import java.util.List;
 public class GrpcTagsStorageService implements TagsStorageService {
 
 
-    private final ApiTagsRepositoryGrpc.ApiTagsRepositoryBlockingStub stub;
+    private final ApiTagsIngestRepositoryGrpc.ApiTagsIngestRepositoryBlockingStub writeStub;
+    private final ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub readStub;
     private final GrpcMapper mapper;
 
-    public GrpcTagsStorageService(ApiTagsRepositoryGrpc.ApiTagsRepositoryBlockingStub stub) {
-        this.stub = stub;
+    public GrpcTagsStorageService(ApiTagsIngestRepositoryGrpc.ApiTagsIngestRepositoryBlockingStub writeStub, ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub readStub) {
+        this.writeStub = writeStub;
+        this.readStub = readStub;
         this.mapper = new GrpcMapper();
     }
 
     @Override
     public List<TagDto> findAll() {
-        return stub.findAll(Empty.getDefaultInstance())
+        return readStub.findAll(Empty.getDefaultInstance())
                 .getTagsList()
                 .stream()
                 .map(mapper::map)
@@ -30,7 +33,7 @@ public class GrpcTagsStorageService implements TagsStorageService {
 
     @Override
     public TagDto save(TagDto tagDto) {
-        GrpcTag save = stub.save(mapper.map(tagDto));
+        GrpcQueryTag save = writeStub.save(mapper.map(tagDto));
         return mapper.map(save);
     }
 }
