@@ -1,6 +1,7 @@
 package com.becker.freelance.component.prediction.ingest.spi;
 
-import java.util.Locale;
+
+import com.becker.freelance.component.prediction.ingest.domain.model.Locale;
 
 public interface LanguageDetectionService {
 

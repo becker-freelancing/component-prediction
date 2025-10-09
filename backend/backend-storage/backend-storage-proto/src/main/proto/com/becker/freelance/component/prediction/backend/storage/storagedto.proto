@@ -44,3 +44,16 @@ message GrpcTagList {
 message GrpcAppList {
     repeated GrpcApp apps = 1;
 }
+
+message GrpcFloatArray {
+    repeated float array = 1;
+}
+
+message GrpcEmbedding {
+    repeated GrpcFloatArray embeddings = 1;
+}
+
+message GrpcDocumentEmbedding {
+    GrpcUUID metadata_id = 1;
+    GrpcEmbedding action_description_embedding = 2;
+}

@@ -4,6 +4,8 @@ import com.becker.freelance.component.prediction.backend.embedding.ApiEmbeddingS
 import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbedding;
 import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbeddingRequest;
 import com.becker.freelance.component.prediction.backend.embedding.GrpcFloatArray;
+import com.becker.freelance.component.prediction.ingest.domain.model.DocumentEmbedding;
+import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
 import com.becker.freelance.component.prediction.ingest.spi.EmbeddingService;
 
 import java.util.List;
@@ -16,10 +18,14 @@ public class GrpcEmbeddingService implements EmbeddingService {
         this.stub = stub;
     }
 
+
     @Override
-    public float[][] embedText(String text) {
-        GrpcEmbedding embed = stub.embed(map(text));
-        return map(embed);
+    public DocumentEmbedding embed(DocumentMetadata metadata) {
+        String actionDescription = metadata.getActionDescription();
+        GrpcEmbedding embeddedActionDescription = stub.embed(map(actionDescription));
+        return new DocumentEmbedding(
+                map(embeddedActionDescription)
+        );
     }
 
     private float[][] map(GrpcEmbedding embed) {

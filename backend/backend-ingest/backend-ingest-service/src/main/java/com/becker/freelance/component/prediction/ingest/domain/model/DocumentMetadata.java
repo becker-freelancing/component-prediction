@@ -3,7 +3,6 @@ package com.becker.freelance.component.prediction.ingest.domain.model;
 
 import java.math.BigInteger;
 import java.time.ZonedDateTime;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -46,6 +45,21 @@ public class DocumentMetadata {
                 actionDescription,
                 actionShortDescription,
                 locale,
+                version,
+                createdAt,
+                tags
+        );
+    }
+
+    public DocumentMetadata(UUID id, App app, String inAppActionPath, String actionTitle, String actionDescription, String actionShortDescription, BigInteger version, ZonedDateTime createdAt, Set<Tag> tags) {
+        this(
+                id,
+                app,
+                inAppActionPath,
+                actionTitle,
+                actionDescription,
+                actionShortDescription,
+                null,
                 version,
                 createdAt,
                 tags

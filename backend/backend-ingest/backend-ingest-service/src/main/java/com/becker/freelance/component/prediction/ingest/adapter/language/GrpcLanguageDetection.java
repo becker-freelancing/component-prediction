@@ -1,11 +1,11 @@
 package com.becker.freelance.component.prediction.ingest.adapter.language;
 
+import com.becker.freelance.component.prediction.ingest.domain.model.Locale;
 import com.becker.freelance.component.prediction.ingest.spi.LanguageDetectionService;
 import com.becker.freelance.component.prediction.language.detection.GrpcLanguageDetectionQuery;
 import com.becker.freelance.component.prediction.language.detection.GrpcLanguageDetectorGrpc;
 import com.becker.freelance.component.prediction.language.detection.GrpcLocale;
 
-import java.util.Locale;
 
 public class GrpcLanguageDetection implements LanguageDetectionService {
 
