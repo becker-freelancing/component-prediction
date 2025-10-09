@@ -1,6 +1,6 @@
 package com.becker.freelance.component.prediction.storage.api;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
 import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadataList;
 import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
@@ -15,23 +15,17 @@ import java.util.List;
 import java.util.Optional;
 
 @GrpcService
-public class BackendDocumentMetadataStorageApi extends ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryImplBase {
+public class DocumentMetadataReadStorageApi extends ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryImplBase {
 
     private final DocumentMetadataRepository metadataRepository;
     private final GrpcMapper grpcMapper;
 
     @Autowired
-    public BackendDocumentMetadataStorageApi(DocumentMetadataRepository metadataRepository) {
+    public DocumentMetadataReadStorageApi(DocumentMetadataRepository metadataRepository) {
         this.metadataRepository = metadataRepository;
         this.grpcMapper = new GrpcMapper();
     }
-    @Override
-    public void save(GrpcDocumentMetadata request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
-        DocumentMetadata documentMetadata = grpcMapper.mapIncoming(request);
-        DocumentMetadata saved = metadataRepository.save(documentMetadata);
-        responseObserver.onNext(grpcMapper.mapOutgoing(saved));
-        responseObserver.onCompleted();
-    }
+
 
     @Override
     public void findAll(Empty request, StreamObserver<GrpcDocumentMetadataList> responseObserver) {

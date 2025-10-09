@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.storage;
+
+import "com/becker/freelance/component/prediction/backend/storage/storagedto.proto";
+
+
+service ApiDocumentMetadataWriteRepository {
+    rpc Save (GrpcDocumentMetadata) returns (GrpcDocumentMetadata);
+
+}
+
+service ApiTagsWriteRepository {
+    rpc Save (GrpcTag) returns (GrpcTag);
+
+}
+
+service ApiAppsWriteRepository {
+
+    rpc Save (GrpcApp) returns (GrpcApp);
+
+}

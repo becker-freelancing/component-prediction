@@ -1,10 +1,10 @@
 syntax = "proto3";
+
 option java_multiple_files = true;
 
 
 package com.becker.freelance.component.prediction.backend.storage;
 
-import "google/protobuf/empty.proto";
 
 message GrpcUUID {
     string id = 1;
@@ -43,26 +43,4 @@ message GrpcTagList {
 
 message GrpcAppList {
     repeated GrpcApp apps = 1;
-}
-
-
-service ApiDocumentMetadataRepository {
-    rpc Save (GrpcDocumentMetadata) returns (GrpcDocumentMetadata);
-
-    rpc FindAll (google.protobuf.Empty) returns (GrpcDocumentMetadataList);
-
-    rpc FindById (GrpcUUID) returns (GrpcDocumentMetadata);
-}
-
-service ApiTagsRepository {
-    rpc Save (GrpcTag) returns (GrpcTag);
-
-    rpc FindAll (google.protobuf.Empty) returns (GrpcTagList);
-}
-
-service ApiAppsRepository {
-
-    rpc Save (GrpcApp) returns (GrpcApp);
-
-    rpc FindAll (google.protobuf.Empty) returns (GrpcAppList);
 }

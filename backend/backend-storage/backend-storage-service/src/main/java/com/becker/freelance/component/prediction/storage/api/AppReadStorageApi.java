@@ -1,6 +1,6 @@
 package com.becker.freelance.component.prediction.storage.api;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiAppsRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiAppsReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
 import com.becker.freelance.component.prediction.backend.storage.GrpcAppList;
 import com.becker.freelance.component.prediction.storage.domain.App;
@@ -13,24 +13,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @GrpcService
-public class BackendAppApi extends ApiAppsRepositoryGrpc.ApiAppsRepositoryImplBase {
+public class AppReadStorageApi extends ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryImplBase {
 
     private final AppRepository appRepository;
     private final GrpcMapper mapper;
 
     @Autowired
-    public BackendAppApi(AppRepository appRepository) {
+    public AppReadStorageApi(AppRepository appRepository) {
         this.appRepository = appRepository;
         this.mapper = new GrpcMapper();
     }
 
-    @Override
-    public void save(GrpcApp request, StreamObserver<GrpcApp> responseObserver) {
-        App app = mapper.mapIncoming(request);
-        App saved = appRepository.save(app);
-        responseObserver.onNext(mapper.mapOutgoing(saved));
-        responseObserver.onCompleted();
-    }
 
     @Override
     public void findAll(Empty request, StreamObserver<GrpcAppList> responseObserver) {

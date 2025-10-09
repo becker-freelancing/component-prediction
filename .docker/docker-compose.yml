@@ -67,14 +67,6 @@ services:
     networks:
       - devnet
 
-  ingest-service:
-    image: beckerfreelancing/backeng-ingest-service:${IMAGE_VERSION}
-    depends_on:
-      - embedding-service
-      - backend-storage-service
-      - language-service
-    networks:
-      - devnet
 
 
   query-service:
@@ -83,6 +75,17 @@ services:
       - backend-storage-service
     networks:
       - devnet
+      -
+  ingest-service:
+    image: beckerfreelancing/backeng-ingest-service:${IMAGE_VERSION}
+    depends_on:
+      - embedding-service
+      - backend-storage-service
+      - language-service
+      - query-service
+    networks:
+      - devnet
+
 
   backend-gateway:
     image: beckerfreelancing/backend-gateway:${IMAGE_VERSION}
