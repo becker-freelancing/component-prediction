@@ -75,7 +75,7 @@ services:
       - backend-storage-service
     networks:
       - devnet
-      -
+
   ingest-service:
     image: beckerfreelancing/backeng-ingest-service:${IMAGE_VERSION}
     depends_on:

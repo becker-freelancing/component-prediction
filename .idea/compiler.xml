@@ -23,6 +23,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ingest-service" target="17" />
+      <module name="test-container" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

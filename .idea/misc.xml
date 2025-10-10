@@ -13,6 +13,7 @@
     <option name="ignoredFiles">
       <set>
         <option value="$PROJECT_DIR$/backend/ingest-service/pom.xml" />
+        <option value="$PROJECT_DIR$/libs/test-container/pom.xml" />
       </set>
     </option>
   </component>
