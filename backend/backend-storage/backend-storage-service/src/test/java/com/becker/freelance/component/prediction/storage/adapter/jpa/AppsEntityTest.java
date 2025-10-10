@@ -1,4 +1,4 @@
-package com.becker.freelance.component.prediction.storage.adapter;
+package com.becker.freelance.component.prediction.storage.adapter.jpa;
 
 class AppsEntityTest extends StorageJpaEntityTest {
 

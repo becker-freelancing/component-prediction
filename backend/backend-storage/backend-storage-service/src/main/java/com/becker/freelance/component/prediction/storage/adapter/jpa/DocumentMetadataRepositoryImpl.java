@@ -1,4 +1,4 @@
-package com.becker.freelance.component.prediction.storage.adapter;
+package com.becker.freelance.component.prediction.storage.adapter.jpa;
 
 import com.becker.freelance.component.prediction.storage.domain.App;
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
