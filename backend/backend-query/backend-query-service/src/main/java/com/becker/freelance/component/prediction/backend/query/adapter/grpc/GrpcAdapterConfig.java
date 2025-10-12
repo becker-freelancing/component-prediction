@@ -1,11 +1,11 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
-import com.becker.freelance.component.prediction.backend.query.ApiAppsReadRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.query.ApiDocumentMetadataReadRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.query.ApiTagsReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.query.spi.AppRepository;
 import com.becker.freelance.component.prediction.backend.query.spi.DocumentMetadataRepository;
 import com.becker.freelance.component.prediction.backend.query.spi.TagRepository;
+import com.becker.freelance.component.prediction.backend.storage.ApiAppsReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiTagsReadRepositoryGrpc;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class GrpcAdapterConfig {
 
 
-    @GrpcClient("backendReadService")
+    @GrpcClient("backendstoragereadservice")
     private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
 
-    @GrpcClient("backendAppReadService")
+    @GrpcClient("backendstorageappreadservice")
     private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub appsReadRepositoryBlockingStub;
 
-    @GrpcClient("backendTagReadService")
+    @GrpcClient("backendstoragetagreadservice")
     private ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub tagsReadRepositoryBlockingStub;
 
     @Bean

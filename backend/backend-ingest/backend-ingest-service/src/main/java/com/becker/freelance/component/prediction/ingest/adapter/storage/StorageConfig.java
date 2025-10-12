@@ -14,16 +14,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class StorageConfig {
 
-    @GrpcClient("backendAppStorageService")
+    @GrpcClient("backendappstorageservice")
     private ApiAppsWriteRepositoryGrpc.ApiAppsWriteRepositoryBlockingStub apiAppsWriteRepositoryBlockingStub;
 
-    @GrpcClient("backendTagStorageService")
+    @GrpcClient("backendtagstorageservice")
     private ApiTagsWriteRepositoryGrpc.ApiTagsWriteRepositoryBlockingStub apiTagsWriteRepositoryBlockingStub;
 
-    @GrpcClient("backendDocumentMetadataStorageService")
+    @GrpcClient("backenddocumentmetadatastorageservice")
     private ApiDocumentMetadataWriteRepositoryGrpc.ApiDocumentMetadataWriteRepositoryBlockingStub apiDocumentMetadataWriteRepositoryBlockingStub;
 
-    @GrpcClient("backendEmbeddingStorageService")
+    @GrpcClient("backendembeddingstorageservice")
     private ApiEmbeddingWriteRepositoryGrpc.ApiEmbeddingWriteRepositoryBlockingStub apiEmbeddingWriteRepositoryBlockingStub;
 
     @Bean

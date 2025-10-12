@@ -1,12 +1,12 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryApp;
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryDocumentMetadata;
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryTag;
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryUUID;
 import com.becker.freelance.component.prediction.backend.query.domain.model.App;
 import com.becker.freelance.component.prediction.backend.query.domain.model.DocumentMetadata;
 import com.becker.freelance.component.prediction.backend.query.domain.model.Tag;
+import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
+import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
+import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -23,7 +23,7 @@ public class GrpcAdapterMapper {
 
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
-    private static final GrpcQueryApp NULL_APP = GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
 
 
     private BigInteger map(Long l) {
@@ -31,12 +31,12 @@ public class GrpcAdapterMapper {
     }
 
 
-    public UUID map(GrpcQueryUUID id) {
+    public UUID map(GrpcUUID id) {
         return id.getId().isEmpty() ? null : UUID.fromString(id.getId());
     }
 
 
-    public DocumentMetadata map(GrpcQueryDocumentMetadata request) {
+    public DocumentMetadata map(GrpcDocumentMetadata request) {
         return new DocumentMetadata(
                 map(request.getId()),
                 map(request.getApp()),
@@ -56,18 +56,18 @@ public class GrpcAdapterMapper {
         return parsed.equals(MIN_ZONED_DATE_TIME) ? null : parsed;
     }
 
-    private Set<Tag> map(List<GrpcQueryTag> tagsList) {
+    private Set<Tag> map(List<GrpcTag> tagsList) {
         return tagsList.stream().map(this::map).collect(Collectors.toSet());
     }
 
-    public Tag map(GrpcQueryTag grpcTag) {
+    public Tag map(GrpcTag grpcTag) {
         return new Tag(
                 map(grpcTag.getId()),
                 map(grpcTag.getTag())
         );
     }
 
-    public App map(GrpcQueryApp app) {
+    public App map(GrpcApp app) {
         return app.equals(NULL_APP) ? null : new App(map(app.getId()), map(app.getAppName()));
     }
 
@@ -75,7 +75,7 @@ public class GrpcAdapterMapper {
         return s.isEmpty() ? null : s;
     }
 
-    public GrpcQueryUUID map(UUID id) {
-        return GrpcQueryUUID.newBuilder().setId(id.toString()).build();
+    public GrpcUUID map(UUID id) {
+        return GrpcUUID.newBuilder().setId(id.toString()).build();
     }
 }

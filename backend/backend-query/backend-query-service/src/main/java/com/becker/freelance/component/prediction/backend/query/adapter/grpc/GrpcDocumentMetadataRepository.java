@@ -1,9 +1,9 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
-import com.becker.freelance.component.prediction.backend.query.ApiDocumentMetadataReadRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryDocumentMetadata;
 import com.becker.freelance.component.prediction.backend.query.domain.model.DocumentMetadata;
 import com.becker.freelance.component.prediction.backend.query.spi.DocumentMetadataRepository;
+import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
 import com.google.protobuf.Empty;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class GrpcDocumentMetadataRepository implements DocumentMetadataRepositor
 
     @Override
     public Optional<DocumentMetadata> findById(UUID id) {
-        GrpcQueryDocumentMetadata byId = stub.findById(mapper.map(id));
+        GrpcDocumentMetadata byId = stub.findById(mapper.map(id));
         return Optional.ofNullable(byId).map(mapper::map);
     }
 }

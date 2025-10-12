@@ -1,8 +1,8 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
-import com.becker.freelance.component.prediction.backend.query.ApiTagsReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.query.domain.model.Tag;
 import com.becker.freelance.component.prediction.backend.query.spi.TagRepository;
+import com.becker.freelance.component.prediction.backend.storage.ApiTagsReadRepositoryGrpc;
 import com.google.protobuf.Empty;
 
 import java.util.List;

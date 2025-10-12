@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EmbeddingConfiguration {
 
-    @GrpcClient("backendEmbeddingService")
+    @GrpcClient("backendembeddingservice")
     private ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub embeddingServiceBlockingStub;
 
     @Bean

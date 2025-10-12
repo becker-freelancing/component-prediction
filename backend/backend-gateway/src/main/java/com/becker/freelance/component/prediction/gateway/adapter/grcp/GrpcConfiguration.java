@@ -17,22 +17,22 @@ import org.springframework.context.annotation.Configuration;
 public class GrpcConfiguration {
 
 
-    @GrpcClient("backendIngestService")
+    @GrpcClient("backendingestservice")
     private ApiDocumentMetadataIngestRepositoryGrpc.ApiDocumentMetadataIngestRepositoryBlockingStub metadataIngestRepositoryBlockingStub;
 
-    @GrpcClient("backendAppIngestService")
+    @GrpcClient("backendappingestservice")
     private ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub appsIngestRepositoryBlockingStub;
 
-    @GrpcClient("backendTagIngestService")
+    @GrpcClient("backendtagingestservice")
     private ApiTagsIngestRepositoryGrpc.ApiTagsIngestRepositoryBlockingStub tagsIngestRepositoryBlockingStub;
 
-    @GrpcClient("backendReadService")
+    @GrpcClient("backendreadservice")
     private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
 
-    @GrpcClient("backendAppReadService")
+    @GrpcClient("backendappreadservice")
     private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub appsReadRepositoryBlockingStub;
 
-    @GrpcClient("backendTagReadService")
+    @GrpcClient("backendtagreadservice")
     private ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub tagsReadRepositoryBlockingStub;
 
     @Bean
