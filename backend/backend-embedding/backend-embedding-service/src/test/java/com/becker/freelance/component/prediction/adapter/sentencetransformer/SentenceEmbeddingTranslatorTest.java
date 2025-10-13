@@ -52,7 +52,7 @@ class SentenceEmbeddingTranslatorTest {
     void processOutput() {
 
         try (NDManager manager = NDManager.newBaseManager()) {
-            NDArray arr = manager.create(new float[][]{{1, 2, 2}, {2, 3, 6}});
+            NDArray arr = manager.create(new float[][]{{1, 2}, {2, 3}, {2, 6}});
 
             float[] actual = embeddingTranslator.processOutput(translatorContext, new NDList(arr));
 

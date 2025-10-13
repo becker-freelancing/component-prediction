@@ -20,10 +20,10 @@ class MeanPoolerTest {
     @Test
     void meanPool() {
         try (NDManager ndManager = NDManager.newBaseManager()) {
-            NDArray arr1 = ndManager.create(new float[][]{{-1, -2, -3}, {4, 5, 6}, {7, 8, 9}});
+            NDArray arr1 = ndManager.create(new float[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}});
             NDArray result = meanPooler.meanPool(arr1);
 
-            NDArray expected = ndManager.create(new float[]{-2, 5, 8});
+            NDArray expected = ndManager.create(new float[]{5, 6, 7, 8});
 
             assertEquals(expected, result);
         }

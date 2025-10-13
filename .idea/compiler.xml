@@ -17,6 +17,7 @@
         <module name="language-detection-service" />
         <module name="backend-ingest-service" />
         <module name="backend-storage-proto" />
+        <module name="grpc-exception-handler" />
         <module name="junit-test-commons" />
         <module name="backend-query-proto" />
       </profile>

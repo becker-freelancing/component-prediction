@@ -39,7 +39,7 @@ class EmbeddingServiceImplTest {
     }
 
     void assertValidEmbedding(float[] array) {
-        assertTrue(array.length > 0);
+        assertEquals(384, array.length);
         for (float f : array) {
             assertFalse(Float.isNaN(f));
             assertFalse(Float.isInfinite(f));

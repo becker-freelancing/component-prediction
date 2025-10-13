@@ -49,6 +49,7 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         Points.UpsertPoints upsertRequest = Points.UpsertPoints.newBuilder()
                 .setCollectionName(getCollectionName(relatedMetadata))
                 .addAllPoints(points)
+                .setWait(true)
                 .build();
 
         Points.UpdateResult updateResult = null;
@@ -97,6 +98,7 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         Points.DeletePoints deleteByDocumentIdRequest = Points.DeletePoints.newBuilder()
                 .setCollectionName(getCollectionName(metadata))
                 .setPoints(documentIdPointsSelector)
+                .setWait(true)
                 .build();
 
         Points.UpdateResult updateResult = null;
