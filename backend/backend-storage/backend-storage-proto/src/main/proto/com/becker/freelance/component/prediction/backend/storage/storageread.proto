@@ -1,0 +1,25 @@
+syntax = "proto3";
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.storage;
+
+import "com/becker/freelance/component/prediction/backend/storage/storagedto.proto";
+import "google/protobuf/empty.proto";
+
+service ApiDocumentMetadataReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcDocumentMetadataList);
+
+    rpc FindById (GrpcUUID) returns (GrpcDocumentMetadata);
+}
+
+service ApiTagsReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcTagList);
+}
+
+service ApiAppsReadRepository {
+
+    rpc FindAll (google.protobuf.Empty) returns (GrpcAppList);
+}

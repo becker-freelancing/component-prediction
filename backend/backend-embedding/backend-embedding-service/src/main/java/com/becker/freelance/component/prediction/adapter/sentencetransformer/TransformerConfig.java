@@ -10,27 +10,59 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Configuration
 public class TransformerConfig {
 
-    private Path modelDir() {
-        try {
-            return Paths.get(TransformerConfig.class.getResource("/models/paraphrase-multilingual-MiniLM-L12-v2").toURI());
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Could not determine path to model directory", e);
+    private static final String MODEL_RESOURCE_BASE_PATH = "/models/paraphrase-multilingual-MiniLM-L12-v2/";
+
+
+    private Path resolveModelPath(String resourceBasePath, String filename, String fileExtension) throws URISyntaxException, IOException {
+        String resourcePath = resourceBasePath + filename + "." + fileExtension;
+        URL resourceUrl = getClass().getResource(resourcePath);
+
+        if (resourceUrl == null) {
+            throw new IllegalStateException("resource not found: " + resourcePath);
         }
+
+        if ("file".equals(resourceUrl.getProtocol())) {
+            return Paths.get(resourceUrl.toURI());
+        }
+
+        if ("jar".equals(resourceUrl.getProtocol())) {
+            try (InputStream is = getClass().getResourceAsStream(resourcePath)) {
+                Path modelTmpFile = Files.createTempFile("embedding-model", filename + "." + fileExtension);
+                Files.copy(is, modelTmpFile, StandardCopyOption.REPLACE_EXISTING);
+                modelTmpFile.toFile().deleteOnExit();
+
+                return modelTmpFile;
+            }
+        }
+
+        throw new IllegalStateException("Unsupported resource protocol: " + resourceUrl.getProtocol());
     }
 
     private Path modelPath() {
-        return modelDir().resolve("model.onnx");
+        try {
+            return resolveModelPath(MODEL_RESOURCE_BASE_PATH, "model", "onnx");
+        } catch (URISyntaxException | IOException e) {
+            throw new IllegalStateException("Could not read or copy embedding model", e);
+        }
     }
 
     private Path tokenizerPath() {
-        return modelDir().resolve("tokenizer.json");
+        try {
+            return resolveModelPath(MODEL_RESOURCE_BASE_PATH, "tokenizer", "json");
+        } catch (URISyntaxException | IOException e) {
+            throw new IllegalStateException("Could not read or copy tokenizer", e);
+        }
     }
 
     @Bean

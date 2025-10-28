@@ -17,6 +17,7 @@ export interface DocumentMetadata {
     actionTitle: string,
     actionDescription: string,
     actionShortDescription: string,
+    tags: Tag[]
     locale: string,
     version: number,
     createdAt: DateTime | undefined,

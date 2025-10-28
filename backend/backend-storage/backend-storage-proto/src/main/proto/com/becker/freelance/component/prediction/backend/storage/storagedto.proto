@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+
+package com.becker.freelance.component.prediction.backend.storage;
+
+
+message GrpcUUID {
+    string id = 1;
+}
+
+message GrpcApp {
+    GrpcUUID id = 1;
+    string app_name = 2;
+}
+
+message GrpcTag {
+    GrpcUUID id = 1;
+    string tag = 2;
+}
+
+message GrpcDocumentMetadata {
+    GrpcUUID id = 1;
+    GrpcApp app = 2;
+    string in_app_action_path = 3;
+    string action_title = 4;
+    string action_description = 5;
+    string action_short_description = 6;
+    string locale = 7;
+    int64 version = 8;
+    string created_at = 9;
+    repeated GrpcTag tags = 10;
+}
+
+message GrpcDocumentMetadataList {
+    repeated GrpcDocumentMetadata metadata = 1;
+}
+
+message GrpcTagList {
+    repeated GrpcTag tags = 1;
+}
+
+message GrpcAppList {
+    repeated GrpcApp apps = 1;
+}
+
+message GrpcFloatArray {
+    repeated float array = 1;
+}
+
+message GrpcEmbedding {
+    repeated GrpcFloatArray embeddings = 1;
+}
+
+message GrpcDocumentEmbedding {
+    GrpcUUID metadata_id = 1;
+    GrpcEmbedding action_description_embedding = 2;
+}

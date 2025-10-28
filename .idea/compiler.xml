@@ -6,19 +6,25 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="database-migration" />
         <module name="backend-embedding-proto" />
-        <module name="language-detection-service" />
+        <module name="backend-ingest-proto" />
         <module name="backend-storage-service" />
         <module name="language-detection-proto" />
         <module name="backend-embedding-service" />
         <module name="backend-gateway" />
+        <module name="backend-query-service" />
+        <module name="database-migration" />
+        <module name="language-detection-service" />
+        <module name="backend-ingest-service" />
         <module name="backend-storage-proto" />
+        <module name="grpc-exception-handler" />
         <module name="junit-test-commons" />
+        <module name="backend-query-proto" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ingest-service" target="17" />
+      <module name="test-container" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

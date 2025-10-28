@@ -44,6 +44,12 @@ services:
       - "5006:5005" # DEBUGGING
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
+      STORAGE_QDRANT_HOST: ${STORAGE_QDRANT_HOST}
+      STORAGE_QDRANT_PORT: ${STORAGE_QDRANT_PORT}
+      STORAGE_QDRANT_VECTORSIZE: ${STORAGE_QDRANT_VECTORSIZE}
+      STORAGE_QDRANT_ONDISK: ${STORAGE_QDRANT_ONDISK}
+      STORAGE_QDRANT_DISTANCE: ${STORAGE_QDRANT_DISTANCE}
+      STORAGE_QDRANT_DATATYPE: ${STORAGE_QDRANT_DATATYPE}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_STORAGE_SERVICE} # DEBUGGING
     depends_on:
       - metadata-db
@@ -52,18 +58,99 @@ services:
     networks:
       - devnet
 
-  backend-gateway:
-    image: beckerfreelancing/backend-gateway:${IMAGE_VERSION}
+  embedding-service:
+    image: beckerfreelancing/backend-embedding-service:${IMAGE_VERSION}
+    ports:
+      - "5007:5005" # DEBUGGING
     environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_GATEWAY} # DEBUGGING
+      EMBEDDING_USE_L2_NORMALIZATION: ${EMBEDDING_USE_L2_NORMALIZATION}
+      EMBEDDING_CHUNK_SIZE: ${EMBEDDING_CHUNK_SIZE}
+      EMBEDDING_CHUNK_OVERLAP: ${EMBEDDING_CHUNK_OVERLAP}
+      EMBEDDING_CHUNK_THRESHOLD: ${EMBEDDING_CHUNK_THRESHOLD}
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_EMBEDDING} # DEBUGGING
+    networks:
+      - devnet
+
+  language-service:
+    image: beckerfreelancing/language-detection-service:${IMAGE_VERSION}
+    ports:
+      - "5008:5005" # DEBUGGING
+    environment:
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_LANGUAGE} # DEBUGGING
+    networks:
+      - devnet
+
+
+
+  query-service:
+    image: beckerfreelancing/backend-query-service:${IMAGE_VERSION}
+    ports:
+      - "5009:5005" # DEBUGGING
+    environment:
+      GRPC_CLIENT_BACKENDSTORAGEREADSERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDSTORAGEREADSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDSTORAGEAPPREADSERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDSTORAGEAPPREADSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDSTORAGETAGREADSERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDSTORAGETAGREADSERVICE_NEGOTIATIONTYPE: plaintext
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_QUERY} # DEBUGGING
     depends_on:
       - backend-storage-service
     networks:
       - devnet
+
+  ingest-service:
+    image: beckerfreelancing/backend-ingest-service:${IMAGE_VERSION}
+    ports:
+      - "5010:5005" # DEBUGGING
+    environment:
+      GRPC_CLIENT_BACKENDEMBEDDINGSERVICE_ADDRESS: static://embedding-service:9090
+      GRPC_CLIENT_BACKENDEMBEDDINGSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_LANGUAGEDETECTIONSERVICE_ADDRESS: static://language-service:9090
+      GRPC_CLIENT_LANGUAGEDETECTIONSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDAPPSTORAGESERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDAPPSTORAGESERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDTAGSTORAGESERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDTAGSTORAGESERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDDOCUMENTMETADATASTORAGESERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDDOCUMENTMETADATASTORAGESERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDEMBEDDINGSTORAGESERVICE_ADDRESS: static://backend-storage-service:9090
+      GRPC_CLIENT_BACKENDEMBEDDINGSTORAGESERVICE_NEGOTIATIONTYPE: plaintext
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_INGEST} # DEBUGGING
+    depends_on:
+      - embedding-service
+      - backend-storage-service
+      - language-service
+      - query-service
+    networks:
+      - devnet
+
+
+  backend-gateway:
+    image: beckerfreelancing/backend-gateway:${IMAGE_VERSION}
     ports:
       - ${BACKEND_GATEWAY_PORT}:8080
-      - "5007:5005" # DEBUGGING
+      - "5011:5005" # DEBUGGING
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES}
+      GRPC_CLIENT_BACKENDINGESTSERVICE_ADDRESS: static://ingest-service:9090
+      GRPC_CLIENT_BACKENDINGESTSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDAPPINGESTSERVICE_ADDRESS: static://ingest-service:9090
+      GRPC_CLIENT_BACKENDAPPINGESTSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDTAGINGESTSERVICE_ADDRESS: static://ingest-service:9090
+      GRPC_CLIENT_BACKENDTAGINGESTSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDREADSERVICE_ADDRESS: static://query-service:9090
+      GRPC_CLIENT_BACKENDREADSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDAPPREADSERVICE_ADDRESS: static://query-service:9090
+      GRPC_CLIENT_BACKENDAPPREADSERVICE_NEGOTIATIONTYPE: plaintext
+      GRPC_CLIENT_BACKENDTAGREADSERVICE_ADDRESS: static://query-service:9090
+      GRPC_CLIENT_BACKENDTAGREADSERVICE_NEGOTIATIONTYPE: plaintext
+      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_BACKEND_GATEWAY} # DEBUGGING
+    depends_on:
+      - ingest-service
+      - query-service
+    networks:
+      - devnet
 
 
 networks:

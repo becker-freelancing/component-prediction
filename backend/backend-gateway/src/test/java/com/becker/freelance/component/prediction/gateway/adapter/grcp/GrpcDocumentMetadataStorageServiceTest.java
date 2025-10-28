@@ -1,6 +1,8 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.*;
+import com.becker.freelance.component.prediction.backend.ingest.ApiDocumentMetadataIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.query.*;
 import com.becker.freelance.component.prediction.gateway.api.dto.AppDto;
 import com.becker.freelance.component.prediction.gateway.api.dto.DocumentMetadataDto;
 import com.becker.freelance.component.prediction.gateway.api.dto.TagDto;
@@ -22,13 +24,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GrpcDocumentMetadataStorageServiceTest {
 
-    private ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub stub;
+    private ApiDocumentMetadataIngestRepositoryGrpc.ApiDocumentMetadataIngestRepositoryBlockingStub writeStub;
+    private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub readStub;
     private GrpcDocumentMetadataStorageService storageService;
 
     @BeforeEach
     void setUp() {
-        stub = Mockito.mock(ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub.class);
-        storageService = new GrpcDocumentMetadataStorageService(stub);
+        writeStub = Mockito.mock(ApiDocumentMetadataIngestRepositoryGrpc.ApiDocumentMetadataIngestRepositoryBlockingStub.class);
+        readStub = Mockito.mock(ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub.class);
+        storageService = new GrpcDocumentMetadataStorageService(writeStub, readStub);
     }
 
 
@@ -38,19 +42,21 @@ class GrpcDocumentMetadataStorageServiceTest {
         UUID id = UUID.randomUUID();
         UUID appId = UUID.randomUUID();
         UUID tagId = UUID.randomUUID();
-        Mockito.when(stub.save(Mockito.any())).then((Answer<GrpcDocumentMetadata>) invocationOnMock -> {
-            GrpcDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcDocumentMetadata.class);
-            return GrpcDocumentMetadata.newBuilder()
-                    .setId(GrpcUUID.newBuilder().setId(id.toString()).build())
-                    .setApp(GrpcApp.newBuilder(argument.getApp()).setId(GrpcUUID.newBuilder().setId(appId.toString()).build()).build())
+        Mockito.when(writeStub.save(Mockito.any())).then((Answer<GrpcQueryDocumentMetadata>) invocationOnMock -> {
+            GrpcIngestDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcIngestDocumentMetadata.class);
+            return GrpcQueryDocumentMetadata.newBuilder()
+                    .setId(GrpcQueryUUID.newBuilder().setId(id.toString()).build())
+                    .setApp(GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(appId.toString()).build()).setAppName(argument.getApp().getAppName()).build())
                     .setInAppActionPath(argument.getInAppActionPath())
                     .setActionTitle(argument.getActionTitle())
                     .setActionDescription(argument.getActionDescription())
                     .setActionShortDescription(argument.getActionShortDescription())
-                    .setLocale(argument.getLocale())
+                    .setLocale("de")
                     .setVersion(1)
                     .setCreatedAt(argument.getCreatedAt())
-                    .addAllTags(argument.getTagsList().stream().map(GrpcTag::newBuilder).map(b -> b.setId(GrpcUUID.newBuilder().setId(tagId.toString()).build())).map(GrpcTag.Builder::build).toList())
+                    .addAllTags(argument.getTagsList().stream().map(tag -> GrpcQueryTag.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(tagId.toString()).build())
+                            .setTag(tag.getTag())
+                            .build()).toList())
                     .build();
         });
 
@@ -91,19 +97,18 @@ class GrpcDocumentMetadataStorageServiceTest {
 
     @Test
     void saveWithNulls() {
-        Mockito.when(stub.save(Mockito.any())).then((Answer<GrpcDocumentMetadata>) invocationOnMock -> {
-            GrpcDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcDocumentMetadata.class);
-            return GrpcDocumentMetadata.newBuilder()
-                    .setId(GrpcUUID.newBuilder().setId("").build())
-                    .setApp(argument.getApp())
+        Mockito.when(writeStub.save(Mockito.any())).then((Answer<GrpcQueryDocumentMetadata>) invocationOnMock -> {
+            GrpcIngestDocumentMetadata argument = invocationOnMock.getArgument(0, GrpcIngestDocumentMetadata.class);
+            return GrpcQueryDocumentMetadata.newBuilder()
+                    .setId(GrpcQueryUUID.newBuilder().setId("").build())
+                    .setApp(GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).setAppName("nullable-app").build())
                     .setInAppActionPath(argument.getInAppActionPath())
                     .setActionTitle(argument.getActionTitle())
                     .setActionDescription(argument.getActionDescription())
                     .setActionShortDescription(argument.getActionShortDescription())
-                    .setLocale(argument.getLocale())
+                    .setLocale("")
                     .setVersion(1)
                     .setCreatedAt(argument.getCreatedAt())
-                    .addAllTags(argument.getTagsList())
                     .build();
         });
 
@@ -125,7 +130,7 @@ class GrpcDocumentMetadataStorageServiceTest {
 
     @Test
     void findAllWithEmptyList() {
-        Mockito.when(stub.findAll(Mockito.any())).thenReturn(GrpcDocumentMetadataList.newBuilder().build());
+        Mockito.when(readStub.findAll(Mockito.any())).thenReturn(GrpcQueryDocumentMetadataList.newBuilder().build());
 
         List<DocumentMetadataDto> all = storageService.findAll();
 
@@ -136,10 +141,10 @@ class GrpcDocumentMetadataStorageServiceTest {
     void findAll() {
         UUID id1 = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
-        Mockito.when(stub.findAll(Mockito.any())).thenReturn(GrpcDocumentMetadataList.newBuilder()
+        Mockito.when(readStub.findAll(Mockito.any())).thenReturn(GrpcQueryDocumentMetadataList.newBuilder()
                 .addAllMetadata(List.of(
-                        GrpcDocumentMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId(id1.toString()).build()).build(),
-                        GrpcDocumentMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId(id2.toString()).build()).build()
+                        GrpcQueryDocumentMetadata.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(id1.toString()).build()).build(),
+                        GrpcQueryDocumentMetadata.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(id2.toString()).build()).build()
                 )).build());
 
         List<DocumentMetadataDto> all = storageService.findAll();

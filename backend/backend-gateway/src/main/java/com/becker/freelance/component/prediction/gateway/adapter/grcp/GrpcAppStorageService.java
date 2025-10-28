@@ -1,7 +1,8 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiAppsRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
+import com.becker.freelance.component.prediction.backend.ingest.ApiAppsIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiAppsReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.GrpcQueryApp;
 import com.becker.freelance.component.prediction.gateway.api.dto.AppDto;
 import com.becker.freelance.component.prediction.gateway.spi.AppStorageService;
 import com.google.protobuf.Empty;
@@ -10,17 +11,19 @@ import java.util.List;
 
 public class GrpcAppStorageService implements AppStorageService {
 
-    private final ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub stub;
+    private final ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub writeStub;
+    private final ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub readStub;
     private final GrpcMapper mapper;
 
-    public GrpcAppStorageService(ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub stub) {
-        this.stub = stub;
+    public GrpcAppStorageService(ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub writeStub, ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub readStub) {
+        this.writeStub = writeStub;
+        this.readStub = readStub;
         this.mapper = new GrpcMapper();
     }
 
     @Override
     public List<AppDto> findAll() {
-        return stub.findAll(Empty.getDefaultInstance())
+        return readStub.findAll(Empty.getDefaultInstance())
                 .getAppsList()
                 .stream()
                 .map(mapper::map)
@@ -29,7 +32,7 @@ public class GrpcAppStorageService implements AppStorageService {
 
     @Override
     public AppDto save(AppDto appDto) {
-        GrpcApp save = stub.save(mapper.map(appDto));
+        GrpcQueryApp save = writeStub.save(mapper.map(appDto));
         return mapper.map(save);
     }
 }

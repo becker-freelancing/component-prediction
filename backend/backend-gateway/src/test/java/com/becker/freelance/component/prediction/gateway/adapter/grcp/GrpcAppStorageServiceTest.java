@@ -1,9 +1,11 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiAppsRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
-import com.becker.freelance.component.prediction.backend.storage.GrpcAppList;
-import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
+import com.becker.freelance.component.prediction.backend.ingest.ApiAppsIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestApp;
+import com.becker.freelance.component.prediction.backend.query.ApiAppsReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.GrpcQueryApp;
+import com.becker.freelance.component.prediction.backend.query.GrpcQueryAppList;
+import com.becker.freelance.component.prediction.backend.query.GrpcQueryUUID;
 import com.becker.freelance.component.prediction.gateway.api.dto.AppDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,22 +19,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GrpcAppStorageServiceTest {
 
-    private ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub stub;
+    private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub readStub;
+    private ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub writeStub;
     private GrpcAppStorageService storageService;
 
     @BeforeEach
     void setUp() {
-        stub = Mockito.mock(ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub.class);
-        storageService = new GrpcAppStorageService(stub);
+        readStub = Mockito.mock(ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub.class);
+        writeStub = Mockito.mock(ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub.class);
+        storageService = new GrpcAppStorageService(writeStub, readStub);
     }
 
     @Test
     void save() {
         UUID id = UUID.randomUUID();
-        Mockito.when(storageService.save(Mockito.any())).then((Answer<GrpcApp>) invocationOnMock -> {
-            GrpcApp argument = invocationOnMock.getArgument(0, GrpcApp.class);
-            return GrpcApp.newBuilder(argument)
-                    .setId(GrpcUUID.newBuilder().setId(id.toString()).build())
+        Mockito.when(writeStub.save(Mockito.any())).then((Answer<GrpcQueryApp>) invocationOnMock -> {
+            GrpcIngestApp argument = invocationOnMock.getArgument(0, GrpcIngestApp.class);
+            return GrpcQueryApp.newBuilder()
+                    .setId(GrpcQueryUUID.newBuilder().setId(id.toString()).build())
+                    .setAppName(argument.getAppName())
                     .build();
         });
 
@@ -49,10 +54,10 @@ class GrpcAppStorageServiceTest {
     void findAll() {
         UUID id1 = UUID.randomUUID();
         UUID id2 = UUID.randomUUID();
-        Mockito.when(stub.findAll(Mockito.any())).thenReturn(GrpcAppList.newBuilder()
+        Mockito.when(readStub.findAll(Mockito.any())).thenReturn(GrpcQueryAppList.newBuilder()
                 .addAllApps(List.of(
-                        GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId(id1.toString()).build()).setAppName("1").build(),
-                        GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId(id2.toString()).build()).setAppName("2").build()
+                        GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(id1.toString()).build()).setAppName("1").build(),
+                        GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId(id2.toString()).build()).setAppName("2").build()
                 )).build());
 
         List<AppDto> find = storageService.findAll();

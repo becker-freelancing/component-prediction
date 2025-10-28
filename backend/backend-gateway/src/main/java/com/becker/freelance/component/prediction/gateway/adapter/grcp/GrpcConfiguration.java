@@ -1,8 +1,11 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
-import com.becker.freelance.component.prediction.backend.storage.ApiAppsRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.ApiTagsRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.ApiAppsIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.ApiDocumentMetadataIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.ApiTagsIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiAppsReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiDocumentMetadataReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiTagsReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.gateway.spi.AppStorageService;
 import com.becker.freelance.component.prediction.gateway.spi.DocumentMetadataStorageService;
 import com.becker.freelance.component.prediction.gateway.spi.TagsStorageService;
@@ -14,27 +17,36 @@ import org.springframework.context.annotation.Configuration;
 public class GrpcConfiguration {
 
 
-    @GrpcClient("backendStorageService")
-    private ApiDocumentMetadataRepositoryGrpc.ApiDocumentMetadataRepositoryBlockingStub stub;
+    @GrpcClient("backendingestservice")
+    private ApiDocumentMetadataIngestRepositoryGrpc.ApiDocumentMetadataIngestRepositoryBlockingStub metadataIngestRepositoryBlockingStub;
 
-    @GrpcClient("backendAppStorageService")
-    private ApiAppsRepositoryGrpc.ApiAppsRepositoryBlockingStub appStub;
+    @GrpcClient("backendappingestservice")
+    private ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub appsIngestRepositoryBlockingStub;
 
-    @GrpcClient("backendTagStorageService")
-    private ApiTagsRepositoryGrpc.ApiTagsRepositoryBlockingStub tagsStub;
+    @GrpcClient("backendtagingestservice")
+    private ApiTagsIngestRepositoryGrpc.ApiTagsIngestRepositoryBlockingStub tagsIngestRepositoryBlockingStub;
+
+    @GrpcClient("backendreadservice")
+    private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
+
+    @GrpcClient("backendappreadservice")
+    private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub appsReadRepositoryBlockingStub;
+
+    @GrpcClient("backendtagreadservice")
+    private ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub tagsReadRepositoryBlockingStub;
 
     @Bean
     public DocumentMetadataStorageService documentMetadataStorageService() {
-        return new GrpcDocumentMetadataStorageService(stub);
+        return new GrpcDocumentMetadataStorageService(metadataIngestRepositoryBlockingStub, metadataReadRepositoryBlockingStub);
     }
 
     @Bean
     public AppStorageService appStorageService() {
-        return new GrpcAppStorageService(appStub);
+        return new GrpcAppStorageService(appsIngestRepositoryBlockingStub, appsReadRepositoryBlockingStub);
     }
 
     @Bean
     public TagsStorageService tagsStorageService() {
-        return new GrpcTagsStorageService(tagsStub);
+        return new GrpcTagsStorageService(tagsIngestRepositoryBlockingStub, tagsReadRepositoryBlockingStub);
     }
 }

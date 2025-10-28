@@ -1,12 +1,11 @@
 package com.becker.freelance.component.prediction.storage.api;
 
-import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
-import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
-import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
+import com.becker.freelance.component.prediction.backend.storage.*;
 import com.becker.freelance.component.prediction.storage.domain.App;
+import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.domain.Tag;
+import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -18,6 +17,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Service
 class GrpcMapper {
 
 
@@ -123,5 +123,29 @@ class GrpcMapper {
 
     private String mapOutgoing(String s) {
         return s == null ? "" : s;
+    }
+
+    public DocumentEmbedding mapIncoming(GrpcDocumentEmbedding request) {
+        UUID metadataId = mapIncoming(request.getMetadataId());
+        float[][] actionDescriptionEmbedding = mapIncoming(request.getActionDescriptionEmbedding());
+        return new DocumentEmbedding(metadataId, actionDescriptionEmbedding);
+    }
+
+    private float[][] mapIncoming(GrpcEmbedding actionDescriptionEmbedding) {
+        List<GrpcFloatArray> embeddingsList = actionDescriptionEmbedding.getEmbeddingsList();
+        float[][] embedding = new float[embeddingsList.size()][];
+        for (int i = 0; i < embedding.length; i++) {
+            embedding[i] = map(embeddingsList.get(i));
+        }
+        return embedding;
+    }
+
+    private float[] map(GrpcFloatArray grpcFloatArray) {
+        List<Float> floats = grpcFloatArray.getArrayList();
+        float[] arr = new float[floats.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = floats.get(i);
+        }
+        return arr;
     }
 }
