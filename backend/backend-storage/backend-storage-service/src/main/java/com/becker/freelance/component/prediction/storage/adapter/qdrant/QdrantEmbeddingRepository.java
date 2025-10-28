@@ -4,12 +4,14 @@ import com.becker.freelance.component.prediction.storage.domain.DocumentEmbeddin
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
 import com.becker.freelance.component.prediction.storage.spi.EmbeddingRepository;
+import com.google.protobuf.Descriptors;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.JsonWithInt;
 import io.qdrant.client.grpc.Points;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -40,6 +42,60 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         upsertEmbeddings(embedding, relatedMetadata);
 
         return relatedMetadata;
+    }
+
+    public Optional<DocumentEmbedding> findByMetadataId(UUID metadataId) {
+        // Get Metadata
+        DocumentMetadata relatedMetadata = metadataRepository.findById(metadataId)
+                .orElse(null);
+        if (relatedMetadata == null) {
+            return Optional.empty();
+        }
+
+        String collectionName = getCollectionName(relatedMetadata);
+
+        // Filter by metadata_id
+        Points.Filter filter = Points.Filter.newBuilder()
+                .addMust(Points.Condition.newBuilder()
+                        .setField(Points.FieldCondition.newBuilder()
+                                .setKey(PAYLOAD_KEY_DOCUMENT_ID)
+                                .setMatch(Points.Match.newBuilder().setKeyword(metadataId.toString()).build())
+                                .build())
+                        .build())
+                .build();
+
+        Points.PointsSelector request = Points.PointsSelector.newBuilder()
+                .setFilter(filter)
+                .build();
+
+        Points.GetPoints.newBuilder()
+                .setCollectionName(collectionName)
+                .setWithPayload(Points.WithPayloadSelector.newBuilder()
+                        .setInclude(Points.PayloadIncludeSelector.newBuilder()
+                                .setField(Descriptors.FieldDescriptor.).build())
+                        .build())
+
+        List<float[]> embeddings = new ArrayList<>();
+
+        try {
+            Points.ScrollPointsResponse response = client.ret(request);
+            response.getResultList().forEach(point -> {
+                List<Float> vector = point.getVectors().getVector().getDataList();
+                float[] vecArray = new float[vector.size()];
+                for (int i = 0; i < vector.size(); i++) {
+                    vecArray[i] = vector.get(i);
+                }
+                embeddings.add(vecArray);
+            });
+        } catch (Exception e) {
+            throw new IllegalStateException("Fehler beim Abrufen von Embeddings für Metadata-ID: " + metadataId, e);
+        }
+
+        if (embeddings.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(new DocumentEmbedding(metadataId, embeddings.toArray(new float[0][])));
     }
 
     private void upsertEmbeddings(DocumentEmbedding embedding, DocumentMetadata relatedMetadata) {
