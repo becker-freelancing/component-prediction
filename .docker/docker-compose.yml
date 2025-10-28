@@ -5,7 +5,7 @@ services:
     networks:
       - devnet
     volumes:
-      - metadata-db-data:/var/lib/postgresql/data
+      - metadata-db-data:/var/lib/postgresql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
