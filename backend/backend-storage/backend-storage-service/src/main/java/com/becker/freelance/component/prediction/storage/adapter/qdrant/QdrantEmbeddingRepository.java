@@ -4,22 +4,22 @@ import com.becker.freelance.component.prediction.storage.domain.DocumentEmbeddin
 import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
 import com.becker.freelance.component.prediction.storage.spi.EmbeddingRepository;
-import com.google.protobuf.Descriptors;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.grpc.JsonWithInt;
 import io.qdrant.client.grpc.Points;
+import jakarta.transaction.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+@Transactional
 public class QdrantEmbeddingRepository implements EmbeddingRepository {
 
     private static final String PAYLOAD_KEY_DOCUMENT_ID = "metadata_id";
     private static final String PAYLOAD_KEY_EMBEDDING_TYPE = "embedding_type";
-    private static final String EMBEDDING_TYPE_ACTION_DESCRIPTION = "action_description";
+    public static final String EMBEDDING_TYPE_ACTION_DESCRIPTION = "action_description";
+    private static final String PAYLOAD_ORIGINAL_VECTOR_L2_NORM = "original_l2_norm";
+    private static final String PAYLOAD_INSERT_ORDER = "insert_order";
 
     private final DocumentMetadataRepository metadataRepository;
     private final QdrantClient client;
@@ -64,26 +64,29 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
                         .build())
                 .build();
 
-        Points.PointsSelector request = Points.PointsSelector.newBuilder()
-                .setFilter(filter)
+        Points.WithVectorsSelector vectorsSelector = Points.WithVectorsSelector.newBuilder()
+                .setEnable(true)
+                .setInclude(Points.VectorsSelector.newBuilder()
+                        .addNames(EMBEDDING_TYPE_ACTION_DESCRIPTION).build())
                 .build();
 
-        Points.GetPoints.newBuilder()
+        Points.ScrollPoints request = Points.ScrollPoints.newBuilder()
                 .setCollectionName(collectionName)
-                .setWithPayload(Points.WithPayloadSelector.newBuilder()
-                        .setInclude(Points.PayloadIncludeSelector.newBuilder()
-                                .setField(Descriptors.FieldDescriptor.).build())
-                        .build())
+                .setFilter(filter)
+                .setLimit(Integer.MAX_VALUE)
+                .setWithVectors(vectorsSelector)
+                .build();
 
         List<float[]> embeddings = new ArrayList<>();
 
         try {
-            Points.ScrollPointsResponse response = client.ret(request);
-            response.getResultList().forEach(point -> {
-                List<Float> vector = point.getVectors().getVector().getDataList();
+            Points.ScrollResponse response = client.scrollAsync(request).get();
+            response.getResultList().stream().sorted(Comparator.comparing(point -> point.getPayloadOrThrow(PAYLOAD_INSERT_ORDER).getIntegerValue())).forEach(point -> {
+                List<Float> vector = point.getVectors().getVectors().getVectorsOrThrow(EMBEDDING_TYPE_ACTION_DESCRIPTION).getDataList();
+                float l2Norm = (float) point.getPayloadOrThrow(PAYLOAD_ORIGINAL_VECTOR_L2_NORM).getDoubleValue();
                 float[] vecArray = new float[vector.size()];
                 for (int i = 0; i < vector.size(); i++) {
-                    vecArray[i] = vector.get(i);
+                    vecArray[i] = denormalize(vector.get(i), l2Norm);
                 }
                 embeddings.add(vecArray);
             });
@@ -96,6 +99,10 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         }
 
         return Optional.of(new DocumentEmbedding(metadataId, embeddings.toArray(new float[0][])));
+    }
+
+    private float denormalize(Float f, float l2Norm) {
+        return f * l2Norm;
     }
 
     private void upsertEmbeddings(DocumentEmbedding embedding, DocumentMetadata relatedMetadata) {
@@ -121,17 +128,32 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
 
     private List<Points.PointStruct> buildPoints(DocumentEmbedding embedding, DocumentMetadata relatedMetadata) {
         List<Points.PointStruct> points = new ArrayList<>();
-        for (float[] embed : embedding.embeddedActionDescription()) {
+        float[][] embeddeded = embedding.embeddedActionDescription();
+        for (int i = 0; i < embeddeded.length; i++) {
+            float[] embed = embeddeded[i];
+            Points.Vector vector = Points.Vector.newBuilder().addAllData(toFloatList(embed)).build();
+            Points.NamedVectors namedVectors = Points.NamedVectors.newBuilder().putAllVectors(Map.of(EMBEDDING_TYPE_ACTION_DESCRIPTION, vector)).build();
+            Points.Vectors vectors = Points.Vectors.newBuilder().setVectors(namedVectors).build();
             Points.PointStruct struct = Points.PointStruct.newBuilder()
                     .setId(Points.PointId.newBuilder().setUuid(UUID.randomUUID().toString()))
-                    .setVectors(Points.Vectors.newBuilder().setVector(Points.Vector.newBuilder().addAllData(toFloatList(embed)).build()).build())
+                    .setVectors(vectors)
                     .putPayload(PAYLOAD_KEY_DOCUMENT_ID, JsonWithInt.Value.newBuilder().setStringValue(relatedMetadata.getId().toString()).build())
                     .putPayload(PAYLOAD_KEY_EMBEDDING_TYPE, JsonWithInt.Value.newBuilder().setStringValue(EMBEDDING_TYPE_ACTION_DESCRIPTION).build())
+                    .putPayload(PAYLOAD_INSERT_ORDER, JsonWithInt.Value.newBuilder().setIntegerValue(i).build())
+                    .putPayload(PAYLOAD_ORIGINAL_VECTOR_L2_NORM, JsonWithInt.Value.newBuilder().setDoubleValue(calcL2Norm(embed)).build())
                     .build();
 
             points.add(struct);
         }
         return points;
+    }
+
+    private double calcL2Norm(float[] embed) {
+        float sum = 0f;
+        for (float f : embed) {
+            sum += f * f;
+        }
+        return Math.sqrt(sum);
     }
 
     private List<Float> toFloatList(float[] arr) {

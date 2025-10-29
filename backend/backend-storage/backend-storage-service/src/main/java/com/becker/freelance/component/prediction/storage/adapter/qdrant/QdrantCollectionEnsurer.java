@@ -33,9 +33,15 @@ public class QdrantCollectionEnsurer {
                 .setDatatype(datatype)
                 .build();
 
+        Collections.VectorsConfig vectorsConfig = Collections.VectorsConfig.newBuilder()
+                .setParamsMap(Collections.VectorParamsMap.newBuilder()
+                        .putMap(QdrantEmbeddingRepository.EMBEDDING_TYPE_ACTION_DESCRIPTION, vectorParams)
+                        .build())
+                .build();
+
         Collections.CreateCollection createCollectionRequest = Collections.CreateCollection.newBuilder()
                 .setCollectionName(collectionName)
-                .setVectorsConfig(Collections.VectorsConfig.newBuilder().setParams(vectorParams).build())
+                .setVectorsConfig(vectorsConfig)
                 .build();
 
         Collections.CollectionOperationResponse collectionOperationResponse = null;

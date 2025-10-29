@@ -8,7 +8,6 @@ import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRep
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
 import io.qdrant.client.grpc.Collections;
-import io.qdrant.client.http.model.CollectionResponse;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.GenericContainer;
 
@@ -22,7 +21,6 @@ import static org.mockito.Mockito.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class QdrantEmbeddingRepositoryTest {
 
-    private static final int QDRANT_PORT = 6333;
 
     private GenericContainer<?> qdrantContainer;
     private QdrantClient qdrantClient;
@@ -33,7 +31,7 @@ class QdrantEmbeddingRepositoryTest {
     @BeforeAll
     void startQdrant() {
         qdrantContainer = new GenericContainer<>("qdrant/qdrant:latest")
-                .withExposedPorts(QDRANT_PORT);
+                .withExposedPorts(6334);
         qdrantContainer.start();
 
         String host = qdrantContainer.getHost();
@@ -72,12 +70,15 @@ class QdrantEmbeddingRepositoryTest {
 
         assertThat(savedMetadata.getId()).isEqualTo(metadataId);
 
-        String collection = qdrantClient.listCollectionsAsync().get()
-                .stream()
-                .filter(c -> c.equals(appId.toString()))
-                .findFirst()
-                .orElse(null);
-        assertThat(collection).isNotNull();
+        Optional<DocumentEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
+        assertThat(byMetadataId).isPresent();
+        assertArrayEquals(vectors, byMetadataId.get().embeddedActionDescription(), 0.001f);
+    }
+
+    private void assertArrayEquals(float[][] expected, float[][] actual, float delta) {
+        for (int i = 0; i < expected.length; i++) {
+            Assertions.assertArrayEquals(expected[i], actual[i], delta, "Row " + i + " differs");
+        }
     }
 
     @Test
@@ -91,7 +92,7 @@ class QdrantEmbeddingRepositoryTest {
     }
 
     @Test
-    void save_shouldDeleteExistingVectors_forSameDocument() {
+    void save_shouldDeleteExistingVectors_forSameDocument() throws InterruptedException {
         UUID metadataId = UUID.randomUUID();
         UUID appId = UUID.randomUUID();
         DocumentMetadata metadata = createMetadata(metadataId, "My Doc", appId);
@@ -106,16 +107,12 @@ class QdrantEmbeddingRepositoryTest {
 
         embeddingRepository.save(embedding2);
 
+        Thread.sleep(1000);
         // Assert
-        // We can't directly query Qdrant payloads via HTTP client in the gRPC version,
-        // but the idea is: old vectors should be deleted and new vectors present.
-        // For simplicity, we check that the collection still exists.
-        CollectionResponse collection = qdrantClient.getCollections().getCollections()
-                .stream()
-                .filter(c -> c.getName().equals(appId.toString()))
-                .findFirst()
-                .orElse(null);
-        assertThat(collection).isNotNull();
+        Optional<DocumentEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
+
+        assertThat(byMetadataId).isPresent();
+        assertArrayEquals(vectors2, byMetadataId.get().embeddedActionDescription(), 0.001f);
     }
 
     @Test
