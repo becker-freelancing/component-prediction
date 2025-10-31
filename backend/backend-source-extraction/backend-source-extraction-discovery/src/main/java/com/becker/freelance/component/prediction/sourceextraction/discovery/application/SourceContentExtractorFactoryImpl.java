@@ -1,8 +1,9 @@
-package com.becker.freelance.component.prediction.ingest.adapter.extraction;
+package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractor;
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractorFactory;
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractorWithExtractionId;
+
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorWithExtractionId;
 
 import java.io.InputStream;
 import java.util.List;

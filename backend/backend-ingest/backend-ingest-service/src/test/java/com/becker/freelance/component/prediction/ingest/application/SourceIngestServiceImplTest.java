@@ -3,6 +3,9 @@ package com.becker.freelance.component.prediction.ingest.application;
 import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;
 import com.becker.freelance.component.prediction.ingest.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.ingest.spi.*;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorWithExtractionId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

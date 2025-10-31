@@ -5,6 +5,7 @@ import com.becker.freelance.component.prediction.ingest.api.IngestSourceChunkCon
 import com.becker.freelance.component.prediction.ingest.api.SourceIngestHandler;
 import com.becker.freelance.component.prediction.ingest.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.ingest.spi.*;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.becker.freelance.component.prediction.ingest.spi;
+package com.becker.freelance.component.prediction.sourceextraction.discovery.api;
 
 import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;
 

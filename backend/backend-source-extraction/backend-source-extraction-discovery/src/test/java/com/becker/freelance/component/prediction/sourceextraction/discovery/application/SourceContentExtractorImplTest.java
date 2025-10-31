@@ -1,4 +1,4 @@
-package com.becker.freelance.component.prediction.ingest.adapter.extraction;
+package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
 import com.becker.freelance.component.prediction.backend.SourceContentExtraction.*;
 import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;

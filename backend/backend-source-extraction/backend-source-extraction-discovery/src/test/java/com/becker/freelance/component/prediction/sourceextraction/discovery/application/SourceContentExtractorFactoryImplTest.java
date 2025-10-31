@@ -1,7 +1,7 @@
-package com.becker.freelance.component.prediction.ingest.adapter.extraction;
+package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractor;
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractorWithExtractionId;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorWithExtractionId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 class SourceContentExtractorFactoryImplTest {

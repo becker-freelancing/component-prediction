@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>backend-source-extraction-proto</module>
+        <module>backend-source-extraction-discovery</module>
     </modules>
 
 </project>

@@ -1,7 +1,7 @@
-package com.becker.freelance.component.prediction.ingest.adapter.extraction;
+package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractor;
-import com.becker.freelance.component.prediction.ingest.spi.SourceContentExtractorFactory;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
