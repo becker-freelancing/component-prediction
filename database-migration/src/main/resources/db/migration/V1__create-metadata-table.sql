@@ -8,28 +8,27 @@ CREATE TABLE tags (
     tag VARCHAR(1024) NOT NULL
 );
 
-CREATE TABLE document_metadata (
+CREATE TABLE source_metadata (
     id UUID PRIMARY KEY,
     app_id UUID NOT NULL,
-    in_app_action_path TEXT NOT NULL,
-    action_title TEXT NOT NULL,
-    action_description  TEXT NOT NULL,
-    action_short_description TEXT NOT NULL,
     locale VARCHAR(2) NOT NULL,
     version INT NOT NULL,
     created_at VARCHAR(100) NOT NULL,
+    last_modified_at VARCHAR(100) NOT NULL,
+    file_name VARCHAR(512),
+    parent_id UUID,
 
-    CONSTRAINT fk_app_id FOREIGN KEY (app_id) REFERENCES apps(id)
-
+    CONSTRAINT fk_app_id FOREIGN KEY (app_id) REFERENCES apps(id),
+    CONSTRAINT fk_parent_id FOREIGN KEY (parent_id) REFERENCES source_metadata(id)
 );
 
 
 
-CREATE TABLE document_tags (
-    document_id UUID NOT NULL,
+CREATE TABLE metadata_tags (
+    metadata_id UUID NOT NULL,
     tag_id UUID NOT NULL,
 
-    PRIMARY KEY (document_id, tag_id),
-    CONSTRAINT fk_document_id FOREIGN KEY (document_id) REFERENCES document_metadata(id),
+    PRIMARY KEY (metadata_id, tag_id),
+    CONSTRAINT fk_metadata_id FOREIGN KEY (metadata_id) REFERENCES source_metadata(id),
     CONSTRAINT fk_tag_id FOREIGN KEY (tag_id) REFERENCES tags(id)
 );

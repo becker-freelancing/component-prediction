@@ -2,8 +2,8 @@
 package com.becker.freelance.component.prediction.storage.adapter.qdrant;
 
 import com.becker.freelance.component.prediction.storage.domain.App;
-import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
-import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
+import com.becker.freelance.component.prediction.storage.domain.SourceEmbedding;
+import com.becker.freelance.component.prediction.storage.domain.SourceMetadata;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
 import io.qdrant.client.QdrantClient;
 import io.qdrant.client.QdrantGrpcClient;
@@ -57,22 +57,22 @@ class QdrantEmbeddingRepositoryTest {
     void save_shouldInsertEmbedding_whenMetadataExists() throws ExecutionException, InterruptedException {
         UUID metadataId = UUID.randomUUID();
         UUID appId = UUID.randomUUID();
-        DocumentMetadata metadata = createMetadata(metadataId, "My Doc", appId);
+        SourceMetadata metadata = createMetadata(metadataId, "My Doc", appId);
         when(metadataRepository.findById(metadataId)).thenReturn(Optional.of(metadata));
 
         float[][] vectors = new float[][]{
                 {0.1f, 0.2f, 0.3f},
                 {0.4f, 0.5f, 0.6f}
         };
-        DocumentEmbedding embedding = new DocumentEmbedding(metadataId, vectors);
+        SourceEmbedding embedding = new SourceEmbedding(metadataId, vectors);
 
-        DocumentMetadata savedMetadata = embeddingRepository.save(embedding);
+        SourceMetadata savedMetadata = embeddingRepository.save(embedding);
 
         assertThat(savedMetadata.getId()).isEqualTo(metadataId);
 
-        Optional<DocumentEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
+        Optional<SourceEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
         assertThat(byMetadataId).isPresent();
-        assertArrayEquals(vectors, byMetadataId.get().embeddedActionDescription(), 0.001f);
+        assertArrayEquals(vectors, byMetadataId.get().embedding(), 0.001f);
     }
 
     private void assertArrayEquals(float[][] expected, float[][] actual, float delta) {
@@ -86,7 +86,7 @@ class QdrantEmbeddingRepositoryTest {
         UUID metadataId = UUID.randomUUID();
         when(metadataRepository.findById(metadataId)).thenReturn(Optional.empty());
 
-        DocumentEmbedding embedding = new DocumentEmbedding(metadataId, new float[][]{{0.1f, 0.2f, 0.3f}});
+        SourceEmbedding embedding = new SourceEmbedding(metadataId, new float[][]{{0.1f, 0.2f, 0.3f}});
 
         Assertions.assertThrows(IllegalStateException.class, () -> embeddingRepository.save(embedding));
     }
@@ -95,24 +95,24 @@ class QdrantEmbeddingRepositoryTest {
     void save_shouldDeleteExistingVectors_forSameDocument() throws InterruptedException {
         UUID metadataId = UUID.randomUUID();
         UUID appId = UUID.randomUUID();
-        DocumentMetadata metadata = createMetadata(metadataId, "My Doc", appId);
+        SourceMetadata metadata = createMetadata(metadataId, "My Doc", appId);
         when(metadataRepository.findById(metadataId)).thenReturn(Optional.of(metadata));
 
         float[][] vectors1 = new float[][]{{0.1f, 0.2f, 0.3f}};
-        DocumentEmbedding embedding1 = new DocumentEmbedding(metadataId, vectors1);
+        SourceEmbedding embedding1 = new SourceEmbedding(metadataId, vectors1);
         embeddingRepository.save(embedding1);
 
         float[][] vectors2 = new float[][]{{0.4f, 0.5f, 0.6f}};
-        DocumentEmbedding embedding2 = new DocumentEmbedding(metadataId, vectors2);
+        SourceEmbedding embedding2 = new SourceEmbedding(metadataId, vectors2);
 
         embeddingRepository.save(embedding2);
 
         Thread.sleep(1000);
         // Assert
-        Optional<DocumentEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
+        Optional<SourceEmbedding> byMetadataId = embeddingRepository.findByMetadataId(metadataId);
 
         assertThat(byMetadataId).isPresent();
-        assertArrayEquals(vectors2, byMetadataId.get().embeddedActionDescription(), 0.001f);
+        assertArrayEquals(vectors2, byMetadataId.get().embedding(), 0.001f);
     }
 
     @Test
@@ -120,27 +120,26 @@ class QdrantEmbeddingRepositoryTest {
         // Arrange
         UUID metadataId = UUID.randomUUID();
         UUID appId = UUID.randomUUID();
-        DocumentMetadata metadata = createMetadata(metadataId, "My Doc", appId);
+        SourceMetadata metadata = createMetadata(metadataId, "My Doc", appId);
         when(metadataRepository.findById(metadataId)).thenReturn(Optional.of(metadata));
 
         // First embedding with 3 dimensions
         float[][] vectors1 = new float[][]{{0.1f, 0.2f, 0.3f}};
-        embeddingRepository.save(new DocumentEmbedding(metadataId, vectors1));
+        embeddingRepository.save(new SourceEmbedding(metadataId, vectors1));
 
         // Second embedding with 2 dimensions (mismatch)
         float[][] vectors2 = new float[][]{{0.4f, 0.5f}};
-        DocumentEmbedding embedding2 = new DocumentEmbedding(metadataId, vectors2);
+        SourceEmbedding embedding2 = new SourceEmbedding(metadataId, vectors2);
 
         // Act & Assert
         Assertions.assertThrows(IllegalStateException.class, () -> embeddingRepository.save(embedding2));
     }
 
-    DocumentMetadata createMetadata(UUID id, String description, UUID appId) {
+    SourceMetadata createMetadata(UUID id, String description, UUID appId) {
         App app = new App(appId, "App");
-        DocumentMetadata metadata = mock(DocumentMetadata.class);
+        SourceMetadata metadata = mock(SourceMetadata.class);
         doReturn(id).when(metadata).getId();
         doReturn(app).when(metadata).getApp();
-        doReturn(description).when(metadata).getActionDescription();
         return metadata;
     }
 

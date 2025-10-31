@@ -21,22 +21,21 @@ message GrpcQueryTag {
     string tag = 2;
 }
 
-message GrpcQueryDocumentMetadata {
+message GrpcQuerySourceMetadata {
     GrpcQueryUUID id = 1;
     GrpcQueryApp app = 2;
-    string in_app_action_path = 3;
-    string action_title = 4;
-    string action_description = 5;
-    string action_short_description = 6;
-    string locale = 7;
-    int64 version = 8;
-    string created_at = 9;
-    string last_modified_at = 10;
-    repeated GrpcQueryTag tags = 11;
+    string locale = 3;
+    int64 version = 4;
+    string created_at = 5;
+    string last_modified_at = 6;
+    repeated GrpcQueryTag tags = 7;
+    string file_name = 8;
+    GrpcQuerySourceMetadata parent = 9;
+    bool hasChildren = 10;
 }
 
-message GrpcQueryDocumentMetadataList {
-    repeated GrpcQueryDocumentMetadata metadata = 1;
+message GrpcQuerySourceMetadataList {
+    repeated GrpcQuerySourceMetadata metadata = 1;
 }
 
 message GrpcQueryTagList {
@@ -48,11 +47,11 @@ message GrpcQueryAppList {
 }
 
 
-service ApiDocumentMetadataReadRepository {
+service ApiSourceMetadataReadRepository {
 
-    rpc FindAll (google.protobuf.Empty) returns (GrpcQueryDocumentMetadataList);
+    rpc FindAll (google.protobuf.Empty) returns (GrpcQuerySourceMetadataList);
 
-    rpc FindById (GrpcQueryUUID) returns (GrpcQueryDocumentMetadata);
+    rpc FindById (GrpcQueryUUID) returns (GrpcQuerySourceMetadata);
 }
 
 service ApiTagsReadRepository {

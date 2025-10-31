@@ -1,10 +1,11 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
 import com.becker.freelance.component.prediction.backend.query.domain.model.App;
-import com.becker.freelance.component.prediction.backend.query.domain.model.DocumentMetadata;
+import com.becker.freelance.component.prediction.backend.query.domain.model.Locale;
+import com.becker.freelance.component.prediction.backend.query.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.backend.query.domain.model.Tag;
 import com.becker.freelance.component.prediction.backend.storage.GrpcApp;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.storage.GrpcSourceMetadata;
 import com.becker.freelance.component.prediction.backend.storage.GrpcTag;
 import com.becker.freelance.component.prediction.backend.storage.GrpcUUID;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class GrpcAdapterMapper {
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
     private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcSourceMetadata NULL_METADATA = GrpcSourceMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).build();
 
 
     private BigInteger map(Long l) {
@@ -36,19 +38,26 @@ public class GrpcAdapterMapper {
     }
 
 
-    public DocumentMetadata map(GrpcDocumentMetadata request) {
-        return new DocumentMetadata(
+    public SourceMetadata map(GrpcSourceMetadata request) {
+        if (NULL_METADATA.equals(request)){
+            return null;
+        }
+        return new SourceMetadata(
                 map(request.getId()),
                 map(request.getApp()),
-                map(request.getInAppActionPath()),
-                map(request.getActionTitle()),
-                map(request.getActionDescription()),
-                map(request.getActionShortDescription()),
-                map(request.getLocale()),
+                mapLocale(request.getLocale()),
                 map(request.getVersion()),
                 mapTime(request.getCreatedAt()),
-                map(request.getTagsList())
+                mapTime(request.getLastModifiedAt()),
+                map(request.getTagsList()),
+                map(request.getFileName()),
+                map(request.getParent()),
+                request.getHasChildren()
         );
+    }
+
+    private Locale mapLocale(String locale) {
+        return new Locale(locale);
     }
 
     private ZonedDateTime mapTime(String createdAt) {

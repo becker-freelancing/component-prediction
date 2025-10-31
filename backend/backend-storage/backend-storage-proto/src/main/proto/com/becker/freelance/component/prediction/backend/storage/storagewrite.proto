@@ -7,8 +7,8 @@ package com.becker.freelance.component.prediction.backend.storage;
 
 import "com/becker/freelance/component/prediction/backend/storage/storagedto.proto";
 
-service ApiDocumentMetadataWriteRepository {
-    rpc Save (GrpcDocumentMetadata) returns (GrpcDocumentMetadata);
+service ApiSourceMetadataWriteRepository {
+    rpc Save (GrpcSourceMetadata) returns (GrpcSourceMetadata);
 
 }
 
@@ -25,5 +25,5 @@ service ApiAppsWriteRepository {
 
 service ApiEmbeddingWriteRepository {
 
-    rpc Save (GrpcDocumentEmbedding) returns (GrpcDocumentMetadata);
+    rpc Save (GrpcSourceEmbedding) returns (GrpcSourceMetadata);
 }

@@ -20,21 +20,21 @@ message GrpcTag {
     string tag = 2;
 }
 
-message GrpcDocumentMetadata {
+message GrpcSourceMetadata {
     GrpcUUID id = 1;
     GrpcApp app = 2;
-    string in_app_action_path = 3;
-    string action_title = 4;
-    string action_description = 5;
-    string action_short_description = 6;
-    string locale = 7;
-    int64 version = 8;
-    string created_at = 9;
-    repeated GrpcTag tags = 10;
+    string locale = 3;
+    int64 version = 4;
+    string created_at = 5;
+    string last_modified_at = 6;
+    repeated GrpcTag tags = 7;
+    string file_name = 8;
+    GrpcSourceMetadata parent = 9;
+    bool hasChildren = 10;
 }
 
-message GrpcDocumentMetadataList {
-    repeated GrpcDocumentMetadata metadata = 1;
+message GrpcSourceMetadataList {
+    repeated GrpcSourceMetadata metadata = 1;
 }
 
 message GrpcTagList {
@@ -49,11 +49,7 @@ message GrpcFloatArray {
     repeated float array = 1;
 }
 
-message GrpcEmbedding {
-    repeated GrpcFloatArray embeddings = 1;
-}
-
-message GrpcDocumentEmbedding {
+message GrpcSourceEmbedding {
     GrpcUUID metadata_id = 1;
-    GrpcEmbedding action_description_embedding = 2;
+    GrpcFloatArray embeddings = 2;
 }

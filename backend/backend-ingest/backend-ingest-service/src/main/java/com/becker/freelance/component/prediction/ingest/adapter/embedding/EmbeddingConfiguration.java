@@ -12,8 +12,11 @@ public class EmbeddingConfiguration {
     @GrpcClient("backendembeddingservice")
     private ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub embeddingServiceBlockingStub;
 
+    @GrpcClient("backendembeddingservice")
+    private ApiEmbeddingServiceGrpc.ApiEmbeddingServiceStub embeddingServiceStub;
+
     @Bean
     public EmbeddingService embeddingService() {
-        return new GrpcEmbeddingService(embeddingServiceBlockingStub);
+        return new GrpcEmbeddingService(embeddingServiceStub, embeddingServiceBlockingStub);
     }
 }

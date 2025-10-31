@@ -1,17 +1,11 @@
 package com.becker.freelance.component.prediction.ingest.api;
 
-import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestApp;
-import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestDocumentMetadata;
-import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestTag;
-import com.becker.freelance.component.prediction.backend.ingest.GrpcIngestUUID;
+import com.becker.freelance.component.prediction.backend.ingest.*;
 import com.becker.freelance.component.prediction.backend.query.GrpcQueryApp;
-import com.becker.freelance.component.prediction.backend.query.GrpcQueryDocumentMetadata;
+import com.becker.freelance.component.prediction.backend.query.GrpcQuerySourceMetadata;
 import com.becker.freelance.component.prediction.backend.query.GrpcQueryTag;
 import com.becker.freelance.component.prediction.backend.query.GrpcQueryUUID;
-import com.becker.freelance.component.prediction.ingest.domain.model.App;
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
-import com.becker.freelance.component.prediction.ingest.domain.model.Locale;
-import com.becker.freelance.component.prediction.ingest.domain.model.Tag;
+import com.becker.freelance.component.prediction.ingest.domain.model.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -26,6 +20,8 @@ public class GrpcMapper {
 
     private static final GrpcIngestApp INGEST_NULL_APP = GrpcIngestApp.newBuilder().setId(GrpcIngestUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
     private static final GrpcQueryApp QUERY_NULL_APP = GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcQuerySourceMetadata QUERY_NULL_METADATA = GrpcQuerySourceMetadata.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).build();
+    private static final GrpcIngestSourceMetadata INGEST_NULL_METADATA = GrpcIngestSourceMetadata.newBuilder().setId(GrpcIngestUUID.newBuilder().setId("").build()).build();
 
 
     public App map(GrpcIngestApp app) {
@@ -80,32 +76,43 @@ public class GrpcMapper {
         return id.getId().isEmpty() ? null : UUID.fromString(id.getId());
     }
 
-    public DocumentMetadata map(GrpcIngestDocumentMetadata metadata) {
-        return new DocumentMetadata(
+    public SourceMetadata map(GrpcIngestSourceMetadata metadata) {
+        if (INGEST_NULL_METADATA.equals(metadata)){
+            return null;
+        }
+        return new SourceMetadata(
                 map(metadata.getId()),
                 map(metadata.getApp()),
-                mapIncoming(metadata.getInAppActionPath()),
-                mapIncoming(metadata.getActionTitle()),
-                mapIncoming(metadata.getActionDescription()),
-                mapIncoming(metadata.getActionShortDescription()),
+                mapLocale(metadata.getLocale()),
                 map(metadata.getVersion()),
                 map(metadata.getCreatedAt()),
-                map(metadata.getTagsList())
+                map(metadata.getLastModifiedAt()),
+                map(metadata.getTagsList()),
+                mapIncoming(metadata.getFileName()),
+                map(metadata.getParent()),
+                metadata.getHasChildren()
         );
     }
 
-    public GrpcQueryDocumentMetadata map(DocumentMetadata metadata) {
-        return GrpcQueryDocumentMetadata.newBuilder()
+    private Locale mapLocale(String locale) {
+        return locale.isEmpty() ? null : new Locale(locale);
+    }
+
+    public GrpcQuerySourceMetadata map(SourceMetadata metadata) {
+        if (metadata == null){
+            return QUERY_NULL_METADATA;
+        }
+        return GrpcQuerySourceMetadata.newBuilder()
                 .setId(map(metadata.getId()))
                 .setApp(map(metadata.getApp()))
-                .setInAppActionPath(mapOutgoing(metadata.getInAppActionPath()))
-                .setActionTitle(mapOutgoing(metadata.getActionTitle()))
-                .setActionDescription(mapOutgoing(metadata.getActionDescription()))
-                .setActionShortDescription(mapOutgoing(metadata.getActionShortDescription()))
                 .setVersion(map(metadata.getVersion()))
                 .setCreatedAt(map(metadata.getCreatedAt()))
+                .setLastModifiedAt(map(metadata.getLastModifiedAt()))
                 .addAllTags(map(metadata.getTags()))
                 .setLocale(map(metadata.getLocale()))
+                .setHasChildren(metadata.hasChildren())
+                .setParent(map(metadata.getParent().orElse(null)))
+                .setFileName(mapOutgoing(metadata.getFileName().orElse(null)))
                 .build();
 
     }
@@ -145,5 +152,13 @@ public class GrpcMapper {
 
     private BigInteger map(long version) {
         return version == -1 ? null : BigInteger.valueOf(version);
+    }
+
+    public IngestSourceChunk map(GrpcIngestSourceChunk grpcIngestSourceChunk) {
+        return new IngestSourceChunk(
+                map(grpcIngestSourceChunk.getUploadId()),
+                grpcIngestSourceChunk.getFileName(),
+                grpcIngestSourceChunk.getData().toByteArray()
+        );
     }
 }

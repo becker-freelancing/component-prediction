@@ -1,10 +1,10 @@
 package com.becker.freelance.component.prediction.backend.query.adapter.grpc;
 
+import com.becker.freelance.component.prediction.backend.storage.ApiSourceMetadataReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.query.spi.AppRepository;
-import com.becker.freelance.component.prediction.backend.query.spi.DocumentMetadataRepository;
+import com.becker.freelance.component.prediction.backend.query.spi.SourceMetadataRepository;
 import com.becker.freelance.component.prediction.backend.query.spi.TagRepository;
 import com.becker.freelance.component.prediction.backend.storage.ApiAppsReadRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.ApiTagsReadRepositoryGrpc;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
@@ -15,7 +15,7 @@ public class GrpcAdapterConfig {
 
 
     @GrpcClient("backendstoragereadservice")
-    private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
+    private ApiSourceMetadataReadRepositoryGrpc.ApiSourceMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
 
     @GrpcClient("backendstorageappreadservice")
     private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub appsReadRepositoryBlockingStub;
@@ -24,8 +24,8 @@ public class GrpcAdapterConfig {
     private ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub tagsReadRepositoryBlockingStub;
 
     @Bean
-    public DocumentMetadataRepository documentMetadataRepository(GrpcAdapterMapper grpcAdapterMapper) {
-        return new GrpcDocumentMetadataRepository(metadataReadRepositoryBlockingStub, grpcAdapterMapper);
+    public SourceMetadataRepository sourceMetadataRepository(GrpcAdapterMapper grpcAdapterMapper) {
+        return new GrpcSourceMetadataRepository(metadataReadRepositoryBlockingStub, grpcAdapterMapper);
     }
 
     @Bean

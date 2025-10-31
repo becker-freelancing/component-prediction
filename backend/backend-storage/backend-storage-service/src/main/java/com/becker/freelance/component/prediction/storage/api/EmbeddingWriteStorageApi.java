@@ -1,10 +1,10 @@
 package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.ApiEmbeddingWriteRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentEmbedding;
-import com.becker.freelance.component.prediction.backend.storage.GrpcDocumentMetadata;
-import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
-import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
+import com.becker.freelance.component.prediction.backend.storage.GrpcSourceEmbedding;
+import com.becker.freelance.component.prediction.backend.storage.GrpcSourceMetadata;
+import com.becker.freelance.component.prediction.storage.domain.SourceEmbedding;
+import com.becker.freelance.component.prediction.storage.domain.SourceMetadata;
 import com.becker.freelance.component.prediction.storage.spi.EmbeddingRepository;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
@@ -23,9 +23,9 @@ public class EmbeddingWriteStorageApi extends ApiEmbeddingWriteRepositoryGrpc.Ap
     }
 
     @Override
-    public void save(GrpcDocumentEmbedding request, StreamObserver<GrpcDocumentMetadata> responseObserver) {
-        DocumentEmbedding embedding = grpcMapper.mapIncoming(request);
-        DocumentMetadata saved = embeddingRepository.save(embedding);
+    public void save(GrpcSourceEmbedding request, StreamObserver<GrpcSourceMetadata> responseObserver) {
+        SourceEmbedding embedding = grpcMapper.mapIncoming(request);
+        SourceMetadata saved = embeddingRepository.save(embedding);
         responseObserver.onNext(grpcMapper.mapOutgoing(saved));
         responseObserver.onCompleted();
     }

@@ -1,13 +1,13 @@
 package com.becker.freelance.component.prediction.gateway.adapter.grcp;
 
 import com.becker.freelance.component.prediction.backend.ingest.ApiAppsIngestRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.ingest.ApiDocumentMetadataIngestRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.ingest.ApiSourceIngestRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.ingest.ApiTagsIngestRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.query.ApiAppsReadRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.query.ApiDocumentMetadataReadRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.query.ApiSourceMetadataReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.query.ApiTagsReadRepositoryGrpc;
 import com.becker.freelance.component.prediction.gateway.spi.AppStorageService;
-import com.becker.freelance.component.prediction.gateway.spi.DocumentMetadataStorageService;
+import com.becker.freelance.component.prediction.gateway.spi.SourceStorageService;
 import com.becker.freelance.component.prediction.gateway.spi.TagsStorageService;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class GrpcConfiguration {
 
 
     @GrpcClient("backendingestservice")
-    private ApiDocumentMetadataIngestRepositoryGrpc.ApiDocumentMetadataIngestRepositoryBlockingStub metadataIngestRepositoryBlockingStub;
+    private ApiSourceIngestRepositoryGrpc.ApiSourceIngestRepositoryStub sourceIngestRepositoryBlockingStub;
 
     @GrpcClient("backendappingestservice")
     private ApiAppsIngestRepositoryGrpc.ApiAppsIngestRepositoryBlockingStub appsIngestRepositoryBlockingStub;
@@ -27,7 +27,7 @@ public class GrpcConfiguration {
     private ApiTagsIngestRepositoryGrpc.ApiTagsIngestRepositoryBlockingStub tagsIngestRepositoryBlockingStub;
 
     @GrpcClient("backendreadservice")
-    private ApiDocumentMetadataReadRepositoryGrpc.ApiDocumentMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
+    private ApiSourceMetadataReadRepositoryGrpc.ApiSourceMetadataReadRepositoryBlockingStub metadataReadRepositoryBlockingStub;
 
     @GrpcClient("backendappreadservice")
     private ApiAppsReadRepositoryGrpc.ApiAppsReadRepositoryBlockingStub appsReadRepositoryBlockingStub;
@@ -36,8 +36,8 @@ public class GrpcConfiguration {
     private ApiTagsReadRepositoryGrpc.ApiTagsReadRepositoryBlockingStub tagsReadRepositoryBlockingStub;
 
     @Bean
-    public DocumentMetadataStorageService documentMetadataStorageService() {
-        return new GrpcDocumentMetadataStorageService(metadataIngestRepositoryBlockingStub, metadataReadRepositoryBlockingStub);
+    public SourceStorageService documentMetadataStorageService() {
+        return new GrpcSourceStorageService(sourceIngestRepositoryBlockingStub, metadataReadRepositoryBlockingStub);
     }
 
     @Bean

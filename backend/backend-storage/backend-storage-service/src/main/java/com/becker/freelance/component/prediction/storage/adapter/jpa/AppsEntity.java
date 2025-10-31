@@ -18,7 +18,7 @@ public class AppsEntity {
     private String appName;
 
     @OneToMany(mappedBy = "app", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DocumentMetadataEntity> metadata;
+    private List<SourceMetadataEntity> metadata;
 
     public UUID getId() {
         return id;
@@ -36,11 +36,11 @@ public class AppsEntity {
         this.appName = appName;
     }
 
-    public List<DocumentMetadataEntity> getMetadata() {
+    public List<SourceMetadataEntity> getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(List<DocumentMetadataEntity> metadata) {
+    public void setMetadata(List<SourceMetadataEntity> metadata) {
         this.metadata = metadata;
     }
 }

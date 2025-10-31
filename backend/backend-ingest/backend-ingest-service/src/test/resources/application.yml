@@ -1,0 +1,3 @@
+sourceextraction:
+  content_extractor_service_prefix: content-extractor
+  content_extractor_service_grpc_port: 6994

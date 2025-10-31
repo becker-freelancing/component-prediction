@@ -21,22 +21,29 @@ message GrpcIngestTag {
     string tag = 2;
 }
 
-message GrpcIngestDocumentMetadata {
+message GrpcIngestSourceMetadata {
     GrpcIngestUUID id = 1;
     GrpcIngestApp app = 2;
-    string in_app_action_path = 3;
-    string action_title = 4;
-    string action_description = 5;
-    string action_short_description = 6;
-    int64 version = 7;
-    string created_at = 8;
-    string last_modified_at = 9;
-    repeated GrpcIngestTag tags = 10;
+    int64 version = 3;
+    string created_at = 4;
+    string last_modified_at = 5;
+    repeated GrpcIngestTag tags = 6;
+    string file_name = 7;
+    GrpcIngestSourceMetadata parent = 8;
+    bool hasChildren = 9;
+    string locale = 10;
+}
+
+message GrpcIngestSourceChunk {
+    GrpcIngestUUID upload_id = 1;
+    string file_name = 2;
+    bytes data = 3;
 }
 
 
-service ApiDocumentMetadataIngestRepository {
-    rpc Save (GrpcIngestDocumentMetadata) returns (.com.becker.freelance.component.prediction.backend.query.GrpcQueryDocumentMetadata);
+service ApiSourceIngestRepository {
+    rpc PrepareSave (GrpcIngestSourceMetadata) returns (GrpcIngestUUID);
+    rpc HandleSave (stream GrpcIngestSourceChunk) returns (.com.becker.freelance.component.prediction.backend.query.GrpcQuerySourceMetadata);
 }
 
 service ApiTagsIngestRepository {

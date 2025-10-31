@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.becker.freelance.component.prediction.backend.SourceContentExtraction;
+
+import "google/protobuf/empty.proto";
+
+
+message GrpcSourceContentExtractionUUID {
+    string id = 1;
+}
+
+message GrpcSourceContentExtraction {
+    string extract = 1;
+}
+
+message GrpcSourceContentExtractionRequestChunk {
+    GrpcSourceContentExtractionUUID id = 1;
+    bytes data = 2;
+}
+
+message GrpcSourceContentExtractionChunk {
+    GrpcSourceContentExtractionUUID id = 1;
+    string chunk = 2;
+}
+
+message GrpcSourceContentExtractionSupportsResponse {
+    bool supports = 1;
+}
+
+service ApiSourceContentExtractionService {
+    rpc PrepareExtraction (google.protobuf.Empty) returns (GrpcSourceContentExtractionUUID);
+    rpc Buffer (stream GrpcSourceContentExtractionRequestChunk) returns (google.protobuf.Empty);
+    rpc SupportsOrReset(GrpcSourceContentExtractionUUID) returns (GrpcSourceContentExtractionSupportsResponse);
+    rpc Extract(GrpcSourceContentExtractionUUID) returns (stream GrpcSourceContentExtractionChunk);
+}

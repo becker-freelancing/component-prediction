@@ -2,8 +2,8 @@ package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.*;
 import com.becker.freelance.component.prediction.storage.domain.App;
-import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
-import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
+import com.becker.freelance.component.prediction.storage.domain.SourceEmbedding;
+import com.becker.freelance.component.prediction.storage.domain.SourceMetadata;
 import com.becker.freelance.component.prediction.storage.domain.Tag;
 import com.becker.freelance.component.prediction.storage.spi.EmbeddingRepository;
 import io.grpc.stub.StreamObserver;
@@ -42,29 +42,23 @@ class EmbeddingWriteStorageApiTest {
         ZonedDateTime created = ZonedDateTime.of(LocalDateTime.of(2020, 1, 1, 0, 0, 0), ZoneId.of("UTC"));
 
 
-        DocumentMetadata documentMetadata = new DocumentMetadata(
+        SourceMetadata sourceMetadata = new SourceMetadata(
                 id,
                 new App(appId, "app"),
-                "in-app",
-                "title",
-                "desc",
-                "short-desc",
-                "de",
                 BigInteger.ONE,
+                created,
                 created,
                 Set.of(new Tag(tagId1, "t1"), new Tag(tagId2, "t2"))
         );
-        DocumentEmbedding embedding = new DocumentEmbedding(id, new float[][]{{1f, 2f}, {2f, 3f}});
+        SourceEmbedding embedding = new SourceEmbedding(id, new float[][]{{1f, 2f}});
 
 
-        doReturn(documentMetadata).when(embeddingRepository).save(embedding);
+        doReturn(sourceMetadata).when(embeddingRepository).save(embedding);
 
-        GrpcDocumentEmbedding request = GrpcDocumentEmbedding.newBuilder()
+        GrpcSourceEmbedding request = GrpcSourceEmbedding.newBuilder()
                 .setMetadataId(GrpcUUID.newBuilder().setId(id.toString()).build())
-                .setActionDescriptionEmbedding(GrpcEmbedding.newBuilder()
-                        .addEmbeddings(GrpcFloatArray.newBuilder().addArray(1).addArray(2).build())
-                        .addEmbeddings(GrpcFloatArray.newBuilder().addArray(2).addArray(3).build())
-                        .build()).build();
+                .setEmbeddings(GrpcFloatArray.newBuilder().addArray(1).addArray(2).build())
+                .build();
 
         StreamObserverAssertion streamObserverAssertion = new StreamObserverAssertion(id.toString());
 
@@ -73,7 +67,7 @@ class EmbeddingWriteStorageApiTest {
 
     }
 
-    class StreamObserverAssertion implements StreamObserver<GrpcDocumentMetadata> {
+    class StreamObserverAssertion implements StreamObserver<GrpcSourceMetadata> {
 
         String id;
 
@@ -82,7 +76,7 @@ class EmbeddingWriteStorageApiTest {
         }
 
         @Override
-        public void onNext(GrpcDocumentMetadata saved) {
+        public void onNext(GrpcSourceMetadata saved) {
             assertEquals(id, saved.getId().getId());
         }
 

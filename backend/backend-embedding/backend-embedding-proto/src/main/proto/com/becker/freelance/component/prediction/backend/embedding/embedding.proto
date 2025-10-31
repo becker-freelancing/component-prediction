@@ -4,6 +4,7 @@ option java_multiple_files = true;
 
 
 package com.becker.freelance.component.prediction.backend.embedding;
+import "google/protobuf/empty.proto";
 
 
 message GrpcFloatArray {
@@ -11,15 +12,21 @@ message GrpcFloatArray {
 }
 
 message GrpcEmbedding {
-    repeated GrpcFloatArray embeddings = 1;
+    GrpcFloatArray embeddings = 1;
 }
 
-message GrpcEmbeddingRequest {
-    string text = 1;
+message GrpcEmbeddingRequestChunk {
+    bytes data = 1;
+}
+
+message GrpcPreferredChunkSize {
+    int32 size = 1;
 }
 
 
 service ApiEmbeddingService {
 
-    rpc Embed (GrpcEmbeddingRequest) returns (GrpcEmbedding);
+    rpc PreferredChunkSize(google.protobuf.Empty) returns (GrpcPreferredChunkSize);
+
+    rpc Embed (stream GrpcEmbeddingRequestChunk) returns (stream GrpcEmbedding);
 }

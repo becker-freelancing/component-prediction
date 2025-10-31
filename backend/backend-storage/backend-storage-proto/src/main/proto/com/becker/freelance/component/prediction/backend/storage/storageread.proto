@@ -7,11 +7,11 @@ package com.becker.freelance.component.prediction.backend.storage;
 import "com/becker/freelance/component/prediction/backend/storage/storagedto.proto";
 import "google/protobuf/empty.proto";
 
-service ApiDocumentMetadataReadRepository {
+service ApiSourceMetadataReadRepository {
 
-    rpc FindAll (google.protobuf.Empty) returns (GrpcDocumentMetadataList);
+    rpc FindAll (google.protobuf.Empty) returns (GrpcSourceMetadataList);
 
-    rpc FindById (GrpcUUID) returns (GrpcDocumentMetadata);
+    rpc FindById (GrpcUUID) returns (GrpcSourceMetadata);
 }
 
 service ApiTagsReadRepository {

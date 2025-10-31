@@ -7,28 +7,38 @@ import com.becker.freelance.component.prediction.language.detection.GrpcLocale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class GrpcLanguageDetectionTest {
 
-    GrpcLanguageDetectorGrpc.GrpcLanguageDetectorBlockingStub stub;
-    GrpcLanguageDetection detection;
+    private GrpcLanguageDetectorGrpc.GrpcLanguageDetectorBlockingStub stub;
+    private GrpcLanguageDetection detectionService;
 
     @BeforeEach
     void setUp() {
         stub = mock(GrpcLanguageDetectorGrpc.GrpcLanguageDetectorBlockingStub.class);
-        detection = new GrpcLanguageDetection(stub);
+        detectionService = new GrpcLanguageDetection(stub);
     }
 
     @Test
-    void detectLanguage() {
-        doReturn(GrpcLocale.newBuilder().setLocale("de").build()).when(stub).detectLanguage(GrpcLanguageDetectionQuery.newBuilder().setQuery("Hallo").build());
+    void detectLanguage_shouldReturnLocale_whenGrpcReturnsLocale() {
+        GrpcLocale grpcLocale = GrpcLocale.newBuilder().setLocale("en").build();
+        when(stub.detectLanguage(any(GrpcLanguageDetectionQuery.class))).thenReturn(grpcLocale);
 
-        Locale locale = detection.detectLanguage("Hallo");
+        Locale result = detectionService.detectLanguage("Hello world");
 
-        assertEquals("de", locale.localeAbbreviation());
+        assertNotNull(result);
+        assertEquals("en", result.localeAbbreviation());
+        verify(stub).detectLanguage(any(GrpcLanguageDetectionQuery.class));
     }
 
+    @Test
+    void detectLanguage_shouldThrowException_whenGrpcThrows() {
+        when(stub.detectLanguage(any(GrpcLanguageDetectionQuery.class)))
+                .thenThrow(new RuntimeException("gRPC error"));
+
+        assertThrows(RuntimeException.class, () -> detectionService.detectLanguage("Bonjour"));
+    }
 }

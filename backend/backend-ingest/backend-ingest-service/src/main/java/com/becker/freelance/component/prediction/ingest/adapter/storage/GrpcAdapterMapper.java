@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 public class GrpcAdapterMapper {
 
     private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcSourceMetadata NULL_METADATA = GrpcSourceMetadata.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).build();
+
+
 
 
     public App map(GrpcApp app) {
@@ -70,18 +73,21 @@ public class GrpcAdapterMapper {
         return id.getId().isEmpty() ? null : UUID.fromString(id.getId());
     }
 
-    public DocumentMetadata map(GrpcDocumentMetadata metadata) {
-        return new DocumentMetadata(
+    public SourceMetadata map(GrpcSourceMetadata metadata) {
+        if (metadata == null){
+            return null;
+        }
+        return new SourceMetadata(
                 map(metadata.getId()),
                 map(metadata.getApp()),
-                mapIncoming(metadata.getInAppActionPath()),
-                mapIncoming(metadata.getActionTitle()),
-                mapIncoming(metadata.getActionDescription()),
-                mapIncoming(metadata.getActionShortDescription()),
                 mapLocale(metadata.getLocale()),
                 map(metadata.getVersion()),
                 map(metadata.getCreatedAt()),
-                map(metadata.getTagsList())
+                map(metadata.getLastModifiedAt()),
+                map(metadata.getTagsList()),
+                mapIncoming(metadata.getFileName()),
+                map(metadata.getParent()),
+                metadata.getHasChildren()
         );
     }
 
@@ -89,18 +95,21 @@ public class GrpcAdapterMapper {
         return locale.isEmpty() ? null : new Locale(locale);
     }
 
-    public GrpcDocumentMetadata map(DocumentMetadata metadata) {
-        return GrpcDocumentMetadata.newBuilder()
+    public GrpcSourceMetadata map(SourceMetadata metadata) {
+        if (metadata == null){
+            return NULL_METADATA;
+        }
+        return GrpcSourceMetadata.newBuilder()
                 .setId(map(metadata.getId()))
                 .setApp(map(metadata.getApp()))
-                .setInAppActionPath(mapOutgoing(metadata.getInAppActionPath()))
-                .setActionTitle(mapOutgoing(metadata.getActionTitle()))
-                .setActionDescription(mapOutgoing(metadata.getActionDescription()))
-                .setActionShortDescription(mapOutgoing(metadata.getActionShortDescription()))
                 .setLocale(mapOutgoing(metadata.getLocale().localeAbbreviation()))
                 .setVersion(map(metadata.getVersion()))
                 .setCreatedAt(map(metadata.getCreatedAt()))
+                .setLastModifiedAt(map(metadata.getLastModifiedAt()))
                 .addAllTags(map(metadata.getTags()))
+                .setFileName(mapOutgoing(metadata.getFileName().orElse(null)))
+                .setParent(map(metadata.getParent().orElse(null)))
+                .setHasChildren(metadata.hasChildren())
                 .build();
 
     }
@@ -138,26 +147,18 @@ public class GrpcAdapterMapper {
         return version == -1 ? null : BigInteger.valueOf(version);
     }
 
-    public GrpcDocumentEmbedding map(DocumentEmbedding embedding, GrpcUUID metadataId) {
-        return GrpcDocumentEmbedding.newBuilder()
-                .setMetadataId(metadataId)
-                .setActionDescriptionEmbedding(map(embedding.embeddedActionDescription()))
-                .build();
-    }
-
-    public GrpcEmbedding map(float[][] embedding) {
-        GrpcEmbedding.Builder builder = GrpcEmbedding.newBuilder();
-        for (float[] floats : embedding) {
-            builder.addEmbeddings(map(floats));
-        }
-        return builder.build();
-    }
-
     private GrpcFloatArray map(float[] floats) {
         GrpcFloatArray.Builder builder = GrpcFloatArray.newBuilder();
         for (float f : floats) {
             builder.addArray(f);
         }
         return builder.build();
+    }
+
+    public GrpcSourceEmbedding map(SourceMetadata metadata, float[] embedding) {
+        return GrpcSourceEmbedding.newBuilder()
+                .setMetadataId(map(metadata.getId()))
+                .setEmbeddings(map(embedding))
+                .build();
     }
 }

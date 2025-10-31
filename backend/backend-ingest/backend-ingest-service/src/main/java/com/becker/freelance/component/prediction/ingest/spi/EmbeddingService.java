@@ -1,9 +1,11 @@
 package com.becker.freelance.component.prediction.ingest.spi;
 
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentEmbedding;
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
+import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;
+
+import java.util.function.Consumer;
 
 public interface EmbeddingService {
 
-    public DocumentEmbedding embed(DocumentMetadata metadata);
+
+    void embed(ByteArraysBuffer extractionBuffer, String name, Consumer<float[]> embedding);
 }

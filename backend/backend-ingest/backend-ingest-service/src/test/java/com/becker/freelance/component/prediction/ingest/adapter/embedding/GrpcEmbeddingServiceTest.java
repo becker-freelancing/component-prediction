@@ -1,45 +1,101 @@
 package com.becker.freelance.component.prediction.ingest.adapter.embedding;
 
-import com.becker.freelance.component.prediction.backend.embedding.ApiEmbeddingServiceGrpc;
-import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbedding;
-import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbeddingRequest;
-import com.becker.freelance.component.prediction.backend.embedding.GrpcFloatArray;
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentEmbedding;
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
+import com.becker.freelance.component.prediction.backend.embedding.*;
+import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;
+import com.google.protobuf.Empty;
+import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class GrpcEmbeddingServiceTest {
 
-    ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub stub;
-    GrpcEmbeddingService service;
+    private ApiEmbeddingServiceGrpc.ApiEmbeddingServiceStub asyncStub;
+    private ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub blockingStub;
+    private ByteArraysBuffer buffer;
+    private GrpcEmbeddingService service;
 
     @BeforeEach
     void setUp() {
-        stub = mock(ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub.class);
-        service = new GrpcEmbeddingService(stub);
+        asyncStub = mock(ApiEmbeddingServiceGrpc.ApiEmbeddingServiceStub.class);
+        blockingStub = mock(ApiEmbeddingServiceGrpc.ApiEmbeddingServiceBlockingStub.class);
+        buffer = mock(ByteArraysBuffer.class);
+
+        service = new GrpcEmbeddingService(asyncStub, blockingStub);
     }
 
     @Test
-    void embed() {
-        doReturn(GrpcEmbedding.newBuilder().addAllEmbeddings(List.of(
-                GrpcFloatArray.newBuilder().addAllArray(List.of(1f, 2f)).build(),
-                GrpcFloatArray.newBuilder().addAllArray(List.of(2f, 3f)).build())
-        ).build()).when(stub).embed(GrpcEmbeddingRequest.newBuilder().setText("Hello").build());
+    void embed_shouldSendChunksAndInvokeConsumer() throws Exception {
+        // Arrange
+        int preferredSize = 4;
+        when(blockingStub.preferredChunkSize(any(Empty.class)))
+                .thenReturn(GrpcPreferredChunkSize.newBuilder().setSize(preferredSize).build());
 
+        byte[] testData = "abcdefgh".getBytes();
+        InputStream is = new ByteArrayInputStream(testData);
+        when(buffer.newInputStream("doc")).thenReturn(is);
 
-        DocumentMetadata metadata = mock(DocumentMetadata.class);
-        doReturn("Hello").when(metadata).getActionDescription();
+        // Capture StreamObserver returned from stub.embed()
+        @SuppressWarnings("unchecked")
+        ArgumentCaptor<StreamObserver<GrpcEmbedding>> serverObserverCaptor = ArgumentCaptor.forClass(StreamObserver.class);
 
-        DocumentEmbedding embedding = service.embed(metadata);
+        StreamObserver<GrpcEmbeddingRequestChunk> clientObserver = mock(StreamObserver.class);
+        when(asyncStub.embed(serverObserverCaptor.capture())).thenReturn(clientObserver);
 
-        assertArrayEquals(new float[][]{{1f, 2f}, {2f, 3f}}, embedding.embeddedActionDescription());
+        AtomicReference<float[]> result = new AtomicReference<>();
+        Consumer<float[]> consumer = result::set;
+
+        // Act
+        service.embed(buffer, "doc", consumer);
+
+        // Assert: should have sent 2 chunks (8 bytes / 4 size)
+        verify(clientObserver, atLeast(2)).onNext(any(GrpcEmbeddingRequestChunk.class));
+        verify(clientObserver).onCompleted();
+
+        // Simulate server response
+        StreamObserver<GrpcEmbedding> serverObserver = serverObserverCaptor.getValue();
+        GrpcFloatArray floatArray = GrpcFloatArray.newBuilder()
+                .addAllArray(List.of(1.0f, 2.0f, 3.0f))
+                .build();
+        serverObserver.onNext(GrpcEmbedding.newBuilder().setEmbeddings(floatArray).build());
+
+        assertNotNull(result.get());
+        assertArrayEquals(new float[]{1f, 2f, 3f}, result.get(), 0.0001f);
     }
 
+
+    @Test
+    void embeddingStreamObserver_shouldMapAndDeliverFloats() {
+        AtomicReference<float[]> result = new AtomicReference<>();
+        Consumer<float[]> consumer = result::set;
+
+        GrpcEmbeddingService.EmbeddingStreamObserver observer =
+                new GrpcEmbeddingService.EmbeddingStreamObserver(consumer);
+
+        GrpcFloatArray array = GrpcFloatArray.newBuilder()
+                .addAllArray(List.of(5.0f, 6.0f))
+                .build();
+        observer.onNext(GrpcEmbedding.newBuilder().setEmbeddings(array).build());
+
+        assertArrayEquals(new float[]{5f, 6f}, result.get(), 0.0001f);
+    }
+
+    @Test
+    void embeddingStreamObserver_onError_shouldThrowIllegalStateException() {
+        GrpcEmbeddingService.EmbeddingStreamObserver observer =
+                new GrpcEmbeddingService.EmbeddingStreamObserver(f -> {});
+
+        assertThrows(IllegalStateException.class, () ->
+                observer.onError(new RuntimeException("boom")));
+    }
 }

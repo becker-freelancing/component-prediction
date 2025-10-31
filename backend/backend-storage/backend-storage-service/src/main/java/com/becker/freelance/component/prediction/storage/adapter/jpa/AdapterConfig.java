@@ -16,11 +16,11 @@ public class AdapterConfig {
 
     @Bean
     public DocumentMetadataRepository documentMetadataRepository(
-            DocumentMetadataSpringDataJpaRepository metadataSpringDataJpaRepository,
+            SourceMetadataSpringDataJpaRepository metadataSpringDataJpaRepository,
             AppsSpringDataJpaRepository appsSpringDataJpaRepository,
             TagsSpringDataJpaRepository tagsSpringDataJpaRepository
     ) {
-        return new DocumentMetadataRepositoryImpl(
+        return new SourceMetadataRepositoryImpl(
                 metadataSpringDataJpaRepository,
                 tagsSpringDataJpaRepository,
                 appsSpringDataJpaRepository

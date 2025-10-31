@@ -1,10 +1,7 @@
 package com.becker.freelance.component.prediction.storage.api;
 
 import com.becker.freelance.component.prediction.backend.storage.*;
-import com.becker.freelance.component.prediction.storage.domain.App;
-import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
-import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
-import com.becker.freelance.component.prediction.storage.domain.Tag;
+import com.becker.freelance.component.prediction.storage.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -23,6 +20,7 @@ class GrpcMapper {
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
     private static final GrpcApp NULL_APP = GrpcApp.newBuilder().setId(GrpcUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcSourceMetadata NULL_METADATA = GrpcSourceMetadata.newBuilder().build();
 
 
     private BigInteger mapIncoming(Long l) {
@@ -30,19 +28,26 @@ class GrpcMapper {
     }
 
 
-    public GrpcDocumentMetadata mapOutgoing(DocumentMetadata saved) {
-        return GrpcDocumentMetadata.newBuilder()
+    public GrpcSourceMetadata mapOutgoing(SourceMetadata saved) {
+        if (saved == null){
+            return NULL_METADATA;
+        }
+        return GrpcSourceMetadata.newBuilder()
                 .setId(mapOutgoing(saved.getId()))
                 .setApp(mapOutgoing(saved.getApp()))
-                .setInAppActionPath(mapOutgoing(saved.getInAppActionPath()))
-                .setActionTitle(mapOutgoing(saved.getActionTitle()))
-                .setActionDescription(mapOutgoing(saved.getActionDescription()))
-                .setActionShortDescription(mapOutgoing(saved.getActionShortDescription()))
                 .setLocale(mapOutgoing(saved.getLocale()))
                 .setVersion(mapOutgoing(saved.getVersion()))
                 .setCreatedAt(mapOutgoingTime(saved.getCreatedAt()))
+                .setLastModifiedAt(mapOutgoingTime(saved.getLastModifiedAt()))
                 .addAllTags(mapOutgoing(saved.getTags()))
+                .setFileName(mapOutgoing(saved.getFileName().orElse(null)))
+                .setParent(mapOutgoing(saved.getParent().orElse(null)))
+                .setHasChildren(saved.hasChildren())
                 .build();
+    }
+
+    private String mapOutgoing(Locale locale) {
+        return locale == null ? "" : locale.abbreviation();
     }
 
     private long mapOutgoing(BigInteger version) {
@@ -78,22 +83,32 @@ class GrpcMapper {
                 .build();
     }
 
-    public DocumentMetadata mapIncoming(GrpcDocumentMetadata request) {
-        return new DocumentMetadata(
+    public SourceMetadata mapIncoming(GrpcSourceMetadata request) {
+        if (NULL_METADATA.equals(request)){
+            return null;
+        }
+        return new SourceMetadata(
                 mapIncoming(request.getId()),
                 mapIncoming(request.getApp()),
-                mapIncoming(request.getInAppActionPath()),
-                mapIncoming(request.getActionTitle()),
-                mapIncoming(request.getActionDescription()),
-                mapIncoming(request.getActionShortDescription()),
-                mapIncoming(request.getLocale()),
+                mapIncomingLocale(request.getLocale()),
                 mapIncoming(request.getVersion()),
                 mapIncomingTime(request.getCreatedAt()),
-                mapIncoming(request.getTagsList())
+                mapIncomingTime(request.getLastModifiedAt()),
+                mapIncoming(request.getTagsList()),
+                mapIncoming(request.getFileName()),
+                mapIncoming(request.getParent()),
+                request.getHasChildren()
         );
     }
 
+    private Locale mapIncomingLocale(String locale) {
+        return locale.isEmpty() ? null : new Locale(locale);
+    }
+
     private ZonedDateTime mapIncomingTime(String createdAt) {
+        if (createdAt.isEmpty()){
+            return null;
+        }
         ZonedDateTime parsed = ZonedDateTime.parse(createdAt);
         return parsed.equals(MIN_ZONED_DATE_TIME) ? null : parsed;
     }
@@ -125,20 +140,12 @@ class GrpcMapper {
         return s == null ? "" : s;
     }
 
-    public DocumentEmbedding mapIncoming(GrpcDocumentEmbedding request) {
+    public SourceEmbedding mapIncoming(GrpcSourceEmbedding request) {
         UUID metadataId = mapIncoming(request.getMetadataId());
-        float[][] actionDescriptionEmbedding = mapIncoming(request.getActionDescriptionEmbedding());
-        return new DocumentEmbedding(metadataId, actionDescriptionEmbedding);
+        float[] embedding = map(request.getEmbeddings());
+        return new SourceEmbedding(metadataId, new float[][]{embedding});
     }
 
-    private float[][] mapIncoming(GrpcEmbedding actionDescriptionEmbedding) {
-        List<GrpcFloatArray> embeddingsList = actionDescriptionEmbedding.getEmbeddingsList();
-        float[][] embedding = new float[embeddingsList.size()][];
-        for (int i = 0; i < embedding.length; i++) {
-            embedding[i] = map(embeddingsList.get(i));
-        }
-        return embedding;
-    }
 
     private float[] map(GrpcFloatArray grpcFloatArray) {
         List<Float> floats = grpcFloatArray.getArrayList();

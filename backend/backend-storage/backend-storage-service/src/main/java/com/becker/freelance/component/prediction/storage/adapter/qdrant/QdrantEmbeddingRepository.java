@@ -1,7 +1,7 @@
 package com.becker.freelance.component.prediction.storage.adapter.qdrant;
 
-import com.becker.freelance.component.prediction.storage.domain.DocumentEmbedding;
-import com.becker.freelance.component.prediction.storage.domain.DocumentMetadata;
+import com.becker.freelance.component.prediction.storage.domain.SourceEmbedding;
+import com.becker.freelance.component.prediction.storage.domain.SourceMetadata;
 import com.becker.freelance.component.prediction.storage.spi.DocumentMetadataRepository;
 import com.becker.freelance.component.prediction.storage.spi.EmbeddingRepository;
 import io.qdrant.client.QdrantClient;
@@ -32,8 +32,8 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
     }
 
     @Override
-    public DocumentMetadata save(DocumentEmbedding embedding) {
-        DocumentMetadata relatedMetadata = metadataRepository.findById(embedding.metadataId()).orElseThrow(() -> new IllegalStateException("No Metadata with id '" + embedding.metadataId() + "' found"));
+    public SourceMetadata save(SourceEmbedding embedding) {
+        SourceMetadata relatedMetadata = metadataRepository.findById(embedding.metadataId()).orElseThrow(() -> new IllegalStateException("No Metadata with id '" + embedding.metadataId() + "' found"));
 
         collectionEnsurer.ensureCollectionExists(getCollectionName(relatedMetadata));
 
@@ -44,9 +44,9 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         return relatedMetadata;
     }
 
-    public Optional<DocumentEmbedding> findByMetadataId(UUID metadataId) {
+    public Optional<SourceEmbedding> findByMetadataId(UUID metadataId) {
         // Get Metadata
-        DocumentMetadata relatedMetadata = metadataRepository.findById(metadataId)
+        SourceMetadata relatedMetadata = metadataRepository.findById(metadataId)
                 .orElse(null);
         if (relatedMetadata == null) {
             return Optional.empty();
@@ -98,14 +98,14 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
             return Optional.empty();
         }
 
-        return Optional.of(new DocumentEmbedding(metadataId, embeddings.toArray(new float[0][])));
+        return Optional.of(new SourceEmbedding(metadataId, embeddings.toArray(new float[0][])));
     }
 
     private float denormalize(Float f, float l2Norm) {
         return f * l2Norm;
     }
 
-    private void upsertEmbeddings(DocumentEmbedding embedding, DocumentMetadata relatedMetadata) {
+    private void upsertEmbeddings(SourceEmbedding embedding, SourceMetadata relatedMetadata) {
 
         List<Points.PointStruct> points = buildPoints(embedding, relatedMetadata);
 
@@ -126,9 +126,9 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         }
     }
 
-    private List<Points.PointStruct> buildPoints(DocumentEmbedding embedding, DocumentMetadata relatedMetadata) {
+    private List<Points.PointStruct> buildPoints(SourceEmbedding embedding, SourceMetadata relatedMetadata) {
         List<Points.PointStruct> points = new ArrayList<>();
-        float[][] embeddeded = embedding.embeddedActionDescription();
+        float[][] embeddeded = embedding.embedding();
         for (int i = 0; i < embeddeded.length; i++) {
             float[] embed = embeddeded[i];
             Points.Vector vector = Points.Vector.newBuilder().addAllData(toFloatList(embed)).build();
@@ -162,7 +162,7 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
         return list;
     }
 
-    private void deleteVectorsWithDocumentId(DocumentMetadata metadata) {
+    private void deleteVectorsWithDocumentId(SourceMetadata metadata) {
         Points.Filter documentIdPayloadFilter = Points.Filter.newBuilder()
                 .addMust(Points.Condition.newBuilder()
                         .setField(Points.FieldCondition.newBuilder()
@@ -191,7 +191,7 @@ public class QdrantEmbeddingRepository implements EmbeddingRepository {
 
     }
 
-    private String getCollectionName(DocumentMetadata metadata) {
+    private String getCollectionName(SourceMetadata metadata) {
         return metadata.getApp().getId().toString();
     }
 

@@ -16,6 +16,7 @@
         <module>junit-test-commons</module>
         <module>language-detection</module>
         <module>grpc-exception-handler</module>
+        <module>buffering</module>
     </modules>
 
 </project>

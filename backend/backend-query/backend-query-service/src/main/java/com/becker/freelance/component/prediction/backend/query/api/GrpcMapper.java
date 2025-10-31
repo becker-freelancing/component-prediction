@@ -2,7 +2,8 @@ package com.becker.freelance.component.prediction.backend.query.api;
 
 import com.becker.freelance.component.prediction.backend.query.*;
 import com.becker.freelance.component.prediction.backend.query.domain.model.App;
-import com.becker.freelance.component.prediction.backend.query.domain.model.DocumentMetadata;
+import com.becker.freelance.component.prediction.backend.query.domain.model.Locale;
+import com.becker.freelance.component.prediction.backend.query.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.backend.query.domain.model.Tag;
 import org.springframework.stereotype.Service;
 
@@ -22,20 +23,28 @@ class GrpcMapper {
 
     private static final ZonedDateTime MIN_ZONED_DATE_TIME = ZonedDateTime.of(LocalDateTime.MIN, ZoneId.of("UTC"));
     private static final GrpcQueryApp NULL_APP = GrpcQueryApp.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).setAppName("nullable-app").build();
+    private static final GrpcQuerySourceMetadata NULL_METADATA = GrpcQuerySourceMetadata.newBuilder().setId(GrpcQueryUUID.newBuilder().setId("").build()).build();
 
-    public GrpcQueryDocumentMetadata mapOutgoing(DocumentMetadata saved) {
-        return GrpcQueryDocumentMetadata.newBuilder()
-                .setId(mapOutgoing(saved.getId()))
-                .setApp(mapOutgoing(saved.getApp()))
-                .setInAppActionPath(mapOutgoing(saved.getInAppActionPath()))
-                .setActionTitle(mapOutgoing(saved.getActionTitle()))
-                .setActionDescription(mapOutgoing(saved.getActionDescription()))
-                .setActionShortDescription(mapOutgoing(saved.getActionShortDescription()))
-                .setLocale(mapOutgoing(saved.getLocale()))
-                .setVersion(mapOutgoing(saved.getVersion()))
-                .setCreatedAt(mapOutgoingTime(saved.getCreatedAt()))
-                .addAllTags(mapOutgoing(saved.getTags()))
+    public GrpcQuerySourceMetadata mapOutgoing(SourceMetadata metadata) {
+        if (metadata == null){
+            return NULL_METADATA;
+        }
+        return GrpcQuerySourceMetadata.newBuilder()
+                .setId(mapOutgoing(metadata.getId()))
+                .setApp(mapOutgoing(metadata.getApp()))
+                .setVersion(mapOutgoing(metadata.getVersion()))
+                .setCreatedAt(mapOutgoingTime(metadata.getCreatedAt()))
+                .setLastModifiedAt(mapOutgoingTime(metadata.getLastModifiedAt()))
+                .addAllTags(mapOutgoing(metadata.getTags()))
+                .setLocale(mapOutgoing(metadata.getLocale()))
+                .setHasChildren(metadata.hasChildren())
+                .setParent(mapOutgoing(metadata.getParent().orElse(null)))
+                .setFileName(mapOutgoing(metadata.getFileName().orElse(null)))
                 .build();
+    }
+
+    private String mapOutgoing(Locale locale) {
+        return locale == null ? "" : locale.abbreviation();
     }
 
     private long mapOutgoing(BigInteger version) {
@@ -87,8 +96,8 @@ class GrpcMapper {
                 .build();
     }
 
-    public GrpcQueryDocumentMetadataList mapOutgoingMetadata(List<DocumentMetadata> metadata) {
-        return GrpcQueryDocumentMetadataList.newBuilder()
+    public GrpcQuerySourceMetadataList mapOutgoingMetadata(List<SourceMetadata> metadata) {
+        return GrpcQuerySourceMetadataList.newBuilder()
                 .addAllMetadata(metadata.stream().map(this::mapOutgoing).toList())
                 .build();
     }

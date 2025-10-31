@@ -1,12 +1,12 @@
 package com.becker.freelance.component.prediction.ingest.adapter.sanitize;
 
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
+import com.becker.freelance.component.prediction.ingest.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.ingest.domain.model.Locale;
-import com.becker.freelance.component.prediction.ingest.spi.DocumentMetadataSanitizer;
+import com.becker.freelance.component.prediction.ingest.spi.SourceMetadataSanitizer;
 import com.becker.freelance.component.prediction.ingest.spi.LanguageDetectionService;
 
 
-public class LocaleSanitizer implements DocumentMetadataSanitizer {
+public class LocaleSanitizer implements SourceMetadataSanitizer {
 
     private final LanguageDetectionService languageDetectionService;
 
@@ -15,10 +15,12 @@ public class LocaleSanitizer implements DocumentMetadataSanitizer {
     }
 
     @Override
-    public DocumentMetadata sanitize(DocumentMetadata documentMetadata) {
+    public SourceMetadata sanitize(SourceMetadata sourceMetadata) {
 
-        Locale locale = languageDetectionService.detectLanguage(documentMetadata.getActionDescription());
-        documentMetadata.setLocale(locale);
-        return documentMetadata;
+        sourceMetadata.getContentPart().ifPresent(part -> {
+            Locale locale = languageDetectionService.detectLanguage(part);
+            sourceMetadata.setLocale(locale);
+        });
+        return sourceMetadata;
     }
 }

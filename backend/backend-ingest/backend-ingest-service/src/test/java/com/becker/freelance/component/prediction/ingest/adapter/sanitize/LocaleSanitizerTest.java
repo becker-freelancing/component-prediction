@@ -1,36 +1,48 @@
 package com.becker.freelance.component.prediction.ingest.adapter.sanitize;
 
-import com.becker.freelance.component.prediction.ingest.domain.model.DocumentMetadata;
 import com.becker.freelance.component.prediction.ingest.domain.model.Locale;
+import com.becker.freelance.component.prediction.ingest.domain.model.SourceMetadata;
 import com.becker.freelance.component.prediction.ingest.spi.LanguageDetectionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import java.util.Optional;
+
+import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class LocaleSanitizerTest {
 
-
-    LanguageDetectionService languageDetectionService;
-    LocaleSanitizer localeSanitizer;
+    private LanguageDetectionService languageDetectionService;
+    private LocaleSanitizer sanitizer;
 
     @BeforeEach
     void setUp() {
         languageDetectionService = mock(LanguageDetectionService.class);
-        localeSanitizer = new LocaleSanitizer(languageDetectionService);
+        sanitizer = new LocaleSanitizer(languageDetectionService);
     }
 
     @Test
-    void sanitize() {
-        doReturn(new Locale("de")).when(languageDetectionService).detectLanguage("Hallo");
+    void sanitize_shouldDetectLanguageAndSetLocale() {
+        SourceMetadata metadata = new SourceMetadata();
+        metadata.setContentPart("some text");
 
-        DocumentMetadata documentMetadata = new DocumentMetadata();
-        documentMetadata.setActionDescription("Hallo");
+        Locale detectedLocale = new Locale("en");
+        when(languageDetectionService.detectLanguage("some text")).thenReturn(detectedLocale);
 
-        DocumentMetadata sanitize = localeSanitizer.sanitize(documentMetadata);
+        SourceMetadata result = sanitizer.sanitize(metadata);
 
-        assertEquals(new Locale("de"), sanitize.getLocale());
+        verify(languageDetectionService).detectLanguage("some text");
+        assertEquals(detectedLocale, result.getLocale());
+    }
+
+    @Test
+    void sanitize_shouldNotCallDetectionIfContentPartEmpty() {
+        SourceMetadata metadata = new SourceMetadata();
+
+        SourceMetadata result = sanitizer.sanitize(metadata);
+
+        verifyNoInteractions(languageDetectionService);
+        assertNull(result.getLocale());
     }
 }

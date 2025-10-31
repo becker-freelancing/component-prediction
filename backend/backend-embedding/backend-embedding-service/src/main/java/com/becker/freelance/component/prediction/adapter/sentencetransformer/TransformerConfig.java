@@ -81,10 +81,10 @@ public class TransformerConfig {
     }
 
     @Bean
-    public TextChunker textChunker(@Value("${embedding.chunk_size}") int chunkSize,
+    public TextChunkerFactory textChunkerFactory(@Value("${embedding.chunk_size}") int chunkSize,
                                    @Value("${embedding.chunk_overlap}") int chunkOverlap,
                                    @Value("${embedding.chunk_threshold}") int chunkThreshold) {
-        return new TextChunker(chunkSize, chunkOverlap, chunkThreshold);
+        return new TextChunkerFactory(chunkSize, chunkOverlap, chunkThreshold);
     }
 
     @Bean
@@ -115,7 +115,7 @@ public class TransformerConfig {
     public EmbeddingService embeddingService(Model model,
                                              SentenceEmbeddingTranslator translator,
                                              TokenizationService tokenizationService,
-                                             TextChunker textChunker) {
-        return new EmbeddingServiceImpl(model, translator, tokenizationService, textChunker);
+                                             TextChunkerFactory textChunkerFactory) {
+        return new EmbeddingServiceImpl(model, translator, tokenizationService, textChunkerFactory);
     }
 }

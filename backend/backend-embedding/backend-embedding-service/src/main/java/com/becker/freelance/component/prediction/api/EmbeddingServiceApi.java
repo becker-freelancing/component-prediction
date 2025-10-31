@@ -2,9 +2,12 @@ package com.becker.freelance.component.prediction.api;
 
 import com.becker.freelance.component.prediction.backend.embedding.ApiEmbeddingServiceGrpc;
 import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbedding;
-import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbeddingRequest;
+import com.becker.freelance.component.prediction.backend.embedding.GrpcEmbeddingRequestChunk;
+import com.becker.freelance.component.prediction.backend.embedding.GrpcPreferredChunkSize;
+import com.becker.freelance.component.prediction.buffer.api.ByteArraysBufferFactory;
 import com.becker.freelance.component.prediction.spi.EmbeddingException;
 import com.becker.freelance.component.prediction.spi.EmbeddingService;
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,25 +16,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class EmbeddingServiceApi extends ApiEmbeddingServiceGrpc.ApiEmbeddingServiceImplBase {
 
     private final EmbeddingService embeddingService;
-    private final GrpcMapper grpcMapper;
 
     @Autowired
-    public EmbeddingServiceApi(EmbeddingService embeddingService, GrpcMapper grpcMapper) {
+    public EmbeddingServiceApi(EmbeddingService embeddingService) {
         this.embeddingService = embeddingService;
-        this.grpcMapper = grpcMapper;
     }
-
 
     @Override
-    public void embed(GrpcEmbeddingRequest request, StreamObserver<GrpcEmbedding> responseObserver) {
-        String text = grpcMapper.map(request);
-        try {
-            float[][] embedded = embeddingService.embed(text);
-            GrpcEmbedding grpcEmbedding = grpcMapper.map(embedded);
-            responseObserver.onNext(grpcEmbedding);
-            responseObserver.onCompleted();
-        } catch (EmbeddingException e) {
-            responseObserver.onError(e);
-        }
+    public void preferredChunkSize(Empty request, StreamObserver<GrpcPreferredChunkSize> responseObserver) {
+        GrpcPreferredChunkSize preferredChunkSize = GrpcPreferredChunkSize.newBuilder()
+                .setSize(1024)
+                .build();
+
+        responseObserver.onNext(preferredChunkSize);
+        responseObserver.onCompleted();
     }
+
+    @Override
+    public StreamObserver<GrpcEmbeddingRequestChunk> embed(StreamObserver<GrpcEmbedding> responseObserver) {
+        return new EmbeddingStreamObserver(embeddingService, ByteArraysBufferFactory.getInstance().createNew(), responseObserver);
+    }
+
+
 }

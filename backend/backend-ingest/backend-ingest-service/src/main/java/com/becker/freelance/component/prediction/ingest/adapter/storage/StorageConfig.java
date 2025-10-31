@@ -1,11 +1,12 @@
 package com.becker.freelance.component.prediction.ingest.adapter.storage;
 
 import com.becker.freelance.component.prediction.backend.storage.ApiAppsWriteRepositoryGrpc;
-import com.becker.freelance.component.prediction.backend.storage.ApiDocumentMetadataWriteRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.ApiEmbeddingWriteRepositoryGrpc;
+import com.becker.freelance.component.prediction.backend.storage.ApiSourceMetadataWriteRepositoryGrpc;
 import com.becker.freelance.component.prediction.backend.storage.ApiTagsWriteRepositoryGrpc;
 import com.becker.freelance.component.prediction.ingest.spi.AppsRepository;
-import com.becker.freelance.component.prediction.ingest.spi.DocumentRepository;
+import com.becker.freelance.component.prediction.ingest.spi.EmbeddingRepository;
+import com.becker.freelance.component.prediction.ingest.spi.MetadataRepository;
 import com.becker.freelance.component.prediction.ingest.spi.TagsRepository;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ public class StorageConfig {
     private ApiTagsWriteRepositoryGrpc.ApiTagsWriteRepositoryBlockingStub apiTagsWriteRepositoryBlockingStub;
 
     @GrpcClient("backenddocumentmetadatastorageservice")
-    private ApiDocumentMetadataWriteRepositoryGrpc.ApiDocumentMetadataWriteRepositoryBlockingStub apiDocumentMetadataWriteRepositoryBlockingStub;
+    private ApiSourceMetadataWriteRepositoryGrpc.ApiSourceMetadataWriteRepositoryBlockingStub apiSourceMetadataWriteRepositoryBlockingStub;
 
     @GrpcClient("backendembeddingstorageservice")
     private ApiEmbeddingWriteRepositoryGrpc.ApiEmbeddingWriteRepositoryBlockingStub apiEmbeddingWriteRepositoryBlockingStub;
@@ -32,15 +33,18 @@ public class StorageConfig {
     }
 
     @Bean
-    public DocumentRepository documentRepository(GrpcAdapterMapper grpcAdapterMapper) {
-        return new DocumentRepositoryImpl(apiEmbeddingWriteRepositoryBlockingStub,
-                apiDocumentMetadataWriteRepositoryBlockingStub,
-                grpcAdapterMapper);
+    public MetadataRepository documentRepository(GrpcAdapterMapper grpcAdapterMapper) {
+        return new MetadataRepositoryImpl(apiSourceMetadataWriteRepositoryBlockingStub, grpcAdapterMapper);
     }
 
     @Bean
     public TagsRepository tagsRepository(GrpcAdapterMapper grpcAdapterMapper) {
         return new TagsRepositoryImpl(apiTagsWriteRepositoryBlockingStub, grpcAdapterMapper);
+    }
+
+    @Bean
+    public EmbeddingRepository embeddingRepository(GrpcAdapterMapper grpcAdapterMapper){
+        return new EmbeddingRepositoryImpl(apiEmbeddingWriteRepositoryBlockingStub, grpcAdapterMapper);
     }
 
 

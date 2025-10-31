@@ -9,7 +9,7 @@ public class EntityBeanTest extends DynamicBeanTest {
     protected Stream<Class<?>> beanClasses() {
         return Stream.of(
                 AppsEntity.class,
-                DocumentMetadataEntity.class,
+                SourceMetadataEntity.class,
                 TagsEntity.class
         );
     }
