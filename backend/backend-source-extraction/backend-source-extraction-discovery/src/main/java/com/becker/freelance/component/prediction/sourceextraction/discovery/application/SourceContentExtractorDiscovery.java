@@ -32,7 +32,7 @@ public class SourceContentExtractorDiscovery {
         List<InetAddress> hosts = new ArrayList<>();
         int i = 1;
         while (true){
-            String host = contentExtractorServicePrefix + "-" + i;
+            String host = contentExtractorServicePrefix + "-" + i + "-1";
             try {
                 InetAddress address = InetAddress.getByName(host);
                 if (address.isReachable(1000)){

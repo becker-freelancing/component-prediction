@@ -33,6 +33,7 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
         try {
             return result.get();
         } catch (InterruptedException | ExecutionException e) {
+            stub.clearBuffer(map(extractionId), new EmptyStreamObserver());
             throw new IllegalStateException("Could not request supports", e);
         }
     }
@@ -45,6 +46,7 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
         try {
             return result.get();
         } catch (InterruptedException | ExecutionException e) {
+            stub.clearBuffer(map(uuid), new EmptyStreamObserver());
             throw new IllegalStateException("Could not extract", e);
         }
     }
@@ -67,7 +69,7 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
                 outputStream.onNext(chunk);
             }
         } catch (IOException e) {
-            outputStream.onError(e);
+            stub.clearBuffer(map(extractionId), new EmptyStreamObserver());
             throw new IllegalStateException("Could not buffer", e);
         }
 
@@ -76,6 +78,7 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
         try {
             result.get();
         } catch (InterruptedException | ExecutionException e) {
+            stub.clearBuffer(map(extractionId), new EmptyStreamObserver());
             throw new IllegalStateException("Could not buffer", e);
         }
     }

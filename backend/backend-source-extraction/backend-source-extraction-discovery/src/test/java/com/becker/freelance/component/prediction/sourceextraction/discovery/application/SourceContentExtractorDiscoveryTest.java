@@ -29,9 +29,9 @@ class SourceContentExtractorDiscoveryTest {
 
         // Mock InetAddress.getByName to return our fake addresses for 1 and 2, then throw for 3
         try (MockedStatic<InetAddress> inetMock = mockStatic(InetAddress.class)) {
-            inetMock.when(() -> InetAddress.getByName(eq("extractor-1"))).thenReturn(addr1);
-            inetMock.when(() -> InetAddress.getByName(eq("extractor-2"))).thenReturn(addr2);
-            inetMock.when(() -> InetAddress.getByName(eq("extractor-3"))).thenThrow(new UnknownHostException("no more hosts"));
+            inetMock.when(() -> InetAddress.getByName(eq("extractor-1-1"))).thenReturn(addr1);
+            inetMock.when(() -> InetAddress.getByName(eq("extractor-2-1"))).thenReturn(addr2);
+            inetMock.when(() -> InetAddress.getByName(eq("extractor-3-1"))).thenThrow(new UnknownHostException("no more hosts"));
 
             // We also mock ManagedChannelBuilder
             ManagedChannel channel = mock(ManagedChannel.class);
@@ -65,7 +65,7 @@ class SourceContentExtractorDiscoveryTest {
         when(addr.isReachable(anyInt())).thenReturn(false);
 
         try (MockedStatic<InetAddress> inetMock = mockStatic(InetAddress.class)) {
-            inetMock.when(() -> InetAddress.getByName(eq("extractor-1")))
+            inetMock.when(() -> InetAddress.getByName(eq("extractor-1-1")))
                     .thenThrow(new UnknownHostException("unreachable"));
 
             SourceContentExtractorDiscovery discovery =

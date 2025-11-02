@@ -99,6 +99,11 @@ services:
     networks:
       - devnet
 
+  source-extract-service-1:
+    image: beckerfreelancing/backend-source-extraction-manual-input:${IMAGE_VERSION}
+    networks:
+      - devnet
+
   ingest-service:
     image: beckerfreelancing/backend-ingest-service:${IMAGE_VERSION}
     ports:
@@ -120,6 +125,7 @@ services:
       SOURCEEXTRACTION_CONTENT_EXTRACTOR_SERVICE_GRPC_PORT: ${SOURCE_EXTRACTION_GRPC_PORT}
       JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS_INGEST} # DEBUGGING
     depends_on:
+      - source-extract-service-1
       - embedding-service
       - backend-storage-service
       - language-service

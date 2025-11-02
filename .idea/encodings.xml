@@ -23,6 +23,8 @@
     <file url="file://$PROJECT_DIR$/backend/backend-query/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-discovery/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-discovery/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-manual-input/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-manual-input/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-proto/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/backend-source-extraction-proto/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/backend/backend-source-extraction/src/main/java" charset="UTF-8" />

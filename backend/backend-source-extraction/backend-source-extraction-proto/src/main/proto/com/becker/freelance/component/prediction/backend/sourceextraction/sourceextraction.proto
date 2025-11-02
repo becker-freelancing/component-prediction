@@ -34,4 +34,5 @@ service ApiSourceContentExtractionService {
     rpc Buffer (stream GrpcSourceContentExtractionRequestChunk) returns (google.protobuf.Empty);
     rpc SupportsOrReset(GrpcSourceContentExtractionUUID) returns (GrpcSourceContentExtractionSupportsResponse);
     rpc Extract(GrpcSourceContentExtractionUUID) returns (stream GrpcSourceContentExtractionChunk);
+    rpc ClearBuffer(GrpcSourceContentExtractionUUID) returns (google.protobuf.Empty);
 }
