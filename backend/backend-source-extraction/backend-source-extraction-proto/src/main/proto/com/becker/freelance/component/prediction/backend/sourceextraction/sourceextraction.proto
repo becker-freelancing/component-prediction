@@ -29,10 +29,15 @@ message GrpcSourceContentExtractionSupportsResponse {
     bool supports = 1;
 }
 
+message GrpcSourceContentExtractorOriginalClassName {
+    string class_name = 1;
+}
+
 service ApiSourceContentExtractionService {
     rpc PrepareExtraction (google.protobuf.Empty) returns (GrpcSourceContentExtractionUUID);
     rpc Buffer (stream GrpcSourceContentExtractionRequestChunk) returns (google.protobuf.Empty);
     rpc SupportsOrReset(GrpcSourceContentExtractionUUID) returns (GrpcSourceContentExtractionSupportsResponse);
     rpc Extract(GrpcSourceContentExtractionUUID) returns (stream GrpcSourceContentExtractionChunk);
     rpc ClearBuffer(GrpcSourceContentExtractionUUID) returns (google.protobuf.Empty);
+    rpc OriginalClassName(google.protobuf.Empty) returns (GrpcSourceContentExtractorOriginalClassName);
 }

@@ -5,7 +5,7 @@ import com.becker.freelance.component.prediction.buffer.api.ByteArraysBuffer;
 import java.io.InputStream;
 import java.util.UUID;
 
-public interface SourceContentExtractor {
+public interface SourceContentExtractor extends SourceContentExtractorIdProvider{
 
     public boolean supportsOrReset(UUID extractionId);
 

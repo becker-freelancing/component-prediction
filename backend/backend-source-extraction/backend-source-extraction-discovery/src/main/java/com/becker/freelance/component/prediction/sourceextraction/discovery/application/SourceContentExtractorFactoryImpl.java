@@ -3,6 +3,7 @@ package com.becker.freelance.component.prediction.sourceextraction.discovery.app
 
 import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
 import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorIdProvider;
 import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorWithExtractionId;
 
 import java.io.InputStream;
@@ -17,6 +18,11 @@ public class SourceContentExtractorFactoryImpl implements SourceContentExtractor
 
     public SourceContentExtractorFactoryImpl(List<SourceContentExtractor> extractors) {
         this.extractors = extractors;
+    }
+
+    @Override
+    public List<? extends SourceContentExtractorIdProvider> findAll() {
+        return extractors;
     }
 
     @Override

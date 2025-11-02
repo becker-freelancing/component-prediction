@@ -99,6 +99,19 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
         }
     }
 
+    @Override
+    public String getOriginalClassName() {
+        OriginalClassNameStreamObserver streamObserver = new OriginalClassNameStreamObserver();
+        CompletableFuture<String> result = streamObserver.getResult();
+        stub.originalClassName(Empty.newBuilder().build(), streamObserver);
+
+        try {
+            return result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IllegalStateException("Could not get original class name", e);
+        }
+    }
+
     private static class PrepareStreamObserver implements StreamObserver<GrpcSourceContentExtractionUUID> {
 
         private final CompletableFuture<GrpcSourceContentExtractionUUID> result = new CompletableFuture<>();
@@ -197,6 +210,29 @@ public class SourceContentExtractorImpl implements SourceContentExtractor {
         }
 
         public CompletableFuture<ByteArraysBuffer> getResult() {
+            return result;
+        }
+    }
+
+    private static class OriginalClassNameStreamObserver implements StreamObserver<GrpcSourceContentExtractorOriginalClassName> {
+
+        private final CompletableFuture<String> result = new CompletableFuture<>();
+
+        @Override
+        public void onNext(GrpcSourceContentExtractorOriginalClassName empty) {
+            result.complete(empty.getClassName());
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+            throw new IllegalStateException(throwable);
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+
+        public CompletableFuture<String> getResult() {
             return result;
         }
     }

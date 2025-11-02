@@ -65,6 +65,16 @@ public class ApiManualInputExtractionService extends ApiSourceContentExtractionS
         responseObserver.onCompleted();
     }
 
+    @Override
+    public void originalClassName(Empty request, StreamObserver<GrpcSourceContentExtractorOriginalClassName> responseObserver) {
+        GrpcSourceContentExtractorOriginalClassName build = GrpcSourceContentExtractorOriginalClassName.newBuilder()
+                .setClassName(getClass().getName())
+                .build();
+
+        responseObserver.onNext(build);
+        responseObserver.onCompleted();
+    }
+
     static class ExtractionConsumerImpl implements ExtractionConsumer {
 
         private final GrpcSourceContentExtractionUUID extractionId;
