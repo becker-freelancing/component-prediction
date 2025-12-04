@@ -10,7 +10,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { saveApp, fetchAppById } from '@/services/appService'
-import type { App } from '@/components/DocumentMetadataTypes'
+import type { App } from '@/components/SourceMetadataTypes'
 import AppForm from './AppForm.vue'
 
 const appName = ref('')

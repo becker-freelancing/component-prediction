@@ -18,7 +18,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import type { Tag } from "@/components/DocumentMetadataTypes";
+import type { Tag } from "@/components/SourceMetadataTypes";
 import { fetchAllTags } from "@/services/tagService";
 import SelectableTable from "@/components/SelectableTable.vue";
 

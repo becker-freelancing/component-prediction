@@ -10,15 +10,15 @@ export interface Tag {
     tag: string
 }
 
-export interface DocumentMetadata {
+export interface SourceMetadata {
     id: string | undefined,
     app: App,
-    inAppActionPath: string,
-    actionTitle: string,
-    actionDescription: string,
-    actionShortDescription: string,
-    tags: Tag[]
+    tags: Tag[],
     locale: string,
     version: number,
     createdAt: DateTime | undefined,
+    lastModifiedAt: DateTime | undefined,
+    fileName: string | undefined,
+    parent: SourceMetadata | undefined,
+    hasChildren: boolean
 }

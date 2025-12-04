@@ -10,15 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
-@GrpcService
 public class ApiManualInputExtractionService extends ApiSourceContentExtractionServiceGrpc.ApiSourceContentExtractionServiceImplBase {
 
     private final ManualInputExtractionService manualInputExtractionService;
     private final ByteArraysBuffer buffer;
+    private final String id;
 
-    @Autowired
-    public ApiManualInputExtractionService(ManualInputExtractionService manualInputExtractionService) {
+    public ApiManualInputExtractionService(ManualInputExtractionService manualInputExtractionService, String id) {
         this.manualInputExtractionService = manualInputExtractionService;
+        this.id = id;
         this.buffer = ByteArraysBufferFactory.getInstance().createNew();
     }
 
@@ -66,12 +66,12 @@ public class ApiManualInputExtractionService extends ApiSourceContentExtractionS
     }
 
     @Override
-    public void originalClassName(Empty request, StreamObserver<GrpcSourceContentExtractorOriginalClassName> responseObserver) {
-        GrpcSourceContentExtractorOriginalClassName build = GrpcSourceContentExtractorOriginalClassName.newBuilder()
-                .setClassName(getClass().getName())
+    public void getId(Empty request, StreamObserver<GrpcSourceContentExtractorId> responseObserver) {
+        GrpcSourceContentExtractorId extractorId = GrpcSourceContentExtractorId.newBuilder()
+                .setId(id)
                 .build();
 
-        responseObserver.onNext(build);
+        responseObserver.onNext(extractorId);
         responseObserver.onCompleted();
     }
 

@@ -1,4 +1,4 @@
-import type { App } from "@/components/DocumentMetadataTypes";
+import type { App } from "@/components/SourceMetadataTypes";
 import { fetchGet, fetchPut } from "./fetchService";
 
 export async function fetchAllApps(): Promise<App[]> {

@@ -20,11 +20,15 @@ public class ExtractionConfig {
 
     @Bean
     List<SourceContentExtractor> sourceContentExtractors(SourceContentExtractorDiscovery sourceContentExtractorDiscovery){
-        return sourceContentExtractorDiscovery.findAll();
+        return sourceContentExtractorDiscovery.findAllExtractionServices();
     }
 
     @Bean
-    SourceContentExtractorFactory sourceContentExtractorFactory(List<SourceContentExtractor> sourceContentExtractors){
-        return new SourceContentExtractorFactoryImpl(sourceContentExtractors);
+    SourceContentExtractorFactory sourceContentExtractorFactory(SourceContentExtractorDiscovery sourceContentExtractorDiscovery){
+        return new SourceContentExtractorFactoryImpl(
+                sourceContentExtractorDiscovery.findAllExtractionServices(),
+                sourceContentExtractorDiscovery.findAllLabelProvider(),
+                sourceContentExtractorDiscovery.findAllConfigProvider()
+        );
     }
 }

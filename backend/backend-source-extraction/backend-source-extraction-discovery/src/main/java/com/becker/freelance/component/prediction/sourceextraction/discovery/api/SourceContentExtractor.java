@@ -14,4 +14,6 @@ public interface SourceContentExtractor extends SourceContentExtractorIdProvider
     void buffer(UUID extractionId, InputStream inputStream);
 
     UUID prepareNewExtraction();
+
+    public String getId();
 }

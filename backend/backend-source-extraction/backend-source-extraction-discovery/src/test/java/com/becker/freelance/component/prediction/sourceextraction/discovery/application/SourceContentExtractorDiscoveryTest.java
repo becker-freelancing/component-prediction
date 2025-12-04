@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 class SourceContentExtractorDiscoveryTest {
 
     @Test
-    void findAll_shouldDiscoverMultipleServices() throws Exception {
+    void findAll_ExractionServices_shouldDiscoverMultipleServices() throws Exception {
         // Arrange
         InetAddress addr1 = mock(InetAddress.class);
         InetAddress addr2 = mock(InetAddress.class);
@@ -48,7 +48,7 @@ class SourceContentExtractorDiscoveryTest {
 
                     // Act
                     SourceContentExtractorDiscovery discovery = new SourceContentExtractorDiscovery("extractor", 6565);
-                    List<SourceContentExtractor> extractors = discovery.findAll();
+                    List<SourceContentExtractor> extractors = discovery.findAllExtractionServices();
 
                     // Assert
                     assertEquals(2, extractors.size(), "Should find 2 extractors");
@@ -60,7 +60,7 @@ class SourceContentExtractorDiscoveryTest {
     }
 
     @Test
-    void findAll_shouldReturnEmptyList_whenNoServiceReachable() throws Exception {
+    void findAll_ExractionServices_shouldReturnEmptyList_whenNoServiceReachable() throws Exception {
         InetAddress addr = mock(InetAddress.class);
         when(addr.isReachable(anyInt())).thenReturn(false);
 
@@ -71,7 +71,7 @@ class SourceContentExtractorDiscoveryTest {
             SourceContentExtractorDiscovery discovery =
                     new SourceContentExtractorDiscovery("extractor", 6565);
 
-            List<SourceContentExtractor> extractors = discovery.findAll();
+            List<SourceContentExtractor> extractors = discovery.findAllExtractionServices();
 
             assertTrue(extractors.isEmpty(), "Should return empty list when nothing reachable");
         }

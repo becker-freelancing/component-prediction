@@ -1,4 +1,4 @@
-import type { Tag } from "@/components/DocumentMetadataTypes";
+import type { Tag } from "@/components/SourceMetadataTypes";
 import { fetchGet, fetchPut } from "./fetchService";
 
 export async function fetchAllTags(): Promise<Tag[]> {

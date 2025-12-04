@@ -1,10 +1,7 @@
 package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
 
-import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
-import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorFactory;
-import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorIdProvider;
-import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorWithExtractionId;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.*;
 
 import java.io.InputStream;
 import java.util.List;
@@ -15,14 +12,28 @@ import java.util.function.Supplier;
 public class SourceContentExtractorFactoryImpl implements SourceContentExtractorFactory {
 
     private final List<SourceContentExtractor> extractors;
+    private final List<SourceContentExtractorLabelProvider> labelProviders;
+    private final List<SourceContentExtractorConfigProvider> configProviders;
 
-    public SourceContentExtractorFactoryImpl(List<SourceContentExtractor> extractors) {
+    public SourceContentExtractorFactoryImpl(List<SourceContentExtractor> extractors, List<SourceContentExtractorLabelProvider> labelProviders, List<SourceContentExtractorConfigProvider> configProviders) {
         this.extractors = extractors;
+        this.labelProviders = labelProviders;
+        this.configProviders = configProviders;
     }
 
     @Override
-    public List<? extends SourceContentExtractorIdProvider> findAll() {
+    public List<? extends SourceContentExtractorIdProvider> findAllIdProvider() {
         return extractors;
+    }
+
+    @Override
+    public List<? extends SourceContentExtractorConfigProvider> findAllConfigProvider() {
+        return configProviders;
+    }
+
+    @Override
+    public List<? extends SourceContentExtractorLabelProvider> findAllLabelProvider() {
+        return labelProviders;
     }
 
     @Override

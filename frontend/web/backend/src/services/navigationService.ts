@@ -3,7 +3,7 @@ import type { TreeNodeContent } from "../components/TreeNodeTypes";
 
 
 export async function fetchNavigation(): Promise<TreeNodeContent[]> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     resolve(
       [
         {
@@ -30,9 +30,9 @@ export async function fetchNavigation(): Promise<TreeNodeContent[]> {
           children: []
         },
         {
-          id: "create-content",
-          label: "Content",
-          seoRoute: "/manage-content",
+          id: "source-overview",
+          label: "Sources",
+          seoRoute: "/source-overview",
           visible: true,
           permissions: [],
           children: []

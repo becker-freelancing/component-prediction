@@ -28,7 +28,7 @@ class SourceContentExtractorFactoryImplTest {
         extractor1 = mock(SourceContentExtractor.class);
         extractor2 = mock(SourceContentExtractor.class);
         inputStreamSupplier = () -> new ByteArrayInputStream("data".getBytes());
-        factory = new SourceContentExtractorFactoryImpl(List.of(extractor1, extractor2));
+        factory = new SourceContentExtractorFactoryImpl(List.of(extractor1, extractor2), List.of(), List.of());
     }
 
     @Test

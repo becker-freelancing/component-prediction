@@ -17,7 +17,7 @@ public class BackendGatewaySourceExtractors {
 
     @Autowired
     public BackendGatewaySourceExtractors(SourceContentExtractorFactory sourceContentExtractorFactory){
-        extractorIds = sourceContentExtractorFactory.findAll().stream()
+        extractorIds = sourceContentExtractorFactory.findAllIdProvider().stream()
                 .map(SourceContentExtractorIdProvider::getOriginalClassName)
                 .toList();
     }

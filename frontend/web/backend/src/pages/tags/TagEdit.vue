@@ -10,7 +10,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { saveTag, fetchTagById } from '@/services/tagService'
-import type { Tag } from '@/components/DocumentMetadataTypes'
+import type { Tag } from '@/components/SourceMetadataTypes'
 import TagForm from './TagForm.vue'
 
 const tagName = ref('')

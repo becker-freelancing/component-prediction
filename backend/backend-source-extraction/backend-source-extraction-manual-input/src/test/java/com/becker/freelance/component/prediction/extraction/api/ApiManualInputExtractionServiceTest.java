@@ -31,7 +31,7 @@ public class ApiManualInputExtractionServiceTest {
         factoryMockedStatic = mockStatic(ByteArraysBufferFactory.class);
         factoryMockedStatic.when(ByteArraysBufferFactory::getInstance).thenReturn(factoryMock);
 
-        service = new ApiManualInputExtractionService(manualInputExtractionService);
+        service = new ApiManualInputExtractionService(manualInputExtractionService, "id");
     }
 
     @AfterEach

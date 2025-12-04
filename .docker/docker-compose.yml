@@ -101,6 +101,8 @@ services:
 
   source-extract-service-1:
     image: beckerfreelancing/backend-source-extraction-manual-input:${IMAGE_VERSION}
+    environment:
+      SERVICE_ID: source-extraction-manual-input
     networks:
       - devnet
 

@@ -1,8 +1,12 @@
 package com.becker.freelance.component.prediction.sourceextraction.discovery.application;
 
+import com.becker.freelance.component.prediction.backend.SourceContentExtraction.ApiSourceContentExtractionConfigProviderGrpc;
+import com.becker.freelance.component.prediction.backend.SourceContentExtraction.ApiSourceContentExtractionLabelProviderGrpc;
 import com.becker.freelance.component.prediction.backend.SourceContentExtraction.ApiSourceContentExtractionServiceGrpc;
 import com.becker.freelance.component.prediction.buffer.api.ByteArraysBufferFactory;
 import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractor;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorConfigProvider;
+import com.becker.freelance.component.prediction.sourceextraction.discovery.api.SourceContentExtractorLabelProvider;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import org.slf4j.Logger;
@@ -27,7 +31,37 @@ public class SourceContentExtractorDiscovery {
         this.contentExtractorServiceGrpcPort = contentExtractorServiceGrpcPort;
     }
 
-    public List<SourceContentExtractor> findAll() {
+    public List<SourceContentExtractor> findAllExtractionServices() {
+        List<ManagedChannel> channels = findAllChannels();
+
+        return channels.stream()
+                .map(ApiSourceContentExtractionServiceGrpc::newStub)
+                .map(stub -> new SourceContentExtractorImpl(stub, byteArraysBufferFactory))
+                .map(e -> (SourceContentExtractor) e)
+                .toList();
+    }
+
+    public List<SourceContentExtractorConfigProvider> findAllConfigProvider(){
+        List<ManagedChannel> channels = findAllChannels();
+
+        return channels.stream()
+                .map(ApiSourceContentExtractionConfigProviderGrpc::newBlockingStub)
+                .map(SourceContentExtractorConfigProviderImpl::new)
+                .map(e -> (SourceContentExtractorConfigProvider) e)
+                .toList();
+    }
+
+    public List<SourceContentExtractorLabelProvider> findAllLabelProvider(){
+        List<ManagedChannel> channels = findAllChannels();
+
+        return channels.stream()
+                .map(ApiSourceContentExtractionLabelProviderGrpc::newBlockingStub)
+                .map(SourceContentExtractorLabelProviderImpl::new)
+                .map(e -> (SourceContentExtractorLabelProvider) e)
+                .toList();
+    }
+
+    private List<ManagedChannel> findAllChannels() {
         List<ManagedChannel> channels = new ArrayList<>();
         List<InetAddress> hosts = new ArrayList<>();
         int i = 1;
@@ -50,11 +84,6 @@ public class SourceContentExtractorDiscovery {
         }
 
         logger.info("Found {} content extractor services with hosts: {}", channels.size(), hosts);
-
-        return channels.stream()
-                .map(ApiSourceContentExtractionServiceGrpc::newStub)
-                .map(stub -> new SourceContentExtractorImpl(stub, byteArraysBufferFactory))
-                .map(e -> (SourceContentExtractor) e)
-                .toList();
+        return channels;
     }
 }

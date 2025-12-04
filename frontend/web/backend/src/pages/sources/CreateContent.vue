@@ -72,8 +72,8 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import type { DocumentMetadata, App, Tag } from '@/components/DocumentMetadataTypes';
-import { fetchById, saveMetadata } from '@/services/documentMetadataService';
+import type { SourceMetadata, App, Tag } from '@/components/SourceMetadataTypes';
+import { fetchById, saveMetadata } from '@/services/sourceMetadataService';
 import { fetchAllApps } from '@/services/appService';
 import { fetchAllTags } from '@/services/tagService';
 import { DateTime } from 'luxon';
@@ -106,7 +106,7 @@ const tags = computed(() => originalTags.value.filter(t => !selectedTags.value.i
 
 onMounted(async () => {
     if (route.query.id) {
-        let metaData: DocumentMetadata | undefined = await fetchById(route.query.id as string)
+        let metaData: SourceMetadata | undefined = await fetchById(route.query.id as string)
         if (metaData) {
             id.value = metaData.id ?? ""
             selectedAppId.value = metaData.app.id ?? ""
@@ -137,7 +137,7 @@ function getApp(): App {
 }
 
 function save() {
-    const metaData: DocumentMetadata = {
+    const metaData: SourceMetadata = {
         id: id.value === "" ? undefined : id.value,
         app: getApp(),
         inAppActionPath: actionPath.value,

@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NotFound from './pages/NotFound.vue'
-import CreateContent from './pages/content/CreateContent.vue'
+import CreateContent from './pages/sources/CreateContent.vue'
 import AppCreate from './pages/app/AppCreate.vue'
 import TagsOverview from './pages/tags/TagsOverview.vue'
 import TagCreate from './pages/tags/TagCreate.vue'
 import TagEdit from './pages/tags/TagEdit.vue'
-import ContentManagement from './pages/content/ContentManagement.vue'
+import SourceOverview from './pages/sources/SourceOverview.vue'
 import AppOverview from './pages/app/AppOverview.vue'
 import AppEdit from './pages/app/AppEdit.vue'
+import ManageSource from './pages/sources/ManageSource.vue'
 
 const routes = [
   {
@@ -41,14 +42,14 @@ const routes = [
     component: TagEdit
   },
   {
-    path: '/manage-content',
+    path: '/source-overview',
     name: 'manageContent',
-    component: ContentManagement,
+    component: SourceOverview,
   },
   {
-    path: "/create-content",
-    name: "createContent",
-    component: CreateContent
+    path: "/manage-source",
+    name: "manage-source",
+    component: ManageSource
   },
   {
     path: '/:pathMatch(.*)*',

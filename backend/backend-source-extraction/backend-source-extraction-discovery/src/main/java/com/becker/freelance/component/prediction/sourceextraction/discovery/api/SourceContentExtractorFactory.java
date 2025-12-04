@@ -7,7 +7,11 @@ import java.util.function.Supplier;
 
 public interface SourceContentExtractorFactory {
 
-    public List<? extends SourceContentExtractorIdProvider> findAll();
+    public List<? extends SourceContentExtractorIdProvider> findAllIdProvider();
+
+    public List<? extends SourceContentExtractorConfigProvider> findAllConfigProvider();
+
+    public List<? extends SourceContentExtractorLabelProvider> findAllLabelProvider();
 
     public Optional<SourceContentExtractorWithExtractionId> findAndBuffer(Supplier<InputStream> inputStream);
 }
